@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  zeebe-cluster:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2019-10-24T12:24:10.311697+05:30"
+    description: A Zeebe Cluster Helm Chart for Kubernetes
+    digest: 052a96c6f9d4a83b210aaf637984104281d7b7f7364c1d55dcd1672efb5260d8
+    icon: https://zeebe.io/img/zeebe-logo.png
+    name: zeebe-cluster
+    urls:
+    - https://charts.livspace.com/zeebe-cluster-0.1.0.tgz
+    version: 0.1.0
+generated: "2019-10-24T12:24:10.307354+05:30"
