@@ -1,15 +1,12 @@
 ## Livspace Public Helm Charts
 
-You can use the [editor on GitHub](https://github.com/livspaceeng/helm-charts/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+All livspace maintained public helm charts are available here.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Adding livspace helm repo
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Before one start installing the charts from livspace helm repo, you must add the repo to your helm. Hope you have valid helm setup
 
 ```markdown
-Add livspace helm charts repo
 $ helm repo add https://charts.livspace.com
 ```
 
