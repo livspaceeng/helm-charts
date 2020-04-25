@@ -2,7 +2,7 @@ apiVersion: v1
 entries:
   exposecontroller:
   - appVersion: 2.3.109
-    created: "2020-04-25T01:50:28.319289+05:30"
+    created: "2020-04-26T01:29:07.879322+05:30"
     digest: eb6aeff2d3de1756ab2bf622be37a4150a4ca3dd9ab32d02f866651465d18c40
     home: https://jenkins-x.github.io/jenkins-x-website/
     icon: https://raw.githubusercontent.com/fabric8-apps/exposecontroller-app/master/src/main/fabric8/icon.png
@@ -14,7 +14,7 @@ entries:
     - https://charts.livspace.com/exposecontroller-2.3.111.tgz
     version: 2.3.111
   - appVersion: 2.3.109
-    created: "2020-04-25T01:50:28.318212+05:30"
+    created: "2020-04-26T01:29:07.878712+05:30"
     digest: 932bf54e7f720eaa1c44f29d5bdea760065aeee9bf0149467bcba624d1240238
     home: https://jenkins-x.github.io/jenkins-x-website/
     icon: https://raw.githubusercontent.com/fabric8-apps/exposecontroller-app/master/src/main/fabric8/icon.png
@@ -28,7 +28,7 @@ entries:
   heartbeat:
   - apiVersion: v1
     appVersion: 6.7.0
-    created: "2020-04-25T01:50:28.32172+05:30"
+    created: "2020-04-26T01:29:07.880831+05:30"
     description: A Helm chart to periodically check the status of your services with
       heartbeat
     digest: 960882f457166f831b1618a4995eb217aba31e72b919666b4355c41de48b2988
@@ -46,7 +46,7 @@ entries:
   matomo:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-04-25T01:50:28.327647+05:30"
+    created: "2020-04-26T01:29:07.889638+05:30"
     description: A Helm chart for Kubernetes
     digest: 6495cda5309b6c5be94d5faff23840358da68bf7f7eb202ee268b4ea82d5a7ec
     home: https://matomo.org/
@@ -63,7 +63,7 @@ entries:
   zeebe-cluster:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-04-25T01:50:28.332058+05:30"
+    created: "2020-04-26T01:29:07.891992+05:30"
     description: A Zeebe Cluster Helm Chart for Kubernetes
     digest: 052a96c6f9d4a83b210aaf637984104281d7b7f7364c1d55dcd1672efb5260d8
     icon: https://zeebe.io/img/zeebe-logo.png
@@ -73,8 +73,17 @@ entries:
     version: 0.1.0
   zeebe-http-worker:
   - apiVersion: v1
+    appVersion: 0.23.1
+    created: "2020-04-26T01:29:07.895184+05:30"
+    description: A Helm chart for Kubernetes
+    digest: 3d283974f7f0b81f7a705eedde7cd22ef93e7e6506e86b4a002927ba38f56011
+    name: zeebe-http-worker
+    urls:
+    - https://charts.livspace.com/zeebe-http-worker-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v1
     appVersion: 0.22.1
-    created: "2020-04-25T01:50:28.338101+05:30"
+    created: "2020-04-26T01:29:07.894569+05:30"
     description: A Helm chart for Kubernetes
     digest: 53a4347151609562b01c201348a165ff05519b51dc9dd72d25eac99ef1c39c76
     name: zeebe-http-worker
@@ -83,7 +92,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.22.1
-    created: "2020-04-25T01:50:28.335774+05:30"
+    created: "2020-04-26T01:29:07.893659+05:30"
     description: A Helm chart for Kubernetes
     digest: cf0267dcc1f4b4a76ac400ea3b1ab9aac32a41ac21fc7ebea2d876ccae47f835
     name: zeebe-http-worker
@@ -92,7 +101,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-04-25T01:50:28.333539+05:30"
+    created: "2020-04-26T01:29:07.892803+05:30"
     description: A Helm chart for Kubernetes
     digest: f892c90c2b09089b535a157957fd3f94a5ab94fc07730123c00f6eeef2692425
     name: zeebe-http-worker
@@ -101,7 +110,7 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-04-25T01:50:28.33279+05:30"
+    created: "2020-04-26T01:29:07.89242+05:30"
     description: A Helm chart for Kubernetes
     digest: db9b481cc2511ea6b1f98f29473e781ddb37af793f8287953bef59b8e9f60d5f
     name: zeebe-http-worker
@@ -111,7 +120,7 @@ entries:
   zeebe-simple-monitor:
   - apiVersion: v1
     appVersion: 0.19.0
-    created: "2020-04-25T01:50:28.345807+05:30"
+    created: "2020-04-26T01:29:07.899142+05:30"
     description: A Helm chart for Kubernetes
     digest: a596e52a78663ab92bbfdd51802f16b1b9627398871ebc01a19e1a313355930e
     name: zeebe-simple-monitor
@@ -120,7 +129,7 @@ entries:
     version: 0.5.0
   - apiVersion: v1
     appVersion: 0.19.0
-    created: "2020-04-25T01:50:28.345163+05:30"
+    created: "2020-04-26T01:29:07.898501+05:30"
     description: A Helm chart for Kubernetes
     digest: 4904308019e992434a6d358d718015ad0b0057e01a53916afc8421766cea4684
     name: zeebe-simple-monitor
@@ -129,7 +138,7 @@ entries:
     version: 0.4.0
   - apiVersion: v1
     appVersion: 0.17.0
-    created: "2020-04-25T01:50:28.342297+05:30"
+    created: "2020-04-26T01:29:07.897647+05:30"
     description: A Helm chart for Kubernetes
     digest: 9f826087920bbf469f6acf94ef0f00d0ea36bcb1e8bf44b32ac8a31db2293cf2
     name: zeebe-simple-monitor
@@ -138,7 +147,7 @@ entries:
     version: 0.3.0
   - apiVersion: v1
     appVersion: 0.16.0
-    created: "2020-04-25T01:50:28.340625+05:30"
+    created: "2020-04-26T01:29:07.896655+05:30"
     description: A Helm chart for Kubernetes
     digest: 20bc8df9aa708804e574e2a5ecaa01f4eb29288264c4258afdd8cf96533858b1
     name: zeebe-simple-monitor
@@ -147,11 +156,11 @@ entries:
     version: 0.2.0
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-04-25T01:50:28.338848+05:30"
+    created: "2020-04-26T01:29:07.895572+05:30"
     description: A Helm chart for Kubernetes
     digest: ad200f18a77bf1bee29d73f99a02ed081adbd7710f6080c389bb6ba22e9fe577
     name: zeebe-simple-monitor
     urls:
     - https://charts.livspace.com/zeebe-simple-monitor-0.1.0.tgz
     version: 0.1.0
-generated: "2020-04-25T01:50:28.314687+05:30"
+generated: "2020-04-26T01:29:07.875275+05:30"
