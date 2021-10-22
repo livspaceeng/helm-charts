@@ -7,7 +7,7 @@ All livspace maintained public helm charts are available here.
 Before one start installing the charts from livspace helm repo, you must add the repo to your helm. Hope you have valid helm setup
 
 ```markdown
-$ helm repo add https://charts.livspace.com
+$ helm repo add livspace https://charts.livspace.com
 ```
 
 ### Support or Contact
