@@ -21,7 +21,7 @@ cd helm-charts
 #Chart name and folder name should be same
 helm package ../app-chart-folder
 helm repo index --merge index.yaml --url https://charts.livspace.com .
-git commit
 git add .
+git commit
 git push origin
 ```
