@@ -9,10 +9,17 @@ image:
   pullPolicy: IfNotPresent
 init:
   command: ["hydra"]
-  args: ["migrate", "sql" ,"$(MIGRATE_DATABASE_URL)","--yes"]
+  args:
+  - "migrate"
+  - "sql"
+  - "$(MIGRATE_DATABASE_URL)"
+  - "--yes"
 run:
   command: ["hydra"]
-  args: ["serve", "all" , "--skip-tls-verify"]
+  args:
+  - "serve"
+  - "all"
+  - "--skip-tls-verify"
 service:
   name: auth
   type: ClusterIP
@@ -55,6 +62,7 @@ terminationGracePeriodSeconds: 10
 
 ingress:
   enabled: false
+  # className: traefik-external
   hosts:
     - host: hydra.proxy.local
       paths: ["/"]
