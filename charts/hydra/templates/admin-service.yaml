@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.adminService.name }}
+  name: {{ .Values.adminService.name }}
+{{- else }}
+  name: {{ template "fullname" . }}-admin
+{{- end }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+  annotations:
+    livspace.com/service: {{ .Values.adminService.name }}
+{{- if .Values.adminService.annotations }}
+{{ toYaml .Values.adminService.annotations | indent 4 }}
+{{- end }}
+{{- if .Values.adminService.gateway }}
+{{- if .Values.adminService.gateway.enabled }}
+{{- if .Values.adminService.gateway.routes }}
+    getambassador.io/config: |
+{{- range $key , $route := .Values.adminService.gateway.routes }} 
+      ---
+      apiVersion: ambassador/v1
+      kind:  Mapping
+      name:  {{ template "fullname" $ }}-admin-{{ $key }}-mapping
+{{- if $route.ambassador_id }}
+      ambassador_id: {{ $route.ambassador_id }}
+{{- else }}
+      ambassador_id: gw-{{ $.Release.Namespace }}
+{{- end }}
+{{- if $route.prefix }}
+      prefix: {{ $route.prefix }}
+{{- else }}
+      prefix: /{{ $.Values.adminService.name }}/
+{{- end }}
+      service: {{ $.Values.adminService.name }}.{{ $.Release.Namespace }}:{{ $.Values.adminService.externalPort }}
+{{- if $route.extra }}
+{{ toYaml $route.extra | indent 6 }}
+{{- end }}
+{{- if $route.legacy }}
+      ---
+      apiVersion: ambassador/v1
+      kind:  Mapping
+      name:  {{ template "fullname" $ }}-admin-{{ $key }}-proxy-mapping
+{{- if $route.ambassador_id }}
+      ambassador_id: {{ $route.ambassador_id }}
+{{- else }}
+      ambassador_id: gw-{{ $.Release.Namespace }}
+{{- end }}
+{{- if $route.prefix }}
+      prefix: /proxy{{ $route.prefix }}
+{{- else }}
+      prefix: /proxy/{{ $.Values.adminService.name }}/
+{{- end }}
+      service: {{ $.Values.adminService.name }}.{{ $.Release.Namespace }}:{{ $.Values.adminService.externalPort }}
+{{- if $route.extra }}
+{{ toYaml $route.extra | indent 6 }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+spec:
+  type: {{ .Values.adminService.type }}
+  ports:
+  - port: {{ .Values.adminService.externalPort }}
+    targetPort: {{ .Values.adminService.internalPort }}
+    protocol: TCP
+    name: http
+  selector:
+    app: {{ template "fullname" . }}
