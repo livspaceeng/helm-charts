@@ -60,7 +60,8 @@ entries:
   - apiVersion: v1
     appVersion: 6.7.0
     created: "2021-11-19T11:32:06.252818+05:30"
-    description: A Helm chart to periodically check the status of your services with heartbeat
+    description: A Helm chart to periodically check the status of your services with
+      heartbeat
     digest: 960882f457166f831b1618a4995eb217aba31e72b919666b4355c41de48b2988
     home: https://www.elastic.co/products/beats/heartbeat
     icon: https://www.elastic.co/jp/assets/blt75e7956191e1bd55/icon-heartbeat-bb.svg
@@ -74,6 +75,19 @@ entries:
     - https://charts.livspace.com/heartbeat-1.2.0.tgz
     version: 1.2.0
   hydra:
+  - apiVersion: v1
+    created: "2022-02-18T10:34:17.916978333Z"
+    description: A Helm chart for Kubernetes
+    digest: 4e958ec90674977ad9902a5b83dfd61f7cd5b3ddcfce922cbcf819d8d2333efb
+    maintainers:
+    - email: ankit.a@livspace.com
+      name: ankit-ls
+    - email: praveen@livspace.com
+      name: praveen-livspace
+    name: hydra
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/hydra-1.20.1/hydra-1.20.1.tgz
+    version: 1.20.1
   - apiVersion: v1
     created: "2021-11-19T11:32:06.257283+05:30"
     description: A Helm chart for Kubernetes
@@ -393,4 +407,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2021-11-19T11:32:06.241425+05:30"
+generated: "2022-02-18T10:34:17.917034832Z"
