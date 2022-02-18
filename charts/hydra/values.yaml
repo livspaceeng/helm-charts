@@ -68,7 +68,7 @@ env:
   enabled: false
   values:
   - name: LOG_LEVEL
-    value: debug
+    value: info
 
 config:
   enabled: false
