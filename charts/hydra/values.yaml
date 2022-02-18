@@ -55,6 +55,7 @@ terminationGracePeriodSeconds: 10
 
 ingress:
   enabled: false
+  # className: traefik-external
   hosts:
     - host: hydra.proxy.local
       paths: ["/"]
