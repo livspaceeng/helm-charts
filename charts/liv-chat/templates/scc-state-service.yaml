@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.cluster.state.svc }}
+spec:
+  type: {{ .Values.cluster.state.type }}
+  selector:
+    component: {{ .Values.cluster.state.svc }}
+  ports:
+    -
+      port: {{ .Values.cluster.state.externalPort }}
+      targetPort: {{ .Values.cluster.state.internalPort }}
