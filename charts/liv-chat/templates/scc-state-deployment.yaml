@@ -1,0 +1,54 @@
+{{- if .Values.cluster.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.cluster.state.svc }}
+spec:
+  replicas: {{ .Values.cluster.state.replicaCount }}
+  selector:
+    matchLabels:
+      component: {{ .Values.cluster.state.svc }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.cluster.state.svc }}
+{{- if .Values.cluster.state.podLabels }}
+{{ toYaml .Values.cluster.state.podLabels | indent 8 }}
+{{- end }}
+{{- if .Values.cluster.state.podAnnotations }}
+      annotations:
+{{ toYaml .Values.cluster.state.podAnnotations | indent 8 -}}
+{{- end }}
+    spec:
+      containers:
+        - name: {{ .Values.cluster.state.svc }}
+          image: {{ default "socketcluster/scc-state:v6.1.0" .Values.cluster.state.image | quote }}
+{{- if .Values.cluster.state.securityContext }}
+          securityContext:
+{{ toYaml .Values.cluster.state.securityContext | indent 12 -}}
+{{- end }}
+          ports:
+            - containerPort: {{ .Values.cluster.state.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: {{ .Values.cluster.state.internalPort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: {{ .Values.cluster.state.internalPort }}
+            initialDelaySeconds: 15
+            timeoutSeconds: 20
+          resources:
+{{ toYaml .Values.cluster.state.resources | indent 12 }}
+{{- if .Values.cluster.state.volumeMounts }}
+          volumeMounts:
+{{ toYaml .Values.cluster.state.volumeMounts | indent 12 }}
+{{- end }}
+{{- if .Values.cluster.state.volumes }}
+      volumes:
+{{ toYaml .Values.cluster.state.volumes | indent 8 }}
+{{- end }}
+{{ end -}}

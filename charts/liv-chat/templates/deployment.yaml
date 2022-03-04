@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    draft: {{ default "draft-app" .Values.draft }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.cluster.scService.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+{{- if .Values.cluster.scService.podLabels }}
+{{ toYaml .Values.cluster.scService.podLabels | indent 8 }}
+{{- end }}
+        draft: {{ default "draft-app" .Values.draft }}
+        app: {{ template "fullname" . }}
+{{- if .Values.cluster.scService.podAnnotations }}
+      annotations:
+{{ toYaml .Values.cluster.scService.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.cluster.scService.image.repository }}:{{ .Values.cluster.scService.image.tag }}"
+        imagePullPolicy: {{ .Values.cluster.scService.image.pullPolicy }}
+{{- if .Values.env.enabled }}
+        env:
+{{ toYaml .Values.env.values | indent 10 -}}
+{{- end }}
+{{- if .Values.cluster.scService.securityContext }}
+        securityContext:
+{{ toYaml .Values.cluster.scService.securityContext | indent 10 -}}
+{{- end }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.probePath }}
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.probePath }}
+            port: {{ .Values.service.internalPort }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+        {{- if .Values.config.enabled }}
+        volumeMounts:
+        - mountPath: {{ .Values.config.mountPath }}
+          name: {{ template "fullname" . }}
+{{ toYaml .Values.cluster.scService.volumeMounts | indent 8 -}}
+        {{- end }}
+        resources:
+{{ toYaml .Values.cluster.scService.resources | indent 12 }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{ if .Values.config.enabled -}}
+      volumes:
+      - name: {{ template "fullname" . }}
+        configMap:
+          name: {{ template "fullname" . }}
+{{ toYaml .Values.cluster.scService.volumes | indent 6 -}}
+      {{- end }}
+
