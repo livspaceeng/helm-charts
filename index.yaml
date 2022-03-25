@@ -176,6 +176,17 @@ entries:
     urls:
     - https://charts.livspace.com/matomo-0.1.0.tgz
     version: 0.1.0
+  rudderstack:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-03-25T10:51:06.70361713Z"
+    description: A Helm chart for Kubernetes
+    digest: c8d01ad046f2dbb30541b277fca4ce47850ac096cd96c00d58128bc63ae6b16d
+    name: rudderstack
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/rudderstack-0.4.0/rudderstack-0.4.0.tgz
+    version: 0.4.0
   socket-cluster:
   - apiVersion: v1
     created: "2021-11-19T11:32:06.276741+05:30"
@@ -416,4 +427,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2022-03-04T12:27:17.658602276Z"
+generated: "2022-03-25T10:51:06.703814429Z"
