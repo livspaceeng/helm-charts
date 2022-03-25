@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "backend.fullname" . }}-config
+  labels:
+    app: {{ include "backend.name" . }}
+    release: {{ .Release.Name | quote }}
+data:
+  config.yaml: |-
+{{ .Files.Get "rudder-config.yaml" | indent 4}}
+  google-application-credentials.json: |-
+{{.Files.Get "rudder-google-application-credentials.json" | indent 4}}
+  {{- if .Values.backend.controlPlaneJSON}}
+  workspaceConfig.json: |-
+{{.Files.Get "workspaceConfig.json" | indent 4}}
+  {{- end }}
