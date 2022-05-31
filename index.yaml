@@ -192,6 +192,16 @@ entries:
   rudderstack:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2022-05-31T10:28:10.373398043Z"
+    description: A Helm chart for Kubernetes
+    digest: a69bfee14bf781105617416fdab3516f8c4d1c1029f5f66e544de603d314d5cd
+    name: rudderstack
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/rudderstack-0.4.2/rudderstack-0.4.2.tgz
+    version: 0.4.2
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-03-25T10:51:06.70361713Z"
     description: A Helm chart for Kubernetes
     digest: c8d01ad046f2dbb30541b277fca4ce47850ac096cd96c00d58128bc63ae6b16d
@@ -440,4 +450,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2022-04-18T14:59:11.951317826Z"
+generated: "2022-05-31T10:28:10.373681255Z"
