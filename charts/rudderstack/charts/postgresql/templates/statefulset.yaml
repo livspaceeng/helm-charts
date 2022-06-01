@@ -92,6 +92,7 @@ spec:
               {{- end }}
           securityContext:
             runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+{{ toYaml .Values.securityContext | indent 12 }}
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
@@ -115,6 +116,7 @@ spec:
           {{- if .Values.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.securityContext.runAsUser }}
+{{ toYaml .Values.securityContext | indent 12 }}
           {{- end }}
           env:
             - name: BITNAMI_DEBUG
