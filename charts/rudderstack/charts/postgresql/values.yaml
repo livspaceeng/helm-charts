@@ -79,6 +79,8 @@ securityContext:
   fsGroup: 70
   runAsUser: 70
 
+containerSecurityContext: {}
+
 ## Pod Service Account
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 serviceAccount:
