@@ -92,7 +92,9 @@ spec:
               {{- end }}
           securityContext:
             runAsUser: {{ .Values.volumePermissions.securityContext.runAsUser }}
+            {{- if .Values.containerSecurityContext }}
 {{ toYaml .Values.containerSecurityContext | indent 12 }}
+            {{- end }}
           volumeMounts:
             - name: data
               mountPath: {{ .Values.persistence.mountPath }}
@@ -113,11 +115,11 @@ spec:
           {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
           {{- end }}
-          {{- if .Values.containerSecurityContext }}
           securityContext:
             runAsUser: {{ .Values.securityContext.runAsUser }}
+            {{- if .Values.containerSecurityContext }}
 {{ toYaml .Values.containerSecurityContext | indent 12 }}
-          {{- end }}
+            {{- end }}
           env:
             - name: BITNAMI_DEBUG
               value: {{ ternary "true" "false" .Values.image.debug | quote }}
@@ -294,10 +296,10 @@ spec:
         - name: metrics
           image: {{ template "postgresql.metrics.image" . }}
           imagePullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
-         {{- if .Values.metrics.securityContext.enabled }}
+          {{- if .Values.metrics.securityContext.enabled }}
           securityContext:
             runAsUser: {{ .Values.metrics.securityContext.runAsUser }}
-        {{- end }}
+          {{- end }}
           env:
             {{- $database := required "In order to enable metrics you need to specify a database (.Values.postgresqlDatabase or .Values.global.postgresql.postgresqlDatabase)" (include "postgresql.database" .) }}
             - name: DATA_SOURCE_URI
