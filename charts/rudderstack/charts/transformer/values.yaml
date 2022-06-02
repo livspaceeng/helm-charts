@@ -39,6 +39,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-securityContext:
-  enabled: false

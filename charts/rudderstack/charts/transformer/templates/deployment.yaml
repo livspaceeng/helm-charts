@@ -39,7 +39,7 @@ spec:
             port: http
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
-{{- if .Values.securityContext.enabled }}
+{{- if .Values.securityContext }}
         securityContext:
 {{ toYaml .Values.securityContext | indent 10 }}
 {{- end }}
