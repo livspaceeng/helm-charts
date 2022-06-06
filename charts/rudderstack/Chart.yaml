@@ -7,3 +7,6 @@ appVersion: 1.16.0
 maintainers:
   - name: Swayam
     email: swayam.arora@livspace.com
+dependencies:
+  - name: transformer
+    condition: transformer.enabled
