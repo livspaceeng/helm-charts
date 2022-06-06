@@ -9,5 +9,6 @@ maintainers:
     email: swayam.arora@livspace.com
 dependencies:
   - name: transformer
+    repository: file://charts/transformer
     version: 0.1.0
     condition: transformer.enabled
