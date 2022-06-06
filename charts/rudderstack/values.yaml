@@ -108,7 +108,7 @@ transformer:
 
 postgresql:
   nameOverride: "rudderstack-postgresql"
-  isK8Sdb: true
+  isK8Sdb: false
   postgresqlHost: host
   postgresqlUsername: rudder
   postgresqlPassword: password
