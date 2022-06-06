@@ -16,4 +16,3 @@ dependencies:
     repository: file://subcharts/postgresql
     version: 7.7.2
     condition: postgresql.isK8Sdb
-
