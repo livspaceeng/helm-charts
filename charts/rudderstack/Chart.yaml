@@ -10,4 +10,4 @@ maintainers:
 dependencies:
 - name: transformer
   version: "0.1.0"
-  repository: "file://charts/"
+  repository: "file://charts/transformer"
