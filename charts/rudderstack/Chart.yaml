@@ -12,3 +12,8 @@ dependencies:
     repository: file://subcharts/transformer
     version: 0.1.0
     condition: transformer.enabled
+  - name: postgresql
+    repository: file://subcharts/postgresql
+    version: 7.7.2
+    condition: postgresql.isK8Sdb
+
