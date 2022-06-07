@@ -93,6 +93,7 @@ backend:
       value: "INFO"
 
 transformer:
+  enabled: true
   replicaCount: 1
   service:
     port: 9090
@@ -107,7 +108,10 @@ transformer:
       memory: 768Mi
 
 postgresql:
+  enabled: true
   nameOverride: "rudderstack-postgresql"
+  isK8Sdb: false
+  postgresqlHost: host
   postgresqlUsername: rudder
   postgresqlPassword: password
   postgresqlDatabase: jobsdb
