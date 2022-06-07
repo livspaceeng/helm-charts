@@ -33,12 +33,12 @@ spec:
           httpGet:
             path: /health
             port: http
-          initialDelaySeconds: {{.Values.service.livenessProbeInitialDelay}}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelay }}
         readinessProbe:
           httpGet:
             path: /health
             port: http
-          initialDelaySeconds: {{.Values.service.readinessProbeInitialDelay}}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelay }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}
 {{- if .Values.securityContext }}
