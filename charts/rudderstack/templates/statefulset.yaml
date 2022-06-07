@@ -65,12 +65,12 @@ spec:
           httpGet:
             path: /health
             port: {{ .Values.backend.service.targetPort }}
-          initialDelaySeconds: {{ .Values.backend.livenessProbe.initialDelay }}
+          initialDelaySeconds: {{ .Values.backend.livenessProbe.initialDelaySeconds }}
         readinessProbe:
           httpGet:
             path: /health
             port: {{ .Values.backend.service.targetPort }}
-          initialDelaySeconds: {{ .Values.backend.readinessProbe.initialDelay }}
+          initialDelaySeconds: {{ .Values.backend.readinessProbe.initialDelaySeconds }}
         resources:
           {{- toYaml .Values.backend.resources | nindent 10 }}
         env:
