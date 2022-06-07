@@ -5,5 +5,5 @@ dependencies:
 - name: postgresql
   repository: file://subcharts/postgresql
   version: 7.7.2
-digest: sha256:9e1cddede1c642a1be2168e105f843426b7b9413fbe48bb48d366555527ea06e
-generated: "2022-06-06T22:05:27.036081+05:30"
+digest: sha256:2cb97d7938272394a4f7150bcf103d1ec20c0b8f6fc8b5aa8f7f583054fdef7f
+generated: "2022-06-07T10:56:16.530554+05:30"
