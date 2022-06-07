@@ -49,9 +49,9 @@ backend:
     port: 80
     targetPort: 8080
   livenessProbe:
-    initialDelay: 120
+    initialDelaySeconds: 120
   readinessProbe:
-    initialDelay: 0
+    initialDelaySeconds: 0
   resources:
     requests:
       memory: 2560Mi
@@ -102,9 +102,9 @@ transformer:
   service:
     port: 9090
   livenessProbe:
-    initialDelay: 10
+    initialDelaySeconds: 10
   readinessProbe:
-    initialDelay: 10
+    initialDelaySeconds: 10
   image:
     repository: rudderlabs/rudder-transformer
     version: latest
