@@ -48,6 +48,10 @@ backend:
     type: LoadBalancer
     port: 80
     targetPort: 8080
+  livenessProbe:
+    initialDelaySeconds: 120
+  readinessProbe:
+    initialDelaySeconds: 0
   resources:
     requests:
       memory: 2560Mi
@@ -97,6 +101,10 @@ transformer:
   replicaCount: 1
   service:
     port: 9090
+  livenessProbe:
+    initialDelaySeconds: 10
+  readinessProbe:
+    initialDelaySeconds: 10
   image:
     repository: rudderlabs/rudder-transformer
     version: latest
