@@ -114,6 +114,8 @@ Router:
     forceHTTP1: true
     httpTimeout: 120s
     httpMaxIdleConnsPerHost: 32
+  GA4:
+    transformerProxy: true
 BatchRouter:
   mainLoopSleep: 2s
   jobQueryBatchSize: 100000
