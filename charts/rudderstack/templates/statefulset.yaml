@@ -23,6 +23,9 @@ spec:
         {{- end }}
         checksum/rudder-config: {{ .Files.Get "rudder-config.yaml" | sha256sum }}
         checksum/rudder-bigquery-credentials: {{ .Files.Get "bigquery-credentials.json" | sha256sum }}
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}        
     spec:
     {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
