@@ -4,6 +4,8 @@ metadata:
   name: {{ include "rudderstack.fullname" . }}
   labels:
     {{- include "rudderstack.labels" . | nindent 4 }}
+  annotations:
+    {{- include "rudderstack.annotations" . | nindent 4 }}    
 spec:
   serviceName: {{ include "rudderstack.fullname" . }}
   replicas: {{ .Values.global.backendReplicaCount }}
