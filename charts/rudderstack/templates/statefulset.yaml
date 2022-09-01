@@ -31,8 +31,8 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      {{- if .Values.serviceAccount.enabled }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- if .Values.backend.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.backend.serviceAccount.name }}
       {{- end }}
       volumes:
         - configMap:

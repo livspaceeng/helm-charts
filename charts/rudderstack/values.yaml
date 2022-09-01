@@ -48,6 +48,11 @@ backend:
     type: LoadBalancer
     port: 80
     targetPort: 8080
+  serviceAccount:
+    enabled: false
+    create: false
+    annotations: {}
+    # name: rudderstack-sa
   livenessProbe:
     initialDelaySeconds: 120
   readinessProbe:
