@@ -29,6 +29,26 @@ entries:
     urls:
     - https://charts.livspace.com/ambassador-6.3.3.tgz
     version: 6.3.3
+  boundary:
+  - apiVersion: v2
+    appVersion: 0.10.5
+    created: "2022-10-04T13:54:17.350987604Z"
+    description: A Helm chart for Hashicorp Boundary deployment
+    digest: 7af3049d4e70857fcecfc8a603fe1ae6f6f28043b0726f1cce0dce4a3e100418
+    home: https://boundaryproject.io
+    keywords:
+    - Hashicorp
+    - Boundary
+    maintainers:
+    - name: Ankit
+      url: https://charts.livspace.com
+    name: boundary
+    sources:
+    - https://github.com/hashicorp/boundary
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/boundary-0.1.0/boundary-0.1.0.tgz
+    version: 0.1.0
   exposecontroller:
   - apiVersion: v1
     appVersion: 2.3.109
@@ -638,4 +658,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2022-09-22T14:33:10.398305147Z"
+generated: "2022-10-04T13:54:17.351085304Z"
