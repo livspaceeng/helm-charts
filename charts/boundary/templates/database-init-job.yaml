@@ -48,7 +48,7 @@ spec:
       restartPolicy: OnFailure
       initContainers:
         - name: {{ .Chart.Name }}-add-kubectl-tool
-          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ .Capabilities.KubeVersion.Minor }}
+          image: bitnami/kubectl:{{ .Capabilities.KubeVersion.Major }}.{{ trunc 2 .Capabilities.KubeVersion.Minor }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /bin/sh
