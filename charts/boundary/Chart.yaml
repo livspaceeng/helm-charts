@@ -1,6 +1,6 @@
 apiVersion: v2
 name: boundary
-version: 0.1.1
+version: 0.1.2
 description: A Helm chart for Hashicorp Boundary deployment
 type: application
 keywords:
@@ -12,4 +12,4 @@ sources:
 maintainers:
   - name: Ankit
     url: https://charts.livspace.com
-appVersion: "0.10.5"
+appVersion: "0.11.0"

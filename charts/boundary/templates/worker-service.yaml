@@ -9,6 +9,12 @@ metadata:
   labels:
     {{- include "boundary.labels" . | nindent 4 }}
     app.kubernetes.io/component: boundary-worker
+{{- if .Values.worker.service.annotations }}
+  annotations:
+  {{- range $key, $value := .Values.worker.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
 spec:
   type: {{ .Values.worker.service.type }}
   ports:
