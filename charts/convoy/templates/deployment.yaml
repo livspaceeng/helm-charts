@@ -27,7 +27,7 @@ spec:
       volumes:
         - name: convoy-config
           configMap:
-            name: convoy-config
+            name: {{ include "convoy.fullname" . }}
             items: 
               - key: convoy.json
                 path: convoy.json
