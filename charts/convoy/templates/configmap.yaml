@@ -6,5 +6,5 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
-  convoy.json: {{ .Values.config.convoy | toPrettyJson }}
+  convoy.json: {{ toJson .Values.config.convoy | toPrettyJson }}
 {{ end -}}
