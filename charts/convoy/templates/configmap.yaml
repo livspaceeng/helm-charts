@@ -1,5 +1,4 @@
 {{- if .Values.config.enabled -}}
-{{ $config :=  .Values.config.convoy | toPrettyJson  }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,5 +6,5 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
-  convoy.json: {{ $config }}
+  convoy.json: {{ toJson .Values.config.convoy | toPrettyJson }}
 {{ end -}}
