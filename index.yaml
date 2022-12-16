@@ -90,7 +90,7 @@ entries:
   convoy:
   - apiVersion: v2
     appVersion: v0.4.21
-    created: "2022-12-16T12:06:23.023087633Z"
+    created: "2022-12-16T12:06:23.023087635Z"
     description: A Helm chart for Kubernetes
     digest: d902edb56bf5f062d4756766d7883722d1368c0d756caa76707f4a23e5a6f712
     name: convoy
@@ -807,4 +807,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2022-12-16T12:06:23.023440709Z"
+generated: "2022-12-16T12:06:23.023087635Z"
