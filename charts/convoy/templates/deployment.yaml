@@ -70,6 +70,9 @@ spec:
             initialDelaySeconds: 30
           resources:
             {{- toYaml .Values.app.resources | nindent 12 }}
+      {{- if .Values.podLabels }}
+      {{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
