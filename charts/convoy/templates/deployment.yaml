@@ -47,7 +47,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: convoy-config
-              mountPath: /config
+              mountPath: /config/
           command: ["/cmd"]
           args: ["server", "--config", "/config/convoy.json"]
           ports:
