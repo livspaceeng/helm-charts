@@ -90,16 +90,6 @@ entries:
   convoy:
   - apiVersion: v2
     appVersion: v0.4.21
-    created: "2022-12-16T12:38:26.317872829Z"
-    description: A Helm chart for Kubernetes
-    digest: 0c7645030ff71483e3eb2c3950802c7666878086a5a328a2b4757814adb383ec
-    name: convoy
-    type: application
-    urls:
-    - https://github.com/livspaceeng/helm-charts/releases/download/convoy-v0.5.9/convoy-v0.5.9.tgz
-    version: v0.5.9
-  - apiVersion: v2
-    appVersion: v0.4.21
     created: "2022-12-16T12:06:23.023087635Z"
     description: A Helm chart for Kubernetes
     digest: d902edb56bf5f062d4756766d7883722d1368c0d756caa76707f4a23e5a6f712
@@ -395,6 +385,28 @@ entries:
     - https://charts.livspace.com/matomo-0.1.0.tgz
     version: 0.1.0
   rudderstack:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-01-02T12:17:19.636252649Z"
+    dependencies:
+    - condition: transformer.enabled
+      name: transformer
+      repository: file://subcharts/transformer
+      version: 0.1.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: file://subcharts/postgresql
+      version: 7.7.2
+    description: A Helm chart for Kubernetes
+    digest: 187e7a3615b46396f4e29e5131543dfeefbc1cbd7f28427b455c70718e0ddac4
+    maintainers:
+    - email: swayam.arora@livspace.com
+      name: Swayam
+    name: rudderstack
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/rudderstack-0.4.13/rudderstack-0.4.13.tgz
+    version: 0.4.13
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2022-09-01T16:41:02.300624199Z"
@@ -817,4 +829,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2022-12-16T12:38:26.318034632Z"
+generated: "2023-01-02T12:17:19.63638845Z"
