@@ -59,6 +59,11 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 terminationGracePeriodSeconds: 10
+# -- PodDistributionBudget configuration
+pdb:
+  enabled: false
+  spec:
+    minAvailable: 1
 
 ingress:
   enabled: false
