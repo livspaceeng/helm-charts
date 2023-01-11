@@ -1,0 +1,11 @@
+{{- if .Values.pdb.enabled -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  {{ toYaml .Values.pdb.spec }}
+{{- end -}}
