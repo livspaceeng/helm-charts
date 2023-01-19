@@ -1,0 +1,11 @@
+{{- if .Values.config.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "convoy.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  convoy.json: |-
+    {{ toJson .Values.config.convoy | indent 4 }}
+{{ end -}}
