@@ -1,232 +1,232 @@
-maxProcess: 12
-gwDBRetention: 0h
-routerDBRetention: 0h
-enableProcessor: true
-enableRouter: true
-enableStats: false
-statsTagsFormat: influxdb
+maxProcess: {{ .Values.rudderConfig.maxProcess | 12 }}
+gwDBRetention: {{ .Values.rudderConfig.gwDBRetention | 0h }}
+routerDBRetention: {{ .Values.rudderConfig.routerDBRetention | 0h }}
+enableProcessor: {{ .Values.rudderConfig.enableProcessor | true }}
+enableRouter: {{ .Values.rudderConfig.enableRouter | true }}
+enableStats: {{ .Values.rudderConfig.enableStats | false }}
+statsTagsFormat: {{ .Values.rudderConfig.statsTagsFormat | influxdb }}
 Http:
-  ReadTimeout: 0s
-  ReadHeaderTimeout: 0s
-  WriteTimeout: 10s
-  IdleTimeout: 720s
-  MaxHeaderBytes: 524288
+  ReadTimeout: {{ .Values.rudderConfig.http.readTimeout | 0s }}
+  ReadHeaderTimeout: {{ .Values.rudderConfig.http.readHeaderTimeout | 0s }}
+  WriteTimeout: {{ .Values.rudderConfig.http.writeTimeout | 10s }}
+  IdleTimeout: {{ .Values.rudderConfig.http.idleTimeout | 720s }}
+  MaxHeaderBytes: {{ .Values.rudderConfig.http.maxHeaderBytes | 524288 }}
 RateLimit:
-  eventLimit: 1000
-  rateLimitWindow: 60m
-  noOfBucketsInWindow: 12
+  eventLimit: {{ .Values.rudderConfig.rateLimit.eventLimit | 1000 }}
+  rateLimitWindow: {{ .Values.rudderConfig.rateLimit.rateLimitWindow | 60m }}
+  noOfBucketsInWindow: {{ .Values.rudderConfig.rateLimit.noOfBucketsInWindow | 12 }}
 Gateway:
-  webPort: 8080
-  maxUserWebRequestWorkerProcess: 64
-  maxDBWriterProcess: 256
-  CustomVal: GW
-  maxUserRequestBatchSize: 128
-  maxDBBatchSize: 128
-  userWebRequestBatchTimeout: 15ms
-  dbBatchWriteTimeout: 5ms
-  maxReqSizeInKB: 4000
-  enableRateLimit: false
-  enableSuppressUserFeature: true
-  allowPartialWriteWithErrors: true
-  allowReqsWithoutUserIDAndAnonymousID: false
+  webPort: {{ .Values.rudderConfig.gateway.webPort | 8080 }}
+  maxUserWebRequestWorkerProcess: {{ .Values.rudderConfig.gateway.maxUserWebRequestWorkerProcess | 64 }}
+  maxDBWriterProcess: {{ .Values.rudderConfig.gateway.maxDBWriterProcess | 256 }}
+  CustomVal: {{ .Values.rudderConfig.gateway.customVal | GW }}
+  maxUserRequestBatchSize: {{ .Values.rudderConfig.gateway.maxUserRequestBatchSize | 128 }}
+  maxDBBatchSize: {{ .Values.rudderConfig.gateway.maxDBBatchSize | 128 }}
+  userWebRequestBatchTimeout: {{ .Values.rudderConfig.gateway.userWebRequestBatchTimeout | 15ms }}
+  dbBatchWriteTimeout: {{ .Values.rudderConfig.gateway.dbBatchWriteTimeout | 5ms }}
+  maxReqSizeInKB: {{ .Values.rudderConfig.gateway.maxReqSizeInKB | 4000 }}
+  enableRateLimit: {{ .Values.rudderConfig.gateway.enableRateLimit | false }}
+  enableSuppressUserFeature: {{ .Values.rudderConfig.gateway.enableSuppressUserFeature | true }}
+  allowPartialWriteWithErrors: {{ .Values.rudderConfig.gateway.allowPartialWriteWithErrors | true }}
+  allowReqsWithoutUserIDAndAnonymousID: {{ .Values.rudderConfig.gateway.allowReqsWithoutUserIDAndAnonymousID | false }}
   webhook:
-    batchTimeout: 20ms
-    maxBatchSize: 32
-    maxTransformerProcess: 64
-    maxRetry: 5
-    maxRetryTime: 10s
+    batchTimeout: {{ .Values.rudderConfig.gateway.webhook.batchTimeout | 20ms }}
+    maxBatchSize: {{ .Values.rudderConfig.gateway.webhook.maxBatchSize | 32 }}
+    maxTransformerProcess: {{ .Values.rudderConfig.gateway.webhook.maxTransformerProcess | 64 }}
+    maxRetry: {{ .Values.rudderConfig.gateway.webhook.maxRetry | 5 }}
+    maxRetryTime: {{ .Values.rudderConfig.gateway.webhook.maxRetryTime | 10s }}
     sourceListForParsingParams:
       - shopify
 EventSchemas:
-  enableEventSchemasFeature: false
-  syncInterval: 240s
-  noOfWorkers: 128
+  enableEventSchemasFeature: {{ .Values.rudderConfig.eventSchemas.enableEventSchemasFeature | false }}
+  syncInterval: {{ .Values.rudderConfig.eventSchemas.syncInterval | 240s }}
+  noOfWorkers: {{ .Values.rudderConfig.eventSchemas.noOfWorkers | 128 }}
 Debugger:
-  maxBatchSize: 32
-  maxESQueueSize: 1024
-  maxRetry: 3
-  batchTimeout: 2s
-  retrySleep: 100ms
+  maxBatchSize: {{ .Values.rudderConfig.debugger.maxBatchSize | 32 }}
+  maxESQueueSize: {{ .Values.rudderConfig.debugger.maxESQueueSize | 1024 }}
+  maxRetry: {{ .Values.rudderConfig.debugger.maxRetry | 3 }}
+  batchTimeout: {{ .Values.rudderConfig.debugger.batchTimeout | 2s }}
+  retrySleep: {{ .Values.rudderConfig.debugger.retrySleep | 100ms }}
 SourceDebugger:
-  disableEventUploads: false
+  disableEventUploads: {{ .Values.rudderConfig.sourceDebugger.disableEventUploads | false }}
 DestinationDebugger:
-  disableEventDeliveryStatusUploads: false
+  disableEventDeliveryStatusUploads: {{ .Values.rudderConfig.destinationDebugger.disableEventDeliveryStatusUploads | false }}
 TransformationDebugger:
-  disableTransformationStatusUploads: false
+  disableTransformationStatusUploads: {{ .Values.rudderConfig.transformationDebugger.disableTransformationStatusUploads | false }}
 Archiver:
-  backupRowsBatchSize: 100
+  backupRowsBatchSize: {{ .Values.rudderConfig.archiver.backupRowsBatchSize | 100 }}
 JobsDB:
-  jobDoneMigrateThres: 0.8
-  jobStatusMigrateThres: 5
-  maxDSSize: 100000
-  maxMigrateOnce: 10
-  maxMigrateDSProbe: 10
-  maxTableSizeInMB: 300
-  migrateDSLoopSleepDuration: 30s
-  addNewDSLoopSleepDuration: 5s
-  refreshDSListLoopSleepDuration: 5s
-  backupCheckSleepDuration: 5s
-  backupRowsBatchSize: 1000
-  archivalTimeInDays: 10
-  archiverTickerTime: 1440m
+  jobDoneMigrateThres: {{ .Values.rudderConfig.jobsDB.jobDoneMigrateThres | 0.8 }}
+  jobStatusMigrateThres: {{ .Values.rudderConfig.jobsDB.jobStatusMigrateThres | 5 }}
+  maxDSSize: {{ .Values.rudderConfig.jobsDB.maxDSSize | 100000 }}
+  maxMigrateOnce: {{ .Values.rudderConfig.jobsDB.maxMigrateOnce | 10 }}
+  maxMigrateDSProbe: {{ .Values.rudderConfig.jobsDB.maxMigrateDSProbe | 10 }}
+  maxTableSizeInMB: {{ .Values.rudderConfig.jobsDB.maxTableSizeInMB | 300 }}
+  migrateDSLoopSleepDuration: {{ .Values.rudderConfig.jobsDB.migrateDSLoopSleepDuration | 30s }}
+  addNewDSLoopSleepDuration: {{ .Values.rudderConfig.jobsDB.addNewDSLoopSleepDuration | 5s }}
+  refreshDSListLoopSleepDuration: {{ .Values.rudderConfig.jobsDB.refreshDSListLoopSleepDuration | 5s }}
+  backupCheckSleepDuration: {{ .Values.rudderConfig.jobsDB.backupCheckSleepDuration | 5s }}
+  backupRowsBatchSize: {{ .Values.rudderConfig.jobsDB.backupRowsBatchSize | 1000 }}
+  archivalTimeInDays: {{ .Values.rudderConfig.jobsDB.archivalTimeInDays | 10 }}
+  archiverTickerTime: {{ .Values.rudderConfig.jobsDB.archiverTickerTime | 1440m }}
   backup:
-    enabled: true
+    enabled: {{ .Values.rudderConfig.jobsDB.backup.enabled | true }}
     gw:
-      enabled: true
-      pathPrefix: ""
+      enabled: {{ .Values.rudderConfig.jobsDB.backup.gw.enabled | true }}
+      pathPrefix: {{ .Values.rudderConfig.jobsDB.backup.gw.pathPrefix | "" }}
     rt:
-      enabled: true
-      failedOnly: true
+      enabled: {{ .Values.rudderConfig.jobsDB.backup.rt.enabled | true }}
+      failedOnly: {{ .Values.rudderConfig.jobsDB.backup.rt.failedOnly | true }}
     batch_rt:
-      enabled: false
-      failedOnly: false
+      enabled: {{ .Values.rudderConfig.jobsDB.backup.batch_rt.enabled | false }}
+      failedOnly: {{ .Values.rudderConfig.jobsDB.backup.batch_rt.failedOnly | false }}
 Router:
-  jobQueryBatchSize: 10000
-  updateStatusBatchSize: 1000
-  readSleep: 1000ms
-  fixedLoopSleep: 0ms
-  noOfJobsPerChannel: 1000
-  noOfJobsToBatchInAWorker: 20
-  jobsBatchTimeout: 5s
-  maxSleep: 60s
-  minSleep: 0s
-  maxStatusUpdateWait: 5s
-  useTestSink: false
-  guaranteeUserEventOrder: true
-  kafkaWriteTimeout: 2s
-  kafkaDialTimeout: 10s
-  minRetryBackoff: 10s
-  maxRetryBackoff: 300s
-  noOfWorkers: 64
-  allowAbortedUserJobsCountForProcessing: 1
-  maxFailedCountForJob: 3
-  retryTimeWindow: 180m
-  failedKeysEnabled: false
-  saveDestinationResponseOverride: false
-  responseTransform: false
+  jobQueryBatchSize: {{ .Values.rudderConfig.router.jobQueryBatchSize | 10000 }}
+  updateStatusBatchSize: {{ .Values.rudderConfig.router.updateStatusBatchSize | 1000 }}
+  readSleep: {{ .Values.rudderConfig.router.readSleep | 1000ms }}
+  fixedLoopSleep: {{ .Values.rudderConfig.router.fixedLoopSleep | 0ms }}
+  noOfJobsPerChannel: {{ .Values.rudderConfig.router.noOfJobsPerChannel | 1000 }}
+  noOfJobsToBatchInAWorker: {{ .Values.rudderConfig.router.noOfJobsToBatchInAWorker | 20 }}
+  jobsBatchTimeout: {{ .Values.rudderConfig.router.jobsBatchTimeout | 5s }}
+  maxSleep: {{ .Values.rudderConfig.router.maxSleep | 60s }}
+  minSleep: {{ .Values.rudderConfig.router.minSleep | 0s }}
+  maxStatusUpdateWait: {{ .Values.rudderConfig.router.maxStatusUpdateWait | 5s }}
+  useTestSink: {{ .Values.rudderConfig.router.useTestSink | false }}
+  guaranteeUserEventOrder: {{ .Values.rudderConfig.router.guaranteeUserEventOrder | true }}
+  kafkaWriteTimeout: {{ .Values.rudderConfig.router.kafkaWriteTimeout | 2s }}
+  kafkaDialTimeout: {{ .Values.rudderConfig.router.kafkaDialTimeout | 10s }}
+  minRetryBackoff: {{ .Values.rudderConfig.router.minRetryBackoff | 10s }}
+  maxRetryBackoff: {{ .Values.rudderConfig.router.maxRetryBackoff | 300s }}
+  noOfWorkers: {{ .Values.rudderConfig.router.noOfWorkers | 64 }}
+  allowAbortedUserJobsCountForProcessing: {{ .Values.rudderConfig.router.allowAbortedUserJobsCountForProcessing | 1 }}
+  maxFailedCountForJob: {{ .Values.rudderConfig.router.maxFailedCountForJob | 3 }}
+  retryTimeWindow: {{ .Values.rudderConfig.router.retryTimeWindow | 180m }}
+  failedKeysEnabled: {{ .Values.rudderConfig.router.failedKeysEnabled | false }}
+  saveDestinationResponseOverride: {{ .Values.rudderConfig.router.saveDestinationResponseOverride | false }}
+  responseTransform: {{ .Values.rudderConfig.router.responseTransform | false }}
   MARKETO:
-    noOfWorkers: 4
+    noOfWorkers: {{ .Values.rudderConfig.router.marketo.noOfWorkers | 4 }}
   throttler:
     MARKETO:
-      limit: 45
-      timeWindow: 20s
+      limit: {{ .Values.rudderConfig.router.throttler.marketo.limit | 45 }}
+      timeWindow: {{ .Values.rudderConfig.router.throttler.marketo.limit | 20s }}
   BRAZE:
-    forceHTTP1: true
-    httpTimeout: 120s
-    httpMaxIdleConnsPerHost: 32
+    forceHTTP1: {{ .Values.rudderConfig.router.braze.forceHTTP1 | true }}
+    httpTimeout: {{ .Values.rudderConfig.router.braze.httpTimeout | 120s }}
+    httpMaxIdleConnsPerHost: {{ .Values.rudderConfig.router.braze.httpMaxIdleConnsPerHost | 32 }}
   GA4:
-    transformerProxy: true
+    transformerProxy: {{ .Values.rudderConfig.router.GA4.transformerProxy | true }}
 BatchRouter:
-  mainLoopSleep: 2s
-  jobQueryBatchSize: 100000
-  uploadFreq: 30s
-  warehouseServiceMaxRetryTime: 3h
-  noOfWorkers: 8
-  maxFailedCountForJob: 128
-  retryTimeWindow: 180m
+  mainLoopSleep: {{ .Values.rudderConfig.batchRouter.mainLoopSleep | 2s }}
+  jobQueryBatchSize: {{ .Values.rudderConfig.batchRouter.jobQueryBatchSize | 100000 }}
+  uploadFreq: {{ .Values.rudderConfig.batchRouter.uploadFreq | 30s }}
+  warehouseServiceMaxRetryTime: {{ .Values.rudderConfig.batchRouter.warehouseServiceMaxRetryTime | 3h }}
+  noOfWorkers: {{ .Values.rudderConfig.batchRouter.noOfWorkers | 8 }}
+  maxFailedCountForJob: {{ .Values.rudderConfig.batchRouter.maxFailedCountForJob | 128 }}
+  retryTimeWindow: {{ .Values.rudderConfig.batchRouter.retryTimeWindow | 180m }}
 Warehouse:
-  mode: off
-  webPort: 8082
-  uploadFreq: 1800s
-  noOfWorkers: 8
-  noOfSlaveWorkerRoutines: 4
-  mainLoopSleep: 5s
-  minRetryAttempts: 3
-  retryTimeWindow: 180m
-  minUploadBackoff: 60s
-  maxUploadBackoff: 1800s
-  warehouseSyncPreFetchCount: 10
-  warehouseSyncFreqIgnore: false
-  stagingFilesBatchSize: 960
-  enableIDResolution: false
-  populateHistoricIdentities: false
+  mode: {{ .Values.rudderConfig.warehouse.mode | off }}
+  webPort: {{ .Values.rudderConfig.warehouse.webPort | 8082 }}
+  uploadFreq: {{ .Values.rudderConfig.warehouse.uploadFreq | 1800s }}
+  noOfWorkers: {{ .Values.rudderConfig.warehouse.noOfWorkers | 8 }}
+  noOfSlaveWorkerRoutines: {{ .Values.rudderConfig.warehouse.noOfSlaveWorkerRoutines | 4 }}
+  mainLoopSleep: {{ .Values.rudderConfig.warehouse.mainLoopSleep | 5s }}
+  minRetryAttempts: {{ .Values.rudderConfig.warehouse.minRetryAttempts | 3 }}
+  retryTimeWindow: {{ .Values.rudderConfig.warehouse.retryTimeWindow | 180m }}
+  minUploadBackoff: {{ .Values.rudderConfig.warehouse.minUploadBackoff | 60s }}
+  maxUploadBackoff: {{ .Values.rudderConfig.warehouse.maxUploadBackoff | 1800s }}
+  warehouseSyncPreFetchCount: {{ .Values.rudderConfig.warehouse.warehouseSyncPreFetchCount | 10 }}
+  warehouseSyncFreqIgnore: {{ .Values.rudderConfig.warehouse.warehouseSyncFreqIgnore | false }}
+  stagingFilesBatchSize: {{ .Values.rudderConfig.warehouse.stagingFilesBatchSize | 960 }}
+  enableIDResolution: {{ .Values.rudderConfig.warehouse.enableIDResolution | false }}
+  populateHistoricIdentities: {{ .Values.rudderConfig.warehouse.populateHistoricIdentities | false }}
   redshift:
-    maxParallelLoads: 3
-    setVarCharMax: false
+    maxParallelLoads: {{ .Values.rudderConfig.warehouse.redshift.maxParallelLoads | 3 }}
+    setVarCharMax: {{ .Values.rudderConfig.warehouse.redshift.setVarCharMax | false }}false
   snowflake:
-    maxParallelLoads: 3
+    maxParallelLoads: {{ .Values.rudderConfig.warehouse.snowflake.maxParallelLoads | 3 }}
   bigquery:
-    maxParallelLoads: 20
+    maxParallelLoads: {{ .Values.rudderConfig.warehouse.bigquery.maxParallelLoads | 20 }}20
   postgres:
-    maxParallelLoads: 3
+    maxParallelLoads: {{ .Values.rudderConfig.warehouse.postgres.maxParallelLoads | 3 }}
   mssql:
-    maxParallelLoads: 3
+    maxParallelLoads: {{ .Values.rudderConfig.warehouse.mssql.maxParallelLoads | 3 }}
   azure_synapse:
-    maxParallelLoads: 3
+    maxParallelLoads: {{ .Values.rudderConfig.warehouse.azure_synapse.maxParallelLoads | 3 }}
   clickhouse:
-    maxParallelLoads: 3
-    queryDebugLogs: false
-    blockSize: 1000
-    poolSize: 10
-    disableNullable: false
-    enableArraySupport: false
+    maxParallelLoads: {{ .Values.rudderConfig.warehouse.clickhouse.maxParallelLoads | 3 }}
+    queryDebugLogs: {{ .Values.rudderConfig.warehouse.clickhouse.queryDebugLogs | false }}
+    blockSize: {{ .Values.rudderConfig.warehouse.clickhouse.blockSize | 1000 }}
+    poolSize: {{ .Values.rudderConfig.warehouse.clickhouse.poolSize | 10 }}
+    disableNullable: {{ .Values.rudderConfig.warehouse.clickhouse.disableNullable | false }}
+    enableArraySupport: {{ .Values.rudderConfig.warehouse.clickhouse.enableArraySupport | false }}
 Processor:
-  webPort: 8086
-  loopSleep: 10ms
-  maxLoopSleep: 5000ms
-  fixedLoopSleep: 0ms
-  maxLoopProcessEvents: 10000
-  transformBatchSize: 100
-  userTransformBatchSize: 200
-  maxConcurrency: 200
-  maxHTTPConnections: 100
-  maxHTTPIdleConnections: 50
-  maxRetry: 30
-  retrySleep: 100ms
-  timeoutDuration: 30s
-  errReadLoopSleep: 30s
-  errDBReadBatchSize: 1000
-  noOfErrStashWorkers: 2
-  maxFailedCountForErrJob: 3
+  webPort: {{ .Values.rudderConfig.processor.webPort | 8086 }}
+  loopSleep: {{ .Values.rudderConfig.processor.loopSleep | 10ms }}
+  maxLoopSleep: {{ .Values.rudderConfig.processor.maxLoopSleep | 5000ms }}
+  fixedLoopSleep: {{ .Values.rudderConfig.processor.fixedLoopSleep | 0ms }}
+  maxLoopProcessEvents: {{ .Values.rudderConfig.processor.maxLoopProcessEvents | 10000 }}
+  transformBatchSize: {{ .Values.rudderConfig.processor.transformBatchSize | 100 }}
+  userTransformBatchSize: {{ .Values.rudderConfig.processor.userTransformBatchSize | 200 }}
+  maxConcurrency: {{ .Values.rudderConfig.processor.maxConcurrency | 200 }}
+  maxHTTPConnections: {{ .Values.rudderConfig.processor.maxHTTPConnections | 100 }}
+  maxHTTPIdleConnections: {{ .Values.rudderConfig.processor.maxHTTPIdleConnections | 50 }}
+  maxRetry: {{ .Values.rudderConfig.processor.maxRetry | 30 }}
+  retrySleep: {{ .Values.rudderConfig.processor.retrySleep | 100ms }}
+  timeoutDuration: {{ .Values.rudderConfig.processor.timeoutDuration | 30s }}
+  errReadLoopSleep: {{ .Values.rudderConfig.processor.errReadLoopSleep | 30s }}
+  errDBReadBatchSize: {{ .Values.rudderConfig.processor.errDBReadBatchSize | 1000 }}
+  noOfErrStashWorkers: {{ .Values.rudderConfig.processor.noOfErrStashWorkers | 2 }}
+  maxFailedCountForErrJob: {{ .Values.rudderConfig.processor.maxFailedCountForErrJob | 3 }}
   Stats:
-    captureEventName: false
+    captureEventName: {{ .Values.rudderConfig.processor.stats.captureEventName | false }}
 Dedup:
-  enableDedup: false
-  dedupWindow: 3600s
+  enableDedup: {{ .Values.rudderConfig.dedup.enableDedup | false }}
+  dedupWindow: {{ .Values.rudderConfig.dedup.dedupWindow | 3600s }}
 BackendConfig:
-  configFromFile: false
-  configJSONPath: /etc/rudderstack/workspaceConfig.json
-  pollInterval: 5s
-  regulationsPollInterval: 300s
-  maxRegulationsPerRequest: 1000
+  configFromFile: {{ .Values.rudderConfig.backendConfig.configFromFile | false }}
+  configJSONPath: {{ .Values.rudderConfig.backendConfig.configJSONPath | /etc/rudderstack/workspaceConfig.json }}
+  pollInterval: {{ .Values.rudderConfig.backendConfig.pollInterval | 5s }}
+  regulationsPollInterval: {{ .Values.rudderConfig.backendConfig.regulationsPollInterval | 300s }}
+  maxRegulationsPerRequest: {{ .Values.rudderConfig.backendConfig.maxRegulationsPerRequest | 1000 }}
 recovery:
-  enabled: true
-  errorStorePath: /tmp/error_store.json
-  storagePath: /tmp/recovery_data.json
+  enabled: {{ .Values.rudderConfig.recovery.enabled | true }}
+  errorStorePath: {{ .Values.rudderConfig.recovery.errorStorePath | /tmp/error_store.json }}
+  storagePath: {{ .Values.rudderConfig.recovery.storagePath | /tmp/recovery_data.json }}
   normal:
-    crashThreshold: 5
-    duration: 300s
+    crashThreshold: {{ .Values.rudderConfig.recovery.normal.crashThreshold | 5 }}
+    duration: {{ .Values.rudderConfig.recovery.normal.duration | 300s }}
 Logger:
-  enableConsole: true
-  enableFile: false
-  consoleJsonFormat: false
-  fileJsonFormat: false
-  logFileLocation: /tmp/rudder_log.log
-  logFileSize: 100
-  enableTimestamp: true
-  enableFileNameInLog: true
-  enableStackTrace: false
+  enableConsole: {{ .Values.rudderConfig.logger.enableConsole | true }}
+  enableFile: {{ .Values.rudderConfig.logger.enableFile | false }}
+  consoleJsonFormat: {{ .Values.rudderConfig.logger.consoleJsonFormat | false }}
+  fileJsonFormat: {{ .Values.rudderConfig.logger.fileJsonFormat | false }}
+  logFileLocation: {{ .Values.rudderConfig.logger.logFileLocation | /tmp/rudder_log.log }}
+  logFileSize: {{ .Values.rudderConfig.logger.logFileSize | 100 }}
+  enableTimestamp: {{ .Values.rudderConfig.logger.enableTimestamp | true }}
+  enableFileNameInLog: {{ .Values.rudderConfig.logger.enableFileNameInLog | true }}
+  enableStackTrace: {{ .Values.rudderConfig.logger.enableStackTrace | false }}
 Diagnostics:
-  enableDiagnostics: true
-  gatewayTimePeriod: 60s
-  routerTimePeriod: 60s
-  batchRouterTimePeriod: 6l
-  enableServerStartMetric: true
-  enableConfigIdentifyMetric: true
-  enableServerStartedMetric: true
-  enableConfigProcessedMetric: true
-  enableGatewayMetric: true
-  enableRouterMetric: true
-  enableBatchRouterMetric: true
-  enableDestinationFailuresMetric: true
+  enableDiagnostics: {{ .Values.rudderConfig.diagnostics.enableDiagnostics | true }}
+  gatewayTimePeriod: {{ .Values.rudderConfig.diagnostics.gatewayTimePeriod | 60s }}
+  routerTimePeriod: {{ .Values.rudderConfig.diagnostics.routerTimePeriod | 60s }}
+  batchRouterTimePeriod: {{ .Values.rudderConfig.diagnostics.batchRouterTimePeriod | 6l }}
+  enableServerStartMetric: {{ .Values.rudderConfig.diagnostics.enableServerStartMetric | true }}
+  enableConfigIdentifyMetric: {{ .Values.rudderConfig.diagnostics.enableConfigIdentifyMetric | true }}
+  enableServerStartedMetric: {{ .Values.rudderConfig.diagnostics.enableServerStartedMetric | true }}
+  enableConfigProcessedMetric: {{ .Values.rudderConfig.diagnostics.enableConfigProcessedMetric | true }}
+  enableGatewayMetric: {{ .Values.rudderConfig.diagnostics.enableGatewayMetric | true }}
+  enableRouterMetric: {{ .Values.rudderConfig.diagnostics.enableRouterMetric | true }}
+  enableBatchRouterMetric: {{ .Values.rudderConfig.diagnostics.enableBatchRouterMetric | true }}
+  enableDestinationFailuresMetric: {{ .Values.rudderConfig.diagnostics.enableDestinationFailuresMetric | true }}
 RuntimeStats:
-  enabled: true
-  statsCollectionInterval: 10
-  enableCPUStats: true
-  enableMemStats: true
-  enableGCStats: true
+  enabled: {{ .Values.rudderConfig.runtimeStats.enabled | true }}
+  statsCollectionInterval: {{ .Values.rudderConfig.runtimeStats.statsCollectionInterval | 10 }}
+  enableCPUStats: {{ .Values.rudderConfig.runtimeStats.enableCPUStats | true }}
+  enableMemStats: {{ .Values.rudderConfig.runtimeStats.enableMemStats | true }}
+  enableGCStats: {{ .Values.rudderConfig.runtimeStats.enableGCStats | true }}
 PgNotifier:
-  retriggerInterval: 2s
-  retriggerCount: 500
-  trackBatchInterval: 2s
-  maxAttempt: 3
+  retriggerInterval: {{ .Values.rudderConfig.pgNotifier.retriggerInterval | 2s }}
+  retriggerCount: {{ .Values.rudderConfig.pgNotifier.retriggerCount | 500 }}
+  trackBatchInterval: {{ .Values.rudderConfig.pgNotifier.trackBatchInterval | 2s }}
+  maxAttempt: {{ .Values.rudderConfig.pgNotifier.maxAttempt | 3 }}
