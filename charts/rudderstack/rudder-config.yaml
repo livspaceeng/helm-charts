@@ -125,7 +125,7 @@ BatchRouter:
   maxFailedCountForJob: 128
   retryTimeWindow: 180m
 Warehouse:
-  mode: embedded
+  mode: off
   webPort: 8082
   uploadFreq: 1800s
   noOfWorkers: 8
