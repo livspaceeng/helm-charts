@@ -181,5 +181,11 @@ telegraf_sidecar:
 rudderConfig:
   rudder-config.yaml: |-
     maxProcess: 12
+    enableStats: true
+    Router:
+      GA4:
+        transformerProxy: true
+    Warehouse:
+      mode: embedded
 
 affinity: {}
