@@ -178,4 +178,8 @@ telegraf_sidecar:
       - 95
       - 99
 
+rudderConfig:
+  rudder-config.yaml: |-
+    maxProcess: 12
+
 affinity: {}
