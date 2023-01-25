@@ -4,6 +4,11 @@ metadata:
   name: {{ include "rudderstack.fullname" . }}
   labels:
     {{- include "rudderstack.labels" . | nindent 4 }}
+  annotations:
+{{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 4 }}
+{{- end }}
+    
 spec:
   serviceName: {{ include "rudderstack.fullname" . }}
   replicas: {{ .Values.global.backendReplicaCount }}
@@ -21,7 +26,7 @@ spec:
         {{- if not .Values.rudderWorkspaceTokenExistingSecret }}
         checksum/rudder-workspace-token: {{ include (print $.Template.BasePath "/secret-rudder-token.yaml") . | sha256sum }}
         {{- end }}
-        checksum/rudder-config: {{ .Files.Get "rudder-config.yaml" | sha256sum }}
+        checksum/rudder-config: {{ toYaml .Values.rudderConfig | sha256sum }}
         checksum/rudder-bigquery-credentials: {{ .Files.Get "bigquery-credentials.json" | sha256sum }}
 {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
