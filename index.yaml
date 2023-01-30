@@ -400,7 +400,7 @@ entries:
   rudderstack:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2023-01-30T09:16:14.815140671Z"
+    created: "2023-01-30T09:16:14.815140672Z"
     dependencies:
     - condition: transformer.enabled
       name: transformer
@@ -886,4 +886,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2023-01-30T09:16:14.815328874Z"
+generated: "2023-01-30T09:16:14.815328875Z"
