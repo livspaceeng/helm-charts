@@ -45,9 +45,12 @@ backend:
     annotations:
       ## Refer https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer for more annotations
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    type: LoadBalancer
+    type: ClusterIP
     port: 80
     targetPort: 8080
+    selectorLabels:
+      app: rudderstack
+      env: prod
   serviceAccount:
     enabled: false
     create: false
