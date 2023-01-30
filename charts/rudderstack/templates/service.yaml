@@ -20,5 +20,8 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "rudderstack.selectorLabels" . | nindent 4 }}
+  {{- with .Values.backend.service.selectorLabels }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+#     {{- include "rudderstack.selectorLabels" . | nindent 4 }}
 {{- end -}}
