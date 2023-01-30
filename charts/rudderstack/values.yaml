@@ -51,7 +51,7 @@ backend:
     targetPort: 8080
     selectorLabels:
       app: rudderstack
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      env: prod
   serviceAccount:
     enabled: false
     create: false
