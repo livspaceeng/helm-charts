@@ -1,8 +1,7 @@
-{{- if .Values.backend.service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "rudderstack.fullname" . }}
+  name: {{ .Values.backend.service.name | default (include "rudderstack.fullname" .) }}
   labels:
     {{- include "rudderstack.labels" . | nindent 4 }}
 {{- if .Values.podLabels }}
@@ -24,4 +23,3 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 #     {{- include "rudderstack.selectorLabels" . | nindent 4 }}
-{{- end -}}
