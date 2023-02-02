@@ -182,7 +182,7 @@ telegraf_sidecar:
       - 99
 
 rudderConfig:
-  rudder-config.yaml: |-
+  config.yaml: |-
     maxProcess: 12
     enableStats: true
     Router:
