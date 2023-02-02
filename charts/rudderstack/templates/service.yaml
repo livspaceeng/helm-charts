@@ -22,4 +22,3 @@ spec:
   {{- with .Values.backend.service.selectorLabels }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
-#     {{- include "rudderstack.selectorLabels" . | nindent 4 }}
