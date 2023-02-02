@@ -400,6 +400,28 @@ entries:
   rudderstack:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-02-02T07:36:44.8295787Z"
+    dependencies:
+    - condition: transformer.enabled
+      name: transformer
+      repository: file://subcharts/transformer
+      version: 0.1.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: file://subcharts/postgresql
+      version: 7.7.2
+    description: A Helm chart for Kubernetes
+    digest: f048f80e3f8cfaeea2dae2d22fa2c777f3cc25959cf325abc8b9e4c69f8775f2
+    maintainers:
+    - email: swayam.arora@livspace.com
+      name: Swayam
+    name: rudderstack
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/rudderstack-0.4.18/rudderstack-0.4.18.tgz
+    version: 0.4.18
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-02-02T05:13:37.300531026Z"
     dependencies:
     - condition: transformer.enabled
@@ -908,4 +930,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2023-02-02T05:13:37.300742025Z"
+generated: "2023-02-02T07:36:44.830231103Z"
