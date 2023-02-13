@@ -82,7 +82,7 @@ spec:
               {{- end }}
               {{- if .Values.env.enabled }}
               env:
-              {{ toYaml .Values.env.values | indent 16 -}}
+{{ toYaml .Values.env.values | indent 16 -}}
               {{- end }}
               resources:
                 {{- toYaml .Values.cronjob.janitor.resources | nindent 16 }}

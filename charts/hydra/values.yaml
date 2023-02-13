@@ -88,7 +88,7 @@ config:
 
 ## -- Janitor cron job configuration
 janitor:
-  enabled: true
+  enabled: false
   cleanupGrants: true
   cleanupRequests: true
   cleanupTokens: true
