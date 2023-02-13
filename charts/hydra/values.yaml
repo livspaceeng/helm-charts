@@ -88,14 +88,14 @@ config:
 
 ## -- Janitor cron job configuration
 janitor:
-  enabled: false
-  cleanupGrants: false
-  cleanupRequests: false
-  cleanupTokens: false
-#  accessLifespan: "24h"
-#  consentRequestLifespan: "24h"
-#  refreshLifespan: "720h"
-#  keepIfYounger: "360h"
+  enabled: true
+  cleanupGrants: true
+  cleanupRequests: true
+  cleanupTokens: true
+  accessLifespan: "24h"
+  consentRequestLifespan: "24h"
+  refreshLifespan: "720h"
+  keepIfYounger: "360h"
   batchSize: 100
   limit: 10000
 
