@@ -1,0 +1,105 @@
+{{- if .Values.janitor.enabled -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ template "fullname" . }}-janitor
+  {{- if .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  labels:
+    {{- with .Values.podLabels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  annotations:
+    {{- with .Values.podAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  concurrencyPolicy: Forbid
+  schedule: {{ .Values.cronjob.janitor.schedule | quote }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- with .Values.podLabels }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+          annotations:
+            {{- with .Values.podAnnotations }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+        spec:
+          restartPolicy: OnFailure
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          containers:
+            - name: janitor
+              image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              {{- with .Values.cronjob.janitor.securityContext }}
+              securityContext:
+                {{- toYaml . | nindent 16 }}
+              {{- end }}
+              command: ["hydra"]
+              {{- if .Values.cronjob.janitor.customArgs }}
+              args: {{- toYaml .Values.cronjob.janitor.customArgs | nindent 14 }}
+              {{- else }}
+              args:
+                - janitor
+                {{- if .Values.janitor.cleanupGrants }}
+                - --grants
+                {{- end }}
+                {{- if .Values.janitor.cleanupRequests }}
+                - --requests
+                {{- end }}
+                {{- if .Values.janitor.cleanupTokens }}
+                - --tokens
+                {{- end }}
+                {{- if .Values.janitor.accessLifespan }}
+                - --access-lifespan
+                - {{ .Values.janitor.accessLifespan | quote }}
+                {{- end }}
+                {{- if .Values.janitor.consentRequestLifespan }}
+                - --consent-request-lifespan
+                - {{ .Values.janitor.consentRequestLifespan | quote }}
+                {{- end }}
+                {{- if .Values.janitor.refreshLifespan }}
+                - --refresh-lifespan
+                - {{ .Values.janitor.refreshLifespan | quote }}
+                {{- end }}
+                {{- if .Values.janitor.keepIfYounger }}
+                - --keep-if-younger
+                - {{ .Values.janitor.keepIfYounger | quote }}
+                {{- end }}
+                - --batch-size
+                - {{ .Values.janitor.batchSize | quote }}
+                - --limit
+                - {{ .Values.janitor.limit | quote }}
+                - --read-from-env
+              {{- end }}
+              {{- if .Values.env.enabled }}
+              env:
+              {{ toYaml .Values.env.values | indent 16 -}}
+              {{- end }}
+              resources:
+                {{- toYaml .Values.cronjob.janitor.resources | nindent 16 }}
+          {{- with .Values.cronjob.janitor.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cronjob.janitor.podSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cronjob.janitor.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.cronjob.janitor.affinity }}
+          affinity:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+{{- end }}
