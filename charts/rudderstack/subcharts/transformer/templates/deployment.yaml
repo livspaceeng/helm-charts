@@ -4,6 +4,8 @@ metadata:
   name: {{ include "transformer.fullname" . }}
   labels:
     {{- include "transformer.labels" . | nindent 4 }}
+  annotations:
+    {{- include "transformer.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:

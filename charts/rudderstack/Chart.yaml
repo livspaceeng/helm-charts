@@ -2,7 +2,7 @@ apiVersion: v2
 name: rudderstack
 description: A Helm chart for Kubernetes
 type: application
-version: 0.4.18
+version: 0.4.19
 appVersion: 1.16.0
 maintainers:
   - name: Swayam
@@ -10,7 +10,7 @@ maintainers:
 dependencies:
   - name: transformer
     repository: file://subcharts/transformer
-    version: 0.1.0
+    version: 0.1.1
     condition: transformer.enabled
   - name: postgresql
     repository: file://subcharts/postgresql
