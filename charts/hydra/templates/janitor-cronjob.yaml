@@ -16,9 +16,12 @@ metadata:
     {{- end }}
 spec:
   concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: {{ default 3 .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ default 1 .Values.failedJobsHistoryLimit }}
   schedule: {{ .Values.cronjob.janitor.schedule | quote }}
   jobTemplate:
     spec:
+      ttlSecondsAfterFinished: {{ default 3600 .Values.ttlSecondsAfterFinished }}
       template:
         metadata:
           labels:
