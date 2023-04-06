@@ -60,8 +60,11 @@ tolerations: []
 
 affinity: {}
 
+
 controller:
   # -- Specifies whether Boundary controller should be deployed
+  initContainers:
+    enabled: false
   enabled: true
   #  -- (int) The number Boundary controller replicas
   # @default -- global.replicaCount
