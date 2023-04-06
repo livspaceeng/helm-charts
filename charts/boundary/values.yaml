@@ -10,7 +10,7 @@ image:
   repository: hashicorp/boundary
   # -- the docker image pull policy
   pullPolicy: IfNotPresent
-  # -- the docker image tag to use 
+  # -- the docker image tag to use
   # @default -- Chart appVersion
   tag: ""
 
@@ -41,6 +41,10 @@ securityContext: {}
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
+
+job:
+  enabled: false
+
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -84,7 +88,7 @@ controller:
   service:
     type: ClusterIP
     annotations: {}
-    ports: 
+    ports:
       api:
         number: 9200
       cluster:
@@ -164,7 +168,7 @@ vault:
   address: http://vault:8200
   # -- the Hashicorp Vault TLS settings to use
   tls: {}
-  #   caCert: 
+  #   caCert:
   #   clientCert:
   #   clientKey:
   #   serverName:
