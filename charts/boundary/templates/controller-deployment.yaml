@@ -57,7 +57,7 @@ spec:
           args:
             - "job"
             - "{{ include "boundary.fullname" . }}-init"
-      {{- end}}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}-controller
           securityContext:
