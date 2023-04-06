@@ -10,7 +10,7 @@ image:
   repository: hashicorp/boundary
   # -- the docker image pull policy
   pullPolicy: IfNotPresent
-  # -- the docker image tag to use 
+  # -- the docker image tag to use
   # @default -- Chart appVersion
   tag: ""
 
@@ -60,7 +60,6 @@ tolerations: []
 
 affinity: {}
 
-
 controller:
   # -- Specifies whether Boundary controller should be deployed
   initContainers:
@@ -87,7 +86,7 @@ controller:
   service:
     type: ClusterIP
     annotations: {}
-    ports: 
+    ports:
       api:
         number: 9200
       cluster:
@@ -167,7 +166,7 @@ vault:
   address: http://vault:8200
   # -- the Hashicorp Vault TLS settings to use
   tls: {}
-  #   caCert: 
+  #   caCert:
   #   clientCert:
   #   clientKey:
   #   serverName:
