@@ -29,6 +29,17 @@ entries:
     urls:
     - https://charts.livspace.com/ambassador-6.3.3.tgz
     version: 6.3.3
+  application:
+  - apiVersion: v2
+    created: "2023-05-22T08:57:12.247470038Z"
+    description: Generic helm chart for all kind of applications
+    digest: 9477c34dc67fea1da97f88d3abafbcb7886439eb273b06e6bb89752b11d2a0d2
+    home: https://github.com/livspaceeng/helm-charts
+    name: application
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/application-1.0.0/application-1.0.0.tgz
+    version: 1.0.0
   boundary:
   - apiVersion: v2
     appVersion: 0.11.0
@@ -1023,4 +1034,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2023-04-06T12:12:08.382587876Z"
+generated: "2023-05-22T08:57:12.247695439Z"
