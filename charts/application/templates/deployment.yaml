@@ -206,14 +206,9 @@ spec:
             {{- toYaml .Values.deployment.readinessProbe.tcpSocket | nindent 12 }}
           {{- end }}
         {{- end }}
-      {{- if or (.Values.deployment.volumeMounts)}}
+      {{- if .Values.deployment.volumeMounts }}
         volumeMounts:
-        {{- if .Values.deployment.volumeMounts }}
-        {{- range $key, $value := .Values.deployment.volumeMounts }}
-        - name: {{ $key }}
-{{  include "application.tplvalues.render" ( dict "value" $value "context" $ ) | indent 10 }}
-        {{- end }}
-        {{- end }}
+          {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumeMounts "context" $) | nindent 12 }}
       {{- end }}
         resources:
           limits:
@@ -239,12 +234,7 @@ spec:
           {{- end }}
       {{- if (.Values.deployment.volumes)}}
       volumes:
-        {{- if .Values.deployment.volumes }}
-        {{- range $key, $value := .Values.deployment.volumes  }}
-      - name: {{ $key  }}
-{{ include "application.tplvalues.render" ( dict "value" $value "context" $ ) | indent 8 }}
-        {{- end }}
-        {{- end }}
+        {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumes  "context" $) | nindent 8 }}
       {{- end }}
       {{- if .Values.rbac.serviceAccount.name }}
       serviceAccountName: {{ .Values.rbac.serviceAccount.name }}

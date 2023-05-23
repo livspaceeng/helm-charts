@@ -129,24 +129,16 @@ deployment:
 
   # Volumes to be added to the pod
   volumes:
-#     configmap-volume:
-#       configMap:
-#         name: '{{ template "application.name" . }}-configmap-nameSuffix'
-#     secret-volume:
-#       secret:
-#         secretName: secret-name
-#     persistent-volume-name:
-#       persistentVolumeClaim:
-#         claimName: claim-name
+#    - name: configmap-volume
+#      configMap:
+#        name: test-config-map
+#        defaultMode: 420
 
   # Mount path for Volumes
   volumeMounts:
-    # volume-name:
-    #    mountPath: path
-    #    subPath: szy
-
-    # volume-name-2:
-    #    mountPath: path-2
+#    - name: test-config-map
+#      mountPath: /etc/app/app.env
+#      subPath: app.env
 
   # Taint tolerations for nodes
   tolerations:
