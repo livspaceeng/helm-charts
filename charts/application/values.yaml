@@ -126,29 +126,35 @@ deployment:
 #          configMapKeyRef:
 #             name: config
 #             key: frequency
-
+  existingConfigMaps: []
+#    - name: test-cm
+#      mounts:
+#        - path: /etc/config
+#        - path: /etc/app/app.env
+#          subPath: app.env
+#          defaultMode: 420
   # Volumes to be added to the pod
-  volumes:
+  volumes: []
 #    - name: configmap-volume
 #      configMap:
 #        name: test-config-map
 #        defaultMode: 420
 
   # Mount path for Volumes
-  volumeMounts:
+  volumeMounts: []
 #    - name: test-config-map
 #      mountPath: /etc/app/app.env
 #      subPath: app.env
 
   # Taint tolerations for nodes
-  tolerations:
+  tolerations: []
     # - key: "dedicated"
     #   operator: "Equal"
     #   value: "app"
     #   effect: "NoSchedule"
 
   # Pod affinity and pod anti-affinity allow you to specify rules about how pods should be placed relative to other pods.
-  affinity:
+  affinity: {}
   #  nodeAffinity:
   #    requiredDuringSchedulingIgnoredDuringExecution:
   #      nodeSelectorTerms:
@@ -159,7 +165,7 @@ deployment:
   #          - ssd
 
   # Topology spread constraints
-  topologySpreadConstraints:
+  topologySpreadConstraints: []
     # - maxSkew: 1
     #   topologyKey: kubernetes.io/hostname
     #   whenUnsatisfiable: ScheduleAnyway

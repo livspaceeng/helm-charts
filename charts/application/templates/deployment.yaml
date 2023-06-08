@@ -206,9 +206,23 @@ spec:
             {{- toYaml .Values.deployment.readinessProbe.tcpSocket | nindent 12 }}
           {{- end }}
         {{- end }}
-      {{- if .Values.deployment.volumeMounts }}
+      {{- if or .Values.deployment.volumeMounts .Values.deployment.existingConfigMaps }}
         volumeMounts:
+          {{- if .Values.deployment.volumeMounts}}
           {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumeMounts "context" $) | nindent 12 }}
+          {{- end}}
+          {{- if (.Values.deployment.existingConfigMaps)}}
+          {{- range $configMap := .Values.deployment.existingConfigMaps  }}
+            {{- range $mount := $configMap.mounts  }}
+          - mountPath: {{$mount.path}}
+            name: {{$configMap.name}}
+            readOnly: true
+            {{- if $mount.subPath}}
+            subPath: {{$mount.subPath}}
+            {{- end}}
+            {{- end}}
+          {{- end}}
+          {{- end}}
       {{- end }}
         resources:
           limits:
@@ -232,9 +246,19 @@ spec:
       dnsConfig:
 {{ toYaml .Values.deployment.dnsConfig | indent 8 }}
           {{- end }}
-      {{- if (.Values.deployment.volumes)}}
+      {{- if or .Values.deployment.volumes .Values.deployment.existingConfigMaps }}
       volumes:
+        {{- if .Values.deployment.volumes}}
         {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumes  "context" $) | nindent 8 }}
+        {{- end}}
+        {{- if (.Values.deployment.existingConfigMaps)}}
+          {{- range $item := .Values.deployment.existingConfigMaps  }}
+        - name: {{$item.name}}
+          configMap:
+            name: {{$item.name}}
+            defaultMode: {{ default "420" $item.defaultMode }}
+          {{- end}}
+        {{- end}}
       {{- end }}
       {{- if .Values.rbac.serviceAccount.name }}
       serviceAccountName: {{ .Values.rbac.serviceAccount.name }}
