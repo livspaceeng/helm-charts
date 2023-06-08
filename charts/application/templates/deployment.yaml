@@ -206,20 +206,24 @@ spec:
             {{- toYaml .Values.deployment.readinessProbe.tcpSocket | nindent 12 }}
           {{- end }}
         {{- end }}
-      {{- if or .Values.deployment.volumeMounts .Values.deployment.existingConfigMaps }}
+      {{- if or .Values.deployment.volumeMounts .Values.deployment.externalConfigMaps }}
         volumeMounts:
           {{- if .Values.deployment.volumeMounts}}
           {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumeMounts "context" $) | nindent 12 }}
           {{- end}}
-          {{- if (.Values.deployment.existingConfigMaps)}}
-          {{- range $configMap := .Values.deployment.existingConfigMaps  }}
-            {{- range $mount := $configMap.mounts  }}
-          - mountPath: {{$mount.path}}
+          {{- if (.Values.deployment.externalConfigMaps)}}
+          {{- range $configMap := .Values.deployment.externalConfigMaps  }}
+            {{- if $configMap.files  }}
+            {{- range $file := $configMap.files  }}
+          - mountPath: {{$configMap.path}}/{{$file}}
             name: {{$configMap.name}}
             readOnly: true
-            {{- if $mount.subPath}}
-            subPath: {{$mount.subPath}}
+            subPath: {{$file}}
             {{- end}}
+            {{- else}}
+          - mountPath: {{$configMap.path}}
+            name: {{$configMap.name}}
+            readOnly: true
             {{- end}}
           {{- end}}
           {{- end}}
@@ -246,13 +250,13 @@ spec:
       dnsConfig:
 {{ toYaml .Values.deployment.dnsConfig | indent 8 }}
           {{- end }}
-      {{- if or .Values.deployment.volumes .Values.deployment.existingConfigMaps }}
+      {{- if or .Values.deployment.volumes .Values.deployment.externalConfigMaps }}
       volumes:
         {{- if .Values.deployment.volumes}}
         {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumes  "context" $) | nindent 8 }}
         {{- end}}
-        {{- if (.Values.deployment.existingConfigMaps)}}
-          {{- range $item := .Values.deployment.existingConfigMaps  }}
+        {{- if (.Values.deployment.externalConfigMaps)}}
+          {{- range $item := .Values.deployment.externalConfigMaps  }}
         - name: {{$item.name}}
           configMap:
             name: {{$item.name}}

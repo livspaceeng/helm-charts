@@ -126,13 +126,13 @@ deployment:
 #          configMapKeyRef:
 #             name: config
 #             key: frequency
-  existingConfigMaps: []
-#    - name: test-cm
-#      mounts:
-#        - path: /etc/config
-#        - path: /etc/app/app.env
-#          subPath: app.env
-#          defaultMode: 420
+  externalConfigMaps: []
+#    - name: bumblebee-argo-bumblebee-cm
+#      path: /usr/src/app
+#      files:
+#        - .env
+#        - application-config.yaml
+
   # Volumes to be added to the pod
   volumes: []
 #    - name: configmap-volume
