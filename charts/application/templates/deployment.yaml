@@ -209,7 +209,7 @@ spec:
       {{- if or .Values.deployment.volumeMounts .Values.deployment.externalConfigMaps }}
         volumeMounts:
           {{- if .Values.deployment.volumeMounts}}
-          {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumeMounts "context" $) | nindent 12 }}
+          {{- include "application.tplvalues.render" (dict "value" .Values.deployment.volumeMounts "context" $) | nindent 10 }}
           {{- end}}
           {{- if (.Values.deployment.externalConfigMaps)}}
           {{- range $configMap := .Values.deployment.externalConfigMaps  }}
