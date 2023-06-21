@@ -149,7 +149,12 @@ spec:
         env:
         {{- range $.Values.deployment.env }}
           - name: {{ .name}}
+            {{- if .valueFrom }}
+            valueFrom:
+              {{- toYaml .valueFrom | nindent 14 }}
+            {{- else }}
             value: {{ .value | quote }}
+            {{- end }}
         {{- end}}
         {{- end }}
         {{- if .Values.deployment.startupProbe.enabled }}
