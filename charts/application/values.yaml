@@ -56,6 +56,19 @@ deployment:
   # Reload deployment if configMap/secret updates
   reloadOnChange: true
 
+  #terminationGracePeriodSeconds
+  gracePeriod: 30
+
+  #container lifecycle
+  lifecycle:
+#    enabled: false
+    enabled: true
+    preStop:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - sleep 60
   # Select nodes to deploy which matches the following labels
   nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool

@@ -74,6 +74,7 @@ spec:
       hostAliases:
 {{ toYaml .Values.deployment.hostAliases | indent 6 }}
       {{- end }}
+      terminationGracePeriodSeconds: {{ $.Values.deployment.gracePeriod }}
       {{- if .Values.deployment.initContainers }}
       initContainers:
   {{- range $key, $value := .Values.deployment.initContainers  }}
@@ -108,8 +109,16 @@ spec:
         {{- with .Values.deployment.image.tag    }} {{- $image = print $image ":" . }} {{- end }}
         {{- with .Values.deployment.image.digest }} {{- $image = print $image "@" . }} {{- end }}
         image: {{ $image }}
-
         imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+        {{- if $.Values.deployment.lifecycle.enabled }}
+        lifecycle:
+          {{- if $.Values.deployment.lifecycle.preStop }}
+          preStop: {{ toYaml $.Values.deployment.lifecycle.preStop | nindent 12 }}
+          {{- end }}
+          {{- if $.Values.deployment.lifecycle.postStart }}
+          postStart: {{ toYaml $.Values.deployment.lifecycle.postStart | nindent 12 -}}
+          {{- end }}
+        {{- end }}
         {{- if .Values.deployment.command }}
         command: {{- include "application.tplvalues.render" (dict "value" .Values.deployment.command "context" $) | nindent 12 }}
         {{- end }}
