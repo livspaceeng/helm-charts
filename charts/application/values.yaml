@@ -53,16 +53,12 @@ deployment:
     #   maxSurge: 25%
     #   maxUnavailable: 25%
 
-  # Reload deployment if configMap/secret updates
-  reloadOnChange: true
-
   #terminationGracePeriodSeconds
   gracePeriod: 30
 
   #container lifecycle
   lifecycle:
-#    enabled: false
-    enabled: true
+    enabled: false
     preStop:
       exec:
         command:
@@ -303,17 +299,6 @@ service:
     # expose: "true"
 
   annotations:
-#     config.xposer.stakater.com/Domain: stakater.com
-#     config.xposer.stakater.com/IngressNameTemplate: '{{ "{{.Service}}-{{.Namespace}}" }}'
-#     config.xposer.stakater.com/IngressURLPath: /
-#     config.xposer.stakater.com/IngressURLTemplate: '{{ "{{.Service}}.{{.Namespace}}.{{.Domain}}" }}'
-#     service.alpha.openshift.io/serving-cert-secret-name: |
-#       '{{ template "application.name" . }}-tls'
-#     xposer.stakater.com/annotations: |-
-#       kubernetes.io/ingress.class: external-ingress
-#       ingress.kubernetes.io/rewrite-target: /
-#       ingress.kubernetes.io/force-ssl-redirect: true
-
   ports:
     - port: 8080
       name: http
@@ -509,21 +494,6 @@ autoscaling:
       target:
          type: Utilization
          averageUtilization: 60
-
-##########################################################
-# EndpointMonitor for IMC
-# https://github.com/stakater/IngressMonitorController
-##########################################################
-endpointMonitor:
-  enabled: false
-
-  # Additional labels
-  additionalLabels:
-    # key: value
-
-  # Additional annotations
-  annotations:
-    # key: value
 
 ##########################################################
 # Pod disruption budget - PDB

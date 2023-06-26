@@ -13,9 +13,6 @@ metadata:
 {{- if .Values.deployment.annotations }}
 {{ toYaml .Values.deployment.annotations | indent 4 }}
 {{- end }}
-{{- if .Values.deployment.reloadOnChange }}
-    reloader.stakater.com/auto: "true"
-{{- end }}
   name: {{ template "application.name" . }}
   namespace: {{ include "application.namespace" . }}
 spec:
