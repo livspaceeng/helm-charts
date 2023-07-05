@@ -29,6 +29,16 @@ entries:
     urls:
     - https://charts.livspace.com/ambassador-6.3.3.tgz
     version: 6.3.3
+  app-compat:
+  - apiVersion: v1
+    appVersion: "1.0"
+    created: "2023-07-05T16:37:46.41341503Z"
+    description: A Helm chart for Kubernetes
+    digest: c32339ee5af76f4aa190fc5fbd28c773a087b0ad4c141b3455ec2cc9ece81e19
+    name: app-compat
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/app-compat-4.18.0/app-compat-4.18.0.tgz
+    version: 4.18.0
   application:
   - apiVersion: v2
     created: "2023-06-30T15:09:44.130434789Z"
@@ -1134,4 +1144,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2023-06-30T15:09:44.130856191Z"
+generated: "2023-07-05T16:37:46.413762032Z"
