@@ -1,6 +1,5 @@
 {{- if $.Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2
-{{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ template ".Chart.Name .fullname" $ }}-hpa
@@ -43,3 +42,4 @@ spec:
   behavior:
     {{- toYaml $.Values.autoscaling.behavior | nindent 4 }}
   {{- end }}
+{{- end }}
