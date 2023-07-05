@@ -1,0 +1,128 @@
+{{ $svcName := include ".servicename" . }}
+{{ $svcPort := (index .Values.ContainerPort 0).servicePort }}
+{{- if $.Values.ingress.enabled -}}
+{{- if .Values.ingress.className }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- if .Values.ingressInternal.className }}
+  {{- if not (hasKey .Values.ingressInternal.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingressInternal.annotations "kubernetes.io/ingress.class" .Values.ingressInternal.className}}
+  {{- end }}
+{{- end }}
+{{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template ".Chart.Name .fullname" . }}-ingress
+  namespace: {{ $.Values.NameSpace }}
+  labels:
+    {{- include "application.labels" . | nindent 4 }}
+{{- if .Values.appLabels }}
+{{ toYaml .Values.appLabels | indent 4 }}
+{{- end }}
+    {{- if .Values.ingress.labels }}
+{{ toYaml .Values.ingress.labels | indent 4 }}
+    {{- end }}
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  rules:
+  {{- if or .Values.ingress.host .Values.ingress.path }}
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: {{ .Values.ingress.path }}
+            pathType: {{ $.Values.ingress.pathType | default "ImplementationSpecific" }}
+            backend:
+              service:
+                name: {{ $svcName }}
+                port:
+                  number: {{ $svcPort }}
+  {{- end }}
+  {{- if and ($.Values.ingress.hosts) (not ($.Values.ingress.host )) }}
+  {{- range .Values.ingress.hosts }}
+    {{ $outer := . -}}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            pathType: {{ $outer.pathType | default "ImplementationSpecific" | quote }}
+            backend:
+              service:
+                name: {{ $svcName }}
+                port:
+                  number: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end }}
+{{- if $.Values.ingressInternal.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template ".Chart.Name .fullname" . }}-ingress-internal
+  namespace: {{ $.Values.NameSpace }}
+  labels:
+    app: {{ template ".Chart.Name .name" . }}
+    appId: {{ $.Values.app | quote }}
+    envId: {{ $.Values.env | quote }}
+    chart: {{ template ".Chart.Name .chart" . }}
+    release: {{ .Release.Name }}
+{{- if .Values.ingressInternal.annotations }}
+  annotations:
+{{ toYaml .Values.ingressInternal.annotations | indent 4 }}
+{{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingressInternal.className }}
+  {{- end }}
+  rules:
+  {{- if or .Values.ingressInternal.host .Values.ingressInternal.path }}
+    - host: {{ .Values.ingressInternal.host }}
+      http:
+        paths:
+          - path: {{ .Values.ingressInternal.path }}
+            {{- if .Values.ingressInternal.pathType }}
+            pathType: {{ $.Values.ingressInternal.pathType | default "Prefix" | quote }}
+            {{- end }}
+            backend:
+              service:
+                name: {{ $svcName }}
+                port:
+                  number: {{ $svcPort }}
+  {{- end }}
+  {{- if and ($.Values.ingressInternal.hosts) (not ($.Values.ingressInternal.host )) }}
+  {{- range .Values.ingressInternal.hosts }}
+    {{ $outer := . -}}
+    - host: {{ .host | quote }}
+      http:
+        paths:
+        {{- range .paths }}
+          - path: {{ . }}
+            pathType: {{ $outer.pathType | default "ImplementationSpecific" | quote }}
+            backend:
+              service:
+                name: {{ $svcName }}
+                port:
+                  number: {{ $svcPort }}
+        {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.ingressInternal.tls }}
+  tls:
+{{ toYaml .Values.ingressInternal.tls | indent 4 }}
+  {{- end -}}
+{{- end }}

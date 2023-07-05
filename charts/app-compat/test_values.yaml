@@ -1,0 +1,192 @@
+applicationName: accounts-backend
+ContainerPort:
+  - envoyPort: 8799
+    idleTimeout: 1800s
+    name: app
+    port: 8080
+    servicePort: 80
+    supportStreaming: true
+    useHTTP2: true
+    servicemonitor:
+      enabled: false
+      path: /actuator/prometheus/
+      scheme: http
+      interval: 30s
+      scrapeTimeout: 20s
+containerSpec:
+  lifecycle:
+    enabled: true
+    preStop:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - sleep 60
+EnvVariables:
+  - name: OTEL_SERVICE_NAME
+    value: accounts-backend-prod
+  - name: OPENTELEMETRY_JAEGER_SENDER_PORT
+    value: 4317
+  - name: OTEL_PROPAGATORS
+    value: b3multi
+  - name: OTEL_TRACES_SAMPLER
+    value: parentbased_traceidratio
+  - name: OTEL_TRACES_SAMPLER_ARG
+    value: 0.1
+  - name: OTEL_TRACES_EXPORTER
+    value: otlp
+  - name: OTEL_METRICS_EXPORTER
+    value: none
+EnvVariablesFromFieldPath:
+  - name: OPENTELEMETRY_JAEGER_SENDER_HOST
+    fieldPath: status.hostIP
+GracePeriod: 30
+LivenessProbe:
+  Path: /actuator/health
+  command: []
+  failureThreshold: 10
+  httpHeader:
+    name: ""
+    value: ""
+  initialDelaySeconds: 100
+  periodSeconds: 10
+  port: 8080
+  scheme: ""
+  successThreshold: 1
+  tcp: false
+  timeoutSeconds: 5
+MaxSurge: 1
+MaxUnavailable: 0
+MinReadySeconds: 60
+ReadinessProbe:
+  Path: /actuator/health
+  command: []
+  failureThreshold: 10
+  initialDelaySeconds: 100
+  periodSeconds: 10
+  port: 8080
+  scheme: ""
+  successThreshold: 1
+  tcp: false
+  timeoutSeconds: 5
+Spec:
+  Affinity:
+    Key: null
+    Values: nodes
+    key: ""
+args:
+  enabled: true
+  value:
+    - -javaagent:/opt/opentelemetry-javaagent.jar
+    - -Dspring.config.location=/etc/accounts-backend/application.yaml
+    - -Dlog4j2.formatMsgNoLookups=true
+    - -Dotel.exporter.otlp.traces.endpoint=http://$(OPENTELEMETRY_JAEGER_SENDER_HOST):$(OPENTELEMETRY_JAEGER_SENDER_PORT)
+    - -jar
+    - /opt/app.jar
+command:
+  enabled: true
+  value:
+    - java
+containers: []
+dbMigrationConfig:
+  enabled: false
+envoyproxy:
+  configMapName: ""
+  image: envoyproxy/envoy:v1.14.1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi
+image:
+  pullPolicy: IfNotPresent
+ingress:
+  enabled: true
+  className: traefik-external
+  hosts:
+    - host: accounts-backend.livspace.com
+      pathType: Prefix
+      paths:
+        - /
+  tls: []
+ingressInternal:
+  annotations: {}
+  enabled: false
+  hosts:
+    - host: chart-example1.internal
+      paths:
+        - /example1
+    - host: chart-example2.internal
+      paths:
+        - /example2
+        - /example2/healthz
+  tls: []
+initContainers: []
+pauseForSecondsBeforeSwitchActive: 30
+prometheus:
+  release: monitoring
+rawYaml: []
+replicaCount: 2
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 300m
+    memory: 1Gi
+autoscaling:
+  MaxReplicas: 15
+  MinReplicas: 2
+  TargetCPUUtilizationPercentage: 80
+  TargetMemoryUtilizationPercentage: 150
+  enabled: true
+  extraMetrics: []
+podDisruptionBudget:
+  maxUnavailable: "1"
+podAnnotations:
+  backstage.io/kubernetes-id: accounts-backend
+  linkerd.io/inject: enabled
+  config.linkerd.io/access-log: json
+  config.alpha.linkerd.io/proxy-wait-before-exit-seconds: "90"
+  config.linkerd.io/proxy-cpu-request: 45m
+podLabels:
+  owner: harshnamdev
+  team: hub
+  language: java
+secret:
+  data: {}
+  enabled: false
+server:
+  deployment:
+    image: ""
+    image_tag: 1-95af053
+service:
+  name: accounts-backend
+  annotations:
+    a8r.io/description: Manages customer account information, and login flow.
+    a8r.io/owner: ujjawalkumar.j@livspace.com
+    a8r.io/chat: https://app.slack.com/client/T01Q2N797UH/G01Q68BLEG1
+    a8r.io/bugs: https://livspaceengg.atlassian.net/browse/WEB
+    a8r.io/logs: https://grafana.livspace.com/explore?orgId=1&left=%5B%22now-1h%22,%22now%22,%22Logs%22,%7B%22expr%22:%22%7Bnamespace%3D%5C%22prod%5C%22,%20app%3D%5C%22accounts-backend%5C%22%7D%22%7D%5D
+    a8r.io/documentation: https://accounts-backend.livspace.com/v2/api-docs
+    a8r.io/repository: https://bitbucket.org/livspaceeng/accounts-backend/src
+    a8r.io/support: https://app.slack.com/client/T01Q2N797UH/G01Q68BLEG1
+    a8r.io/runbook: https://livspaceengg.atlassian.net/wiki/spaces/WSS/pages/224657410/Accounts+Backend
+    a8r.io/incidents: https://livspaceengg.atlassian.net/browse/WEB
+    a8r.io/uptime: https://status.livspace.com/
+    a8r.io/performance: https://grafana.livspace.com/d/OmDL8uZ7k/kubernetes-app-metrics?orgId=1&refresh=30s&var-namespace=prod&var-container=accounts-backend
+    a8r.io/dependencies: rabbitmq, hydra
+    livspace.slo/slack_channel: cx-critical-alerts
+  type: ClusterIP
+servicemonitor:
+  additionalLabels: {}
+tolerations: []
+volumeMounts:
+  - mountPath: /tmp
+    name: tmp-dir-volume
+volumes:
+  - name: tmp-dir-volume
+    emptyDir: {}
+waitForSecondsBeforeScalingDown: 30
