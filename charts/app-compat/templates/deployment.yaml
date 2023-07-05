@@ -24,6 +24,9 @@
   {{- end }}
   {{- end }}
 
+  {{- $image := required "Undefined image for application container" .Values.deployment.image.repository }}
+  {{- with .Values.deployment.image.tag    }} {{- $image = print $image ":" . }} {{- end }}
+  {{- with .Values.deployment.image.digest }} {{- $image = print $image "@" . }} {{- end }}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -133,7 +136,7 @@ spec:
 {{- range $i, $c := .Values.initContainers }}
 {{- if .reuseContainerImage}}
         - name: {{ $.Chart.Name }}-init-{{ add1 $i }}
-          image: "{{ $.Values.server.deployment.image }}:{{ $.Values.server.deployment.image_tag }}"
+          image: {{ $image }}
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
 {{- if .securityContext }}
           securityContext:
@@ -162,7 +165,7 @@ spec:
 {{- range $i, $c := .Values.containers }}
 {{- if .reuseContainerImage}}
         - name: {{ $.Chart.Name }}-sidecontainer-{{ add1 $i }}
-          image: "{{ $.Values.server.deployment.image }}:{{ $.Values.server.deployment.image_tag }}"
+          image: {{ $image }}
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
 {{- if .securityContext }}
           securityContext:
@@ -187,7 +190,7 @@ spec:
 {{- end}}
 {{- end}}
         - name: {{ $.Chart.Name }}
-          image: "{{ .Values.server.deployment.image }}:{{ .Values.server.deployment.image_tag }}"
+          image: {{ $image }}
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           {{- if $.Values.containerSpec.lifecycle.enabled }}
           lifecycle:

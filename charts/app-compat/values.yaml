@@ -40,7 +40,7 @@ autoPromotionSeconds: 30
 Spec:
  Affinity:
   Key:
-#  Key: kops.k8s.io/instancegroup 
+#  Key: kops.k8s.io/instancegroup
   Values:
 
 
@@ -123,7 +123,7 @@ kedaAutoscaling:
   enabled: false
   envSourceContainerName: "" # Optional. Default: .spec.template.spec.containers[0]
   cooldownPeriod: 300 # Optional. Default: 300 seconds
-  minReplicaCount: 1 
+  minReplicaCount: 1
   maxReplicaCount: 2
   idleReplicaCount: 0 # Optional. Must be less than minReplicaCount
   pollingInterval: 30 # Optional. Default: 30 seconds
@@ -151,7 +151,7 @@ kedaAutoscaling:
 #   enabled: false
 #   minReplicaCount: 1
 #   maxReplicaCount: 2
-#   targetPendingRequests: 
+#   targetPendingRequests:
 #   scaledownPeriod:
 #   servicePort: 80 # port of the service (required)
 
@@ -194,8 +194,8 @@ istio:
       #       add:
       #         x-some-header: "value"
       #   retries:
-      #     attempts: 2 
-      #     perTryTimeout: 3s 
+      #     attempts: 2
+      #     perTryTimeout: 3s
   destinationRule:
     enabled: false
     labels: {}
@@ -253,9 +253,9 @@ flaggerCanary:
   # discover all port open in container
   portDiscovery: true
   # application protocol (optional)
-  appProtocol: 
+  appProtocol:
   # Istio retry policy (optional)
-  retries: 
+  retries:
     attempts: 3
     perTryTimeout: 1s
     retryOn: "gateway-error,connect-failure,refused-stream"
@@ -302,14 +302,14 @@ flaggerCanary:
     latency: 500
   loadtest:
     enabled: true
-    # load tester address 
+    # load tester address
     url: http://flagger-loadtester.istio-system/
 
 
-server:
- deployment:
-   image_tag: 1-95af053
-   image: ""
+deployment:
+  image:
+    repository: livcr.io/livspace/app-name
+    tag: 1-95af053
 
 EnvVariablesFromFieldPath: []
 # - name: POD_NAME
@@ -465,13 +465,13 @@ networkPolicy:
   enabled: false
   annotations: {}
   labels: {}
-  podSelector: 
+  podSelector:
     matchExpressions: []
     matchLabels: {}
   policyTypes: []
   ingress: []
   egress: []
-    
+
 dbMigrationConfig:
   enabled: false
 
@@ -677,14 +677,14 @@ containerSecurityContext: {}
 ##
 serviceAccount:
   ## @param serviceAccount.create Enable creation of ServiceAccount for pods
-  ##  
+  ##
   create: false
   ## @param serviceAccount.name The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the `.Chart.Name .fullname` template
   name: ""
   ## @param serviceAccount.annotations Annotations for service account. Evaluated as a template.
   ## Only used if `create` is `true`.
-  ##  
+  ##
   annotations: {}
 
 tolerations: []
