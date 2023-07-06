@@ -188,7 +188,7 @@ spec:
 {{- end}}
 {{- end}}
 {{- end}}
-        - name: {{ $.Chart.Name }}
+        - name: {{ template "application.name" . }}
           image: {{ $image }}
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           {{- if $.Values.containerSpec.lifecycle.enabled }}
