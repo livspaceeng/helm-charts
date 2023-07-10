@@ -15,7 +15,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include ".Chart.Name .fullname" $ }}
+    name: {{ template "application.name" . }}
   minReplicas: {{ $.Values.autoscaling.MinReplicas  }}
   maxReplicas: {{ $.Values.autoscaling.MaxReplicas }}
   metrics:
