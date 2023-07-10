@@ -43,7 +43,7 @@ spec:
       name: envoy-admin
       {{- end }}
   selector:
-    app: {{ template ".Chart.Name .name" . }}
+    {{ include "application.selectorLabels" . | indent 4 }}
 {{- if eq .Values.deploymentType "BLUE-GREEN" }}
 ---
 apiVersion: v1
