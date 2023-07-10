@@ -2,7 +2,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ template ".Chart.Name .fullname" $ }}-hpa
+  name: {{ template "application.name" . }}-hpa
   {{- if .Values.autoscaling.annotations }}
   annotations:
 {{ toYaml .Values.autoscaling.annotations | indent 4 }}
