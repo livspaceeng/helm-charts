@@ -2,7 +2,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include ".Chart.Name .fullname" $ }}
+  name: {{ template "application.name" . }}-pdb
   labels:
     {{- include "application.labels" . | nindent 4 }}
 spec:
@@ -14,6 +14,5 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      appId: {{ $.Values.app | quote }}
-      envId: {{ $.Values.env | quote }}
+      {{- include "application.selectorLabels" . | nindent 6 }}
   {{- end }}
