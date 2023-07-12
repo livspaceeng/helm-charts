@@ -159,6 +159,9 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/part-of: {{ include "application.name" . }}
 app: {{ include "application.name" . }}
 {{- end }}
+{{- define "pod.compatLabels" -}}
+app: {{ include "application.name" . }}
+{{- end }}
 {{- define "application.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "application.name" . }}
 {{- end }}

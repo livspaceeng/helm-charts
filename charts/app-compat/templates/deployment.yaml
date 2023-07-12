@@ -62,6 +62,7 @@ spec:
     {{- end }}
       labels:
 {{ include "application.selectorLabels" . | indent 8 }}
+{{ include "pod.compatLabels" . | indent 8 }}
 {{- if .Values.appLabels }}
 {{ toYaml .Values.appLabels | indent 8 }}
 {{- end }}
