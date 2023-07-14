@@ -62,6 +62,10 @@ pdb:
   enabled: false
   spec:
     minAvailable: 1
+serviceAccount:
+  create: false
+  name: ""
+  annotations: {}
 
 ingress:
   enabled: false
