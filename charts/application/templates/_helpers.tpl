@@ -46,6 +46,7 @@ app.kubernetes.io/version: {{ quote . }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 app.kubernetes.io/part-of: {{ include "application.name" . }}
 app: {{ include "application.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
