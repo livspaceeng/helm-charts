@@ -23,6 +23,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
 {{- end }}
     spec:
+{{- if $.Values.serviceAccountName }}
+      serviceAccountName: {{ $.Values.serviceAccountName }}
+{{- else  }}
       initContainers:
 {{- if .Values.init }}
       - name: {{ .Chart.Name }}-init
