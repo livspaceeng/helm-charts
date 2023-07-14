@@ -9,6 +9,7 @@ metadata:
   {{- end }}
   {{- if .Values.autoscaling.labels }}
   labels:
+    {{- include "application.labels" . | nindent 4 }}
 {{ toYaml .Values.autoscaling.labels | indent 4 }}
   {{- end }}
 spec:
