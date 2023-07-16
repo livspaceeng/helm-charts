@@ -15,7 +15,7 @@ Create service name
 {{- else if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 55 | trimSuffix "-" -}}-service
 {{- else -}}
-{{- $name := default .Chart.Name .Values.applicationName -}}
+{{- $name := coalesce .Values.applicationName .Release.Name -}}
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 55 | trimSuffix "-" -}}-service
 {{- else -}}
@@ -141,7 +141,7 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 {{- end -}}
 {{- define "application.name" -}}
-{{- default .Chart.Name .Values.applicationName | trunc 63 | trimSuffix "-" -}}
+{{- coalesce .Values.applicationName .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- define "application.version" -}}
   {{- $version := default "" .Values.image.tag -}}
