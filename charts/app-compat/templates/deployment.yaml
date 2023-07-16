@@ -1,21 +1,20 @@
   {{- $hasCMEnvExists := false -}}
   {{- $hasCMVolumeExists := false -}}
-  {{- if .Values.ConfigMaps.enabled }}
-  {{- range .Values.ConfigMaps.maps }}
-  {{- if eq .type "volume"}}
-  {{- $hasCMVolumeExists = true}}
-  {{- end }}
+  {{- if .Values.externalConfigMaps }}
+  {{- range .Values.externalConfigMaps }}
   {{- if eq .type "environment"}}
   {{- $hasCMEnvExists = true}}
+  {{- else if .path}}
+  {{- $hasCMVolumeExists = true}}
   {{- end }}
   {{- end }}
   {{- end }}
 
   {{- $hasSecretEnvExists := false -}}
   {{- $hasSecretVolumeExists := false -}}
-  {{- if .Values.ConfigSecrets.enabled }}
-  {{- range .Values.ConfigSecrets.secrets }}
-  {{- if eq .type "volume"}}
+  {{- if .Values.externalSecrets }}
+  {{- range .Values.externalSecrets }}
+  {{- if .path}}
   {{- $hasSecretVolumeExists = true}}
   {{- end }}
   {{- if eq .type "environment"}}
@@ -269,29 +268,21 @@ spec:
                   key: {{ .keyName }}
           {{- end }}
           {{- end }}
-          {{- if or (and ($hasCMEnvExists) (.Values.ConfigMaps.enabled)) (and ($hasSecretEnvExists) (.Values.ConfigSecrets.enabled)) }}
+          {{- if or $hasCMEnvExists $hasSecretEnvExists }}
           envFrom:
-          {{- if .Values.ConfigMaps.enabled }}
-          {{- range .Values.ConfigMaps.maps }}
+          {{- if (.Values.externalConfigMaps)}}
+          {{- range $configMap := .Values.externalConfigMaps  }}
           {{- if eq .type "environment" }}
-          - configMapRef:
-              {{- if eq .external true }}
-              name: {{ .name }}
-              {{- else if eq .external false }}
-              name: {{ .name}}-{{ $.Values.app }}
-              {{- end }}
+            - configMapRef:
+                name: {{ .name }}
           {{- end }}
           {{- end }}
           {{- end }}
-          {{- if .Values.ConfigSecrets.enabled }}
-          {{- range .Values.ConfigSecrets.secrets }}
+          {{- if (.Values.externalSecrets)}}
+          {{- range $configMap := .Values.externalSecrets  }}
           {{- if eq .type "environment" }}
-          - secretRef:
-              {{if eq .external true}}
-              name: {{ .name }}
-              {{else if eq .external false}}
-              name: {{ .name}}-{{ $.Values.app }}
-              {{- end }}
+            - secretRef:
+                name: {{ .name }}
           {{- end }}
           {{- end }}
           {{- end }}
@@ -390,8 +381,9 @@ spec:
 {{- with .Values.volumeMounts }}
 {{ toYaml . | trim | indent 12 }}
 {{- end }}
-          {{- if (.Values.externalConfigMaps)}}
+          {{- if and $hasCMVolumeExists (.Values.externalConfigMaps)}}
           {{- range $configMap := .Values.externalConfigMaps  }}
+            {{- if $configMap.path  }}
             {{- if $configMap.files  }}
             {{- range $file := $configMap.files  }}
             - mountPath: {{$configMap.path}}/{{$file}}
@@ -405,9 +397,11 @@ spec:
               readOnly: true
             {{- end}}
             {{- end}}
+            {{- end}}
           {{- end}}
-          {{- if (.Values.externalSecrets)}}
+          {{- if and $hasSecretVolumeExists .Values.externalSecrets }}
           {{- range $secrets := .Values.externalSecrets  }}
+            {{- if and $secrets.path  }}
             {{- if $secrets.files  }}
             {{- range $file := $secrets.files  }}
             - mountPath: {{$secrets.path}}/{{$file}}
@@ -419,8 +413,9 @@ spec:
             - mountPath: {{$secrets.path}}
               name: {{$secrets.name}}
               readOnly: true
-              {{- end}}
-              {{- end}}
+            {{- end}}
+            {{- end}}
+            {{- end}}
             {{- end}}
       volumes:
 {{- with .Values.volumes }}
