@@ -1,7 +1,6 @@
 # Default values for myapp.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
 replicaCount: 1
 MinReadySeconds: 5
 MaxSurge: 1
@@ -230,58 +229,25 @@ flaggerCanary:
   enabled: false
   labels: {}
   annotations: {}
-  createIstioGateway:
-    enabled: false
-    labels: {}
-    annotations: {}
-    host: ""
-    tls:
-      enabled: false
-      secretName: ""
-  # Istio gateways (optional)
-  addOtherGateways: []
-  # Istio virtual service host names (optional)
-  addOtherHosts: []
-  # Istio gateway refs (optional)
-  gatewayRefs:
-    # - name: istio-gateway
-    #   namespace: istio-system
-  #service port
-  serviceport: 8080
-  #containerPort
-  targetPort: 8080
-  # discover all port open in container
-  portDiscovery: true
-  # application protocol (optional)
-  appProtocol:
-  # Istio retry policy (optional)
-  retries:
-    attempts: 3
-    perTryTimeout: 1s
-    retryOn: "gateway-error,connect-failure,refused-stream"
-  # HTTP match conditions (optional)
-  match:
-    - uri:
-        prefix: /
-  # HTTP rewrite (optional)
-  rewriteUri: /
-  # timeout (optional)
-  timeout:
-  # Add headers (optional)
-  headers:
-    # request:
-    #   add:
-    #     x-some-header: "value"
-  # cross-origin resource sharing policy (optional)
-  corsPolicy:
-    # allowOrigin:
-    #   - example.com
-    # allowMethods:
-    #   - GET
-    # allowCredentials: false
-    # allowHeaders:
-    #   - x-some-header
-    # maxAge: 24h
+  service:
+    port: 8080
+    targetPort: 8080
+    portDiscovery: false
+    # application protocol (optional)
+    #appProtocol:
+    # Retry policy (optional)
+    retries: {}
+    #  attempts: 3
+    #  perTryTimeout: 1s
+    #  retryOn: "gateway-error,connect-failure,refused-stream"
+    # HTTP match conditions (optional)
+    match: []
+    #  - uri:
+    #      prefix: /
+    # HTTP rewrite (optional)
+    #rewriteUri: /
+    # timeout (optional)
+    #timeout:
   analysis:
     # schedule interval (default 60s)
     interval: 15s
@@ -293,17 +259,18 @@ flaggerCanary:
     # canary increment step
     # percentage (0-100)
     stepWeight: 5
-  thresholds:
-    # minimum req success rate (non 5xx responses)
-    # percentage (0-100)
-    successRate: 90
-    # maximum req duration P99
-    # milliseconds
-    latency: 500
-  loadtest:
-    enabled: true
-    # load tester address
-    url: http://flagger-loadtester.istio-system/
+    metrics: []
+    #- name: success-rate
+    #  threshold: 99
+    #  interval: 2m
+    #- name: latency
+    #  threshold: 500
+    #  interval: 2m
+  webhooks:
+    loadtest:
+      enabled: false
+      # load tester address
+      url: http://flagger-loadtester.istio-system/
 
 
 deployment:
