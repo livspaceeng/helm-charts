@@ -135,7 +135,7 @@ Create chart name and version as used by the chart label.
 {{/* Create the name of the service account to use */}}
 {{- define "serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include ".Chart.Name .fullname" .) .Values.serviceAccount.name }}
+    {{ default .Release.Name .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
