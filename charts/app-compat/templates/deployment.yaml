@@ -134,7 +134,7 @@ spec:
       initContainers:
 {{- range $i, $c := .Values.initContainers }}
 {{- if .reuseContainerImage}}
-        - name: {{ $.Chart.Name }}-init-{{ add1 $i }}
+        - name: {{ template "application.name" . }}-init-{{ add1 $i }}
           image: {{ $image }}
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
 {{- if .securityContext }}
@@ -163,7 +163,7 @@ spec:
 {{- if $.Values.containers }}
 {{- range $i, $c := .Values.containers }}
 {{- if .reuseContainerImage}}
-        - name: {{ $.Chart.Name }}-sidecontainer-{{ add1 $i }}
+        - name: {{ template "application.name" . }}-sidecontainer-{{ add1 $i }}
           image: {{ $image }}
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
 {{- if .securityContext }}
