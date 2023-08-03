@@ -244,6 +244,13 @@ spec:
                 fieldRef:
                  fieldPath: {{ .fieldPath }}
           {{- end}}
+          {{- range $.Values.EnvVariablesFromContainers }}
+            - name: {{ .name }}
+              valueFrom:
+                resourceFieldRef:
+                  containerName: {{ .container }}
+                  resource: {{ .resource }}
+          {{- end}}
           {{- range $.Values.EnvVariables }}
           {{- if and .name .value }}
             - name: {{ .name }}
