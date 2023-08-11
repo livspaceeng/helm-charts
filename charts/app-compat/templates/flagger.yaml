@@ -13,6 +13,7 @@ metadata:
 {{ toYaml .Values.flaggerCanary.annotations | indent 4 }}
 {{- end }}
 spec:
+  provider: {{ $.Values.flaggerCanary.provider }}
   targetRef:
     apiVersion: apps/v1
     kind: Deployment
