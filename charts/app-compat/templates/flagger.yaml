@@ -17,7 +17,12 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "application.name" . }}
-{{- if $.Values.autoscaling.enabled }}
+{{- if eq "apisix" $.Values.flaggerCanary.provider }}
+  routeRef:
+    apiVersion: apisix.apache.org/v2
+    kind: ApisixRoute
+    name: {{ template "application.name" . }}
+{{- else if $.Values.autoscaling.enabled }}
   autoscalerRef:
     apiVersion: autoscaling/v1
     kind: HorizontalPodAutoscaler
@@ -59,12 +64,14 @@ spec:
       threshold: {{ $value.threshold }}
       interval: {{ $value.interval }}
     {{- end }}
+    {{- if .Values.flaggerCanary.webhooks }}
     webhooks:
       {{- if .Values.flaggerCanary.webhooks.loadtest.enabled }}
       - name: load-test
         url: {{ .Values.flaggerCanary.webhooks.loadtest.url }}
         timeout: 5s
         metadata:
-          cmd: "hey -z 1m -q 10 -c 2 http://{{ include ".Chart.Name .fullname" $ }}-canary.{{ $.Release.Namespace }}:{{ $.Values.flaggerCanary.targetPort }}/"
+          cmd: "hey -z 1m -q 10 -c 2 http://{{ include ".Chart.Name .fullname" $ }}-canary.{{ $.Release.Namespace }}:{{ $.Values.flaggerCanary.service.targetPort }}/"
       {{- end }}
+    {{- end }}
 {{- end }}

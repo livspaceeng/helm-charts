@@ -227,6 +227,7 @@ istio:
 
 flaggerCanary:
   enabled: false
+  provider: "linkerd"
   labels: {}
   annotations: {}
   service:
@@ -234,7 +235,7 @@ flaggerCanary:
     targetPort: 8080
     portDiscovery: false
     # application protocol (optional)
-    #appProtocol:
+    # appProtocol:
     # Retry policy (optional)
     retries: {}
     #  attempts: 3
@@ -250,7 +251,7 @@ flaggerCanary:
     #timeout:
   analysis:
     # schedule interval (default 60s)
-    interval: 15s
+    interval: 60s
     # max number of failed metric checks before rollback
     threshold: 5
     # max traffic percentage routed to canary
@@ -258,19 +259,19 @@ flaggerCanary:
     maxWeight: 50
     # canary increment step
     # percentage (0-100)
-    stepWeight: 5
+    stepWeight: 10
     metrics: []
-    #- name: success-rate
-    #  threshold: 99
-    #  interval: 2m
-    #- name: latency
-    #  threshold: 500
-    #  interval: 2m
-  webhooks:
-    loadtest:
-      enabled: false
-      # load tester address
-      url: http://flagger-loadtester.istio-system/
+    # - name: success-rate
+    #   threshold: 99
+    #   interval: 2m
+    # - name: latency
+    #   threshold: 500
+    #   interval: 2m
+  webhooks: {}
+    # loadtest:
+    #   enabled: false
+    #   # load tester address
+    #   url: http://flagger-loadtester.istio-system/
 
 
 deployment:
