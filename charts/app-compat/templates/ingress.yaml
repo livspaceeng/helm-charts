@@ -1,5 +1,6 @@
 {{ $svcName := include ".servicename" . }}
 {{ $svcPort := (index .Values.ContainerPort 0).servicePort }}
+{{ $flagger := .Values.flaggerCanary.enabled }}
 {{- if $.Values.ingress.enabled -}}
 ---
 apiVersion: networking.k8s.io/v1
@@ -32,7 +33,11 @@ spec:
             pathType: {{ $.Values.ingress.pathType | default "ImplementationSpecific" }}
             backend:
               service:
+                {{- if $flagger }}
+                name: {{ $svcName }}-primary
+                {{- else }}
                 name: {{ $svcName }}
+                {{- end }}
                 port:
                   number: {{ $svcPort }}
   {{- end }}
@@ -47,7 +52,11 @@ spec:
             pathType: {{ $outer.pathType | default "ImplementationSpecific" | quote }}
             backend:
               service:
+                {{- if $flagger }}
+                name: {{ $svcName }}-primary
+                {{- else }}
                 name: {{ $svcName }}
+                {{- end }}
                 port:
                   number: {{ $svcPort }}
         {{- end }}
@@ -86,7 +95,11 @@ spec:
             {{- end }}
             backend:
               service:
+                {{- if $flagger }}
+                name: {{ $svcName }}-primary
+                {{- else }}
                 name: {{ $svcName }}
+                {{- end }}
                 port:
                   number: {{ $svcPort }}
   {{- end }}
@@ -101,7 +114,11 @@ spec:
             pathType: {{ $outer.pathType | default "ImplementationSpecific" | quote }}
             backend:
               service:
+                {{- if $flagger }}
+                name: {{ $svcName }}-primary
+                {{- else }}
                 name: {{ $svcName }}
+                {{- end }}
                 port:
                   number: {{ $svcPort }}
         {{- end }}
