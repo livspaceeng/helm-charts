@@ -225,6 +225,26 @@ istio:
     provider: {}
     rules: []
 
+apisix:
+  route:
+    enabled: false
+    hosts: []
+    # - api.beta.staging.livspace.com
+    paths: []
+    # - "/bouncer/*"
+    service:
+      port: 80
+    plugins: []
+    # - name: proxy-rewrite
+    #   config:
+    #     regex_uri:
+    #       - "^/bouncer/(.*)"
+    #       - "/$1"
+    #     headers:
+    #       set:
+    #         X-Client-Id: xxx
+    #         X-Client-Secret: zzz
+
 flaggerCanary:
   enabled: false
   provider: "linkerd"

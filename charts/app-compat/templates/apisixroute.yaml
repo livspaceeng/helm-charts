@@ -1,0 +1,26 @@
+{{- if .Values.apisix.route.enabled }}
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: {{ template ".servicename" . }}
+spec:
+  http:
+  - name: {{ template ".servicename" . }}
+    match:
+      hosts: {{ toYaml .Values.apisix.route.hosts | nindent 6 }}
+      paths: {{ toYaml .Values.apisix.route.paths | nindent 6 }}
+    backends:
+      - servicePort: {{ default 80 .Values.apisix.route.service.port }}
+        {{- if .Values.flaggerCanary.enabled }}
+        serviceName: {{ template ".servicename" . }}-primary
+        {{- else }}
+        serviceName: {{ template ".servicename" . }}
+        {{- end }}
+    plugin_config_name: hydra-apc
+    {{- range .Values.apisix.route.plugins }}
+    plugins:
+      - name: {{ .name }}
+        enable: true
+        config: {{ toYaml .config | nindent 10 }}
+    {{- end }}
+{{- end }}
