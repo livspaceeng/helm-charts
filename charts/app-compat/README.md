@@ -206,7 +206,7 @@ autoscaling:
 You can use flagger for canary releases with deployment objects. It supports flexible traffic routing with istio service mesh as well.
 
 ```yaml
-flaggerCanary:
+canary:
   addOtherGateways: []
   addOtherHosts: []
   analysis:

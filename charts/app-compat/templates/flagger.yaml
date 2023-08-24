@@ -1,4 +1,4 @@
-{{- if .Values.flaggerCanary.enabled }}
+{{- if .Values.canary.enabled }}
 apiVersion: flagger.app/v1beta1
 kind: Canary
 metadata:
@@ -8,17 +8,17 @@ metadata:
 {{- if $.Values.appLabels }}
 {{ toYaml $.Values.appLabels | indent 4 }}
 {{- end }}
-{{- if .Values.flaggerCanary.annotations }}
+{{- if .Values.canary.annotations }}
   annotations:
-{{ toYaml .Values.flaggerCanary.annotations | indent 4 }}
+{{ toYaml .Values.canary.annotations | indent 4 }}
 {{- end }}
 spec:
-  provider: {{ $.Values.flaggerCanary.provider }}
+  provider: {{ $.Values.canary.provider }}
   targetRef:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ template "application.name" . }}
-{{- if eq "apisix" $.Values.flaggerCanary.provider }}
+{{- if eq "apisix" $.Values.canary.provider }}
   routeRef:
     apiVersion: apisix.apache.org/v2
     kind: ApisixRoute
@@ -30,49 +30,49 @@ spec:
     name: {{ template "application.name" . }}-hpa
 {{- end }}
   service:
-    portDiscovery: {{ .Values.flaggerCanary.service.portDiscovery }}
-    port: {{ .Values.flaggerCanary.service.port }}
-    targetPort: {{ .Values.flaggerCanary.service.targetPort }}
-    {{- if .Values.flaggerCanary.service.appProtocol }}
-    appProtocol: {{ .Values.flaggerCanary.service.appProtocol }}
+    portDiscovery: {{ .Values.canary.service.portDiscovery }}
+    port: {{ .Values.canary.service.port }}
+    targetPort: {{ .Values.canary.service.targetPort }}
+    {{- if .Values.canary.service.appProtocol }}
+    appProtocol: {{ .Values.canary.service.appProtocol }}
     {{- end }}
-    {{- if .Values.flaggerCanary.service.retries }}
+    {{- if .Values.canary.service.retries }}
     retries:
-{{ toYaml .Values.flaggerCanary.service.retries | indent 6 }}
+{{ toYaml .Values.canary.service.retries | indent 6 }}
     {{- end }}
-    {{- if .Values.flaggerCanary.service.match }}
+    {{- if .Values.canary.service.match }}
     match:
-    {{- range .Values.flaggerCanary.service.match }}
+    {{- range .Values.canary.service.match }}
       - uri:
           prefix: {{ .uri.prefix  }}
     {{- end }}
     {{- end }}
-    {{- if .Values.flaggerCanary.service.rewriteUri }}
+    {{- if .Values.canary.service.rewriteUri }}
     rewrite:
-      uri: {{ .Values.flaggerCanary.service.rewriteUri }}
+      uri: {{ .Values.canary.service.rewriteUri }}
     {{- end }}
-    {{- if .Values.flaggerCanary.service.timeout }}
-    timeout: {{ .Values.flaggerCanary.service.timeout }}
+    {{- if .Values.canary.service.timeout }}
+    timeout: {{ .Values.canary.service.timeout }}
     {{- end }}
   analysis:
-    interval: {{ .Values.flaggerCanary.analysis.interval }}
-    threshold: {{ .Values.flaggerCanary.analysis.threshold }}
-    maxWeight: {{ .Values.flaggerCanary.analysis.maxWeight }}
-    stepWeight: {{ .Values.flaggerCanary.analysis.stepWeight }}
+    interval: {{ .Values.canary.analysis.interval }}
+    threshold: {{ .Values.canary.analysis.threshold }}
+    maxWeight: {{ .Values.canary.analysis.maxWeight }}
+    stepWeight: {{ .Values.canary.analysis.stepWeight }}
     metrics:
-    {{- range $key, $value := .Values.flaggerCanary.analysis.metrics }}
+    {{- range $key, $value := .Values.canary.analysis.metrics }}
     - name: {{ $value.name }}
       threshold: {{ $value.threshold }}
       interval: {{ $value.interval }}
     {{- end }}
-    {{- if .Values.flaggerCanary.webhooks }}
+    {{- if .Values.canary.webhooks }}
     webhooks:
-      {{- if .Values.flaggerCanary.webhooks.loadtest.enabled }}
+      {{- if .Values.canary.webhooks.loadtest.enabled }}
       - name: load-test
-        url: {{ .Values.flaggerCanary.webhooks.loadtest.url }}
+        url: {{ .Values.canary.webhooks.loadtest.url }}
         timeout: 5s
         metadata:
-          cmd: "hey -z 1m -q 10 -c 2 http://{{ include ".Chart.Name .fullname" $ }}-canary.{{ $.Release.Namespace }}:{{ $.Values.flaggerCanary.service.targetPort }}/"
+          cmd: "hey -z 1m -q 10 -c 2 http://{{ include ".Chart.Name .fullname" $ }}-canary.{{ $.Release.Namespace }}:{{ $.Values.canary.service.targetPort }}/"
       {{- end }}
     {{- end }}
 {{- end }}

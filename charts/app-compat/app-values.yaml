@@ -218,7 +218,7 @@ networkPolicy:
   ingress: []
   egress: []
 
-flaggerCanary:
+canary:
   enabled: false
   labels: {}
   annotations: {}

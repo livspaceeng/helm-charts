@@ -225,10 +225,10 @@ istio:
     provider: {}
     rules: []
 
-apisix:
-  route:
-    enabled: false
-    hosts: []
+api:
+  enabled: false
+  routes:
+  - hosts: []
     # - api.beta.staging.livspace.com
     paths: []
     # - "/bouncer/*"
@@ -245,7 +245,7 @@ apisix:
     #         X-Client-Id: xxx
     #         X-Client-Secret: zzz
 
-flaggerCanary:
+canary:
   enabled: false
   provider: "linkerd"
   labels: {}

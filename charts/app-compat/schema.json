@@ -338,7 +338,7 @@
       "description": "Istio Service mesh",
       "title": "Istio"
     },
-      "flaggerCanary":{
+      "canary":{
       "type": "object",
       "description": "Flagger for canary release with istio service mesh",
       "title": "Flagger Canary Release"

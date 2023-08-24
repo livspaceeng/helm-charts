@@ -1,26 +1,41 @@
-{{- if .Values.apisix.route.enabled }}
+{{- if .Values.api.enabled }}
+{{- $svc := include ".servicename" . }}
+{{- $canary := .Values.canary.enabled }}
+---
 apiVersion: apisix.apache.org/v2
 kind: ApisixRoute
 metadata:
-  name: {{ template ".servicename" . }}
+  name: {{ $svc }}
 spec:
   http:
-  - name: {{ template ".servicename" . }}
+  {{- range $key , $route := .Values.api.routes }}
+  - name: {{ $svc }}-{{ $key }}
     match:
-      hosts: {{ toYaml .Values.apisix.route.hosts | nindent 6 }}
-      paths: {{ toYaml .Values.apisix.route.paths | nindent 6 }}
+      {{- if $route.hosts }}
+      hosts: {{ toYaml $route.hosts | nindent 6 }}
+      {{- end }}
+      {{- if $route.paths }}
+      paths: {{ toYaml $route.paths | nindent 6 }}
+      {{- else }}
+      paths: "/{{ $svc }}/*"
+      {{- end }}
     backends:
-      - servicePort: {{ default 80 .Values.apisix.route.service.port }}
-        {{- if .Values.flaggerCanary.enabled }}
-        serviceName: {{ template ".servicename" . }}-primary
+      - {{- if $route.service }}
+        servicePort: {{ default 80 $route.service.port }}
         {{- else }}
-        serviceName: {{ template ".servicename" . }}
+        servicePort: 80
+        {{- end }}
+        {{- if $canary }}
+        serviceName: {{ $svc }}-primary
+        {{- else }}
+        serviceName: {{ $svc }}
         {{- end }}
     plugin_config_name: hydra-apc
-    {{- range .Values.apisix.route.plugins }}
     plugins:
+    {{- range $route.plugins }}
       - name: {{ .name }}
         enable: true
         config: {{ toYaml .config | nindent 10 }}
     {{- end }}
+  {{- end }}
 {{- end }}
