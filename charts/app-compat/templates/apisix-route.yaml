@@ -17,7 +17,8 @@ spec:
       {{- if $route.paths }}
       paths: {{ toYaml $route.paths | nindent 6 }}
       {{- else }}
-      paths: "/{{ $svc }}/*"
+      paths:
+      - "/{{ $svc }}/*"
       {{- end }}
     backends:
       - servicePort: {{ default 80 $route.service.port }}
