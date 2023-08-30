@@ -232,18 +232,21 @@ api:
     # - api.beta.staging.livspace.com
     paths: []
     # - "/bouncer/*"
-    service:
-      port: 80
-    plugins: []
-    # - name: proxy-rewrite
-    #   config:
-    #     regex_uri:
-    #       - "^/bouncer/(.*)"
-    #       - "/$1"
-    #     headers:
-    #       set:
-    #         X-Client-Id: xxx
-    #         X-Client-Secret: zzz
+    service: {}
+      # port: 80
+    # proxy_rewrite:
+    #   prefix: bouncer
+    #   headers:
+    #     set:
+    #       X-Client-Id: xxx
+    #       X-Client-Secret: zzz
+  # loadbalancer: ewma
+  # portLevelSettings:
+  #   - port: 80
+  #     scheme: http
+  #   - port: 81
+  #     scheme: grpc
+  #     retries: 3
 
 canary:
   enabled: false

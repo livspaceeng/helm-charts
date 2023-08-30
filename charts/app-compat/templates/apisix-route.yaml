@@ -1,0 +1,67 @@
+{{- if .Values.api.enabled }}
+{{- $svc := include ".servicename" . }}
+{{- $canary := .Values.canary.enabled }}
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: {{ $svc }}
+spec:
+  http:
+  {{- range $key , $route := .Values.api.routes }}
+  - name: {{ $svc }}-{{ $key }}
+    match:
+      {{- if $route.hosts }}
+      hosts: {{ toYaml $route.hosts | nindent 6 }}
+      {{- end }}
+      {{- if $route.paths }}
+      paths: {{ toYaml $route.paths | nindent 6 }}
+      {{- else }}
+      paths: "/{{ $svc }}/*"
+      {{- end }}
+    backends:
+      - servicePort: {{ default 80 $route.service.port }}
+        {{- if $canary }}
+        serviceName: {{ $svc }}-primary
+        {{- else }}
+        serviceName: {{ $svc }}
+        {{- end }}
+    plugin_config_name: hydra-apc
+    plugins:
+      - name: proxy-rewrite
+        enable: true
+        config:
+          regex_uri:
+            {{- if and $route.proxy_rewrite $route.proxy_rewrite.prefix }}
+            {{ $prefix := printf "^/%s/(.*)" $route.proxy_rewrite.prefix -}}
+            - {{ $prefix }}
+            {{- else }}
+            {{ $prefix := printf "^/%s/(.*)" $svc -}}
+            - {{ $prefix }}
+            {{- end }}
+            - "/$1"
+          {{- if and $route.proxy_rewrite $route.proxy_rewrite.headers }}
+          headers: {{ toYaml $route.proxy_rewrite.headers | nindent 12 }}
+          {{- end }}
+      {{- if $route.proxy_cache }}
+      - name: proxy-cache
+        enable: true
+        config: {{ toYaml $route.proxy_cache.config | nindent 10 }}
+      {{- end }}
+      {{- if $route.consumer_restriction }}
+      - name: consumer_restriction
+        enable: true
+        config: {{ toYaml $route.consumer_restriction.config | nindent 10 }}
+      {{- end }}
+      {{- if $route.cors }}
+      - name: cors
+        enable: true
+        config: {{ toYaml $route.cors.config | nindent 10 }}
+      {{- end }}
+      {{- if $route.degraphql }}
+      - name: degraphql
+        enable: true
+        config: {{ toYaml $route.degraphql.config | nindent 10 }}
+      {{- end }}
+  {{- end }}
+{{- end }}
