@@ -227,19 +227,19 @@ istio:
 
 api:
   enabled: false
-  routes:
-  - hosts: []
-    # - api.beta.staging.livspace.com
-    paths: []
-    # - "/bouncer/*"
-    service:
-      port: 80
-    # proxy_rewrite:
-    #   prefix: bouncer
-    #   headers:
-    #     set:
-    #       X-Client-Id: xxx
-    #       X-Client-Secret: zzz
+  routes: []
+  # - hosts: []
+  #   # - api.beta.staging.livspace.com
+  #   paths: []
+  #   # - "/bouncer/*"
+  #   service:
+  #     port: 80
+  #   proxy_rewrite:
+  #     prefix: bouncer
+  #     headers:
+  #       set:
+  #         X-Client-Id: xxx
+  #         X-Client-Secret: zzz
   # loadbalancer: ewma
   # portLevelSettings:
   #   - port: 80
