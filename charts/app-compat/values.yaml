@@ -232,8 +232,8 @@ api:
     # - api.beta.staging.livspace.com
     paths: []
     # - "/bouncer/*"
-    service: {}
-      # port: 80
+    service:
+      port: 80
     # proxy_rewrite:
     #   prefix: bouncer
     #   headers:
