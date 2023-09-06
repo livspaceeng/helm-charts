@@ -21,7 +21,7 @@ spec:
       - "/{{ $svc }}/*"
       {{- end }}
     backends:
-      - servicePort: {{ default 80 $route.service.port }}
+      - servicePort: {{ default 80 (($route.service).port) }}
         {{- if $canary }}
         serviceName: {{ $svc }}-primary
         {{- else }}
