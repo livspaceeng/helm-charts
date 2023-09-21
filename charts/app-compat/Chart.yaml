@@ -2,4 +2,4 @@ apiVersion: v1
 appVersion: "1.0"
 description: A Helm chart for Kubernetes
 name: app-compat
-version: 2.0.0-next.7
+version: 2.0.0-next.8
