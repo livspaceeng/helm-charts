@@ -1020,12 +1020,6 @@
         }
       }
     },
-    "rawYaml": {
-      "type": "array",
-      "items": {},
-      "description": "Accepts an array of Kubernetes objects. One can specify any kubernetes yaml here & it will be applied when a app gets deployed.",
-      "title": "Raw YAML"
-    },
     "replicaCount": {
       "type": "integer",
       "description": "count of Replicas of pod",

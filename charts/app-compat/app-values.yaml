@@ -26,7 +26,7 @@ service:
   # enabled: true
   #name: "service-1234567890"
   loadBalancerSourceRanges: []
-  # loadBalancerSourceRanges: 
+  # loadBalancerSourceRanges:
   #    - 1.2.3.4/32
   #    - 1.2.5.6/23
   annotations: {}
@@ -161,8 +161,8 @@ istio:
       #       add:
       #         x-some-header: "value"
       #   retries:
-      #     attempts: 2 
-      #     perTryTimeout: 3s 
+      #     attempts: 2
+      #     perTryTimeout: 3s
   destinationRule:
     enabled: false
     labels: {}
@@ -204,14 +204,14 @@ winterSoldier:
     timeRanges: []
   action: sleep
   targetReplicas: []
-  fieldSelector: 
+  fieldSelector:
     - AfterTime(AddTime(ParseTime({{metadata.creationTimestamp}}, '2006-01-02T15:04:05Z'), '5m'), Now())
 
 networkPolicy:
   enabled: false
   annotations: {}
   labels: {}
-  podSelector: 
+  podSelector:
     matchExpressions: []
     matchLabels: {}
   policyTypes: []
@@ -229,13 +229,13 @@ canary:
     host:
     tls:
       enabled: false
-      secretName: 
+      secretName:
   # Istio gateways (optional)
   addOtherGateways: []
   # Istio virtual service host names (optional)
   addOtherHosts: []
   # Istio gateway refs (optional)
-  gatewayRefs: 
+  gatewayRefs:
     # - name: istio-gateway
     #   namespace: istio-system
   #service port
@@ -247,7 +247,7 @@ canary:
   # application protocol (optional)
   appProtocol: http
   # Istio retry policy (optional)
-  retries: 
+  retries:
     # attempts: 3
     # perTryTimeout: 1s
     # retryOn: "gateway-error,connect-failure,refused-stream"
@@ -294,7 +294,7 @@ canary:
     latency: 500
   loadtest:
     enabled: true
-    # load tester address 
+    # load tester address
     url: http://flagger-loadtester.istio-system/
 
 ingressInternal:
@@ -325,8 +325,8 @@ command:
   workingDir: {}
   enabled: false
   value: []
-    
-args: 
+
+args:
   enabled: false
   value:
     - /bin/sh
@@ -339,8 +339,6 @@ podLabels: {}
 #  customKey: customValue
 podAnnotations: {}
 #  customKey: customValue
-
-rawYaml: []
 
 topologySpreadConstraints: []
 
@@ -441,7 +439,7 @@ autoscaling:
 kedaAutoscaling:
   enabled: false
   envSourceContainerName: "" # Optional. Default: .spec.template.spec.containers[0]
-  minReplicaCount: 1 
+  minReplicaCount: 1
   maxReplicaCount: 2
   advanced: {}
   triggers: []
@@ -455,8 +453,8 @@ kedaAutoscaling:
 #   enabled: false
 #   minReplicaCount: 1
 #   maxReplicaCount: 2
-#   targetPendingRequests: 
-#   scaledownPeriod: 
+#   targetPendingRequests:
+#   scaledownPeriod:
 #   servicePort: 80 # port of the service (required)
 
 prometheus:
@@ -487,14 +485,14 @@ envoyproxy:
 ##
 serviceAccount:
   ## @param serviceAccount.create Enable creation of ServiceAccount for pods
-  ##  
+  ##
   create: false
   ## @param serviceAccount.name The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the `.Chart.Name .fullname` template
   name: ""
   ## @param serviceAccount.annotations Annotations for service account. Evaluated as a template.
   ## Only used if `create` is `true`.
-  ##  
+  ##
   annotations: {}
 
 imagePullSecrets: []
