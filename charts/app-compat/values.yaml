@@ -37,9 +37,8 @@ waitForSecondsBeforeScalingDown: 30
 autoPromotionSeconds: 30
 
 Spec:
- Affinity:
+  Affinity:
   Key:
-#  Key: kops.k8s.io/instancegroup
   Values:
 
 
@@ -120,14 +119,14 @@ autoscaling:
 
 kedaAutoscaling:
   enabled: false
-  envSourceContainerName: "" # Optional. Default: .spec.template.spec.containers[0]
-  cooldownPeriod: 300 # Optional. Default: 300 seconds
+  envSourceContainerName: ""  # Optional. Default: .spec.template.spec.containers[0]
+  cooldownPeriod: 300  # Optional. Default: 300 seconds
   minReplicaCount: 1
   maxReplicaCount: 2
-  idleReplicaCount: 0 # Optional. Must be less than minReplicaCount
-  pollingInterval: 30 # Optional. Default: 30 seconds
+  idleReplicaCount: 0  # Optional. Must be less than minReplicaCount
+  pollingInterval: 30  # Optional. Default: 30 seconds
   # The fallback section is optional. It defines a number of replicas to fallback to if a scaler is in an error state.
-  fallback: {} # Optional. Section to specify fallback options
+  fallback: {}  # Optional. Section to specify fallback options
     # failureThreshold: 3 # Mandatory if fallback section is included
     # replicas: 6
   advanced: {}
@@ -269,9 +268,9 @@ canary:
     #  - uri:
     #      prefix: /
     # HTTP rewrite (optional)
-    #rewriteUri: /
+    # rewriteUri: /
     # timeout (optional)
-    #timeout:
+    # timeout:
   analysis:
     # schedule interval (default 60s)
     interval: 60s
@@ -467,12 +466,12 @@ dbMigrationConfig:
   enabled: false
 
 command:
- enabled: false
- value: []
+  enabled: false
+  value: []
 
 args:
- enabled: false
- value: []
+  enabled: false
+  value: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -499,12 +498,12 @@ podExtraSpecs: {}
 # then provide them here
 containerExtraSpecs: {}
 
-#used for deployment algo selection
+# used for deployment algo selection
 orchestrator.deploymant.algo: 1
 
 ConfigMaps:
- enabled: false
- maps: []
+  enabled: false
+  maps: []
 #  - name: config-map-1
 #    type: environment
 #    external: false
@@ -535,8 +534,8 @@ ConfigMaps:
 
 
 ConfigSecrets:
- enabled: false
- secrets: []
+  enabled: false
+  secrets: []
 #  - name: config-secret-1
 #    type: environment
 #    external: false
@@ -571,12 +570,12 @@ initContainers: []
 containers: []
   ## Additional init containers to run before the Scheduler pods.
   ## for example, be used to run a sidecar that chown Logs storage .
-  #- name: volume-mount-hack
-  #  image: busybox
-  #  command: ["sh", "-c", "chown -R 1000:1000 logs"]
-  #  volumeMounts:
-  #    - mountPath: /usr/local/airflow/logs
-  #      name: logs-data
+  # - name: volume-mount-hack
+  #   image: busybox
+  #   command: ["sh", "-c", "chown -R 1000:1000 logs"]
+  #   volumeMounts:
+  #   - mountPath: /usr/local/airflow/logs
+  #     name: logs-data
 
 topologySpreadConstraints: []
   # - maxSkew: 1
@@ -586,16 +585,16 @@ topologySpreadConstraints: []
   #   customLabelSelector: {}
 
 envoyproxy:
- image: docker.io/envoyproxy/envoy:v1.16.0
- lifecycle: {}
- configMapName: ""
- resources:
-   limits:
-     cpu: 50m
-     memory: 50Mi
-   requests:
-     cpu: 50m
-     memory: 50Mi
+  image: docker.io/envoyproxy/envoy:v1.16.0
+  lifecycle: {}
+  configMapName: ""
+  resources:
+    limits:
+      cpu: 50m
+      memory: 50Mi
+    requests:
+      cpu: 50m
+      memory: 50Mi
 
 containerSpec:
   lifecycle:
