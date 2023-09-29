@@ -17,10 +17,11 @@ spec:
       {{- if $route.paths }}
       paths: {{ toYaml $route.paths | nindent 6 }}
       {{- else }}
-      paths: "/{{ $svc }}/*"
+      paths:
+      - "/{{ $svc }}/*"
       {{- end }}
     backends:
-      - servicePort: {{ default 80 $route.service.port }}
+      - servicePort: {{ default 80 (($route.service).port) }}
         {{- if $canary }}
         serviceName: {{ $svc }}-primary
         {{- else }}
@@ -33,7 +34,7 @@ spec:
         config:
           regex_uri:
             {{- if and $route.proxy_rewrite $route.proxy_rewrite.prefix }}
-            {{ $prefix := printf "^/%s/(.*)" $route.proxy_rewrite.prefix -}}
+            {{ $prefix := printf "^%s(.*)" $route.proxy_rewrite.prefix -}}
             - {{ $prefix }}
             {{- else }}
             {{ $prefix := printf "^/%s/(.*)" $svc -}}
@@ -49,9 +50,14 @@ spec:
         config: {{ toYaml $route.proxy_cache.config | nindent 10 }}
       {{- end }}
       {{- if $route.consumer_restriction }}
-      - name: consumer_restriction
+      - name: consumer-restriction
         enable: true
         config: {{ toYaml $route.consumer_restriction.config | nindent 10 }}
+      {{- end }}
+      {{- if $route.referer_restriction }}
+      - name: referer-restriction
+        enable: true
+        config: {{ toYaml $route.referer_restriction.config | nindent 10 }}
       {{- end }}
       {{- if $route.cors }}
       - name: cors
