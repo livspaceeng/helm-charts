@@ -502,8 +502,8 @@ containerExtraSpecs: {}
 orchestrator.deploymant.algo: 1
 
 ConfigMaps:
- enabled: false
- maps: []
+  enabled: false
+  maps: []
 #  - name: config-map-1
 #    type: environment
 #    external: false
@@ -534,8 +534,8 @@ ConfigMaps:
 
 
 ConfigSecrets:
- enabled: false
- secrets: []
+  enabled: false
+  secrets: []
 #  - name: config-secret-1
 #    type: environment
 #    external: false
@@ -570,12 +570,12 @@ initContainers: []
 containers: []
   ## Additional init containers to run before the Scheduler pods.
   ## for example, be used to run a sidecar that chown Logs storage .
-  #- name: volume-mount-hack
-  #  image: busybox
-  #  command: ["sh", "-c", "chown -R 1000:1000 logs"]
-  #  volumeMounts:
-  #    - mountPath: /usr/local/airflow/logs
-  #      name: logs-data
+  # - name: volume-mount-hack
+  #   image: busybox
+  #   command: ["sh", "-c", "chown -R 1000:1000 logs"]
+  #   volumeMounts:
+  #   - mountPath: /usr/local/airflow/logs
+  #     name: logs-data
 
 topologySpreadConstraints: []
   # - maxSkew: 1
@@ -585,16 +585,16 @@ topologySpreadConstraints: []
   #   customLabelSelector: {}
 
 envoyproxy:
- image: docker.io/envoyproxy/envoy:v1.16.0
- lifecycle: {}
- configMapName: ""
- resources:
-   limits:
-     cpu: 50m
-     memory: 50Mi
-   requests:
-     cpu: 50m
-     memory: 50Mi
+  image: docker.io/envoyproxy/envoy:v1.16.0
+  lifecycle: {}
+  configMapName: ""
+  resources:
+    limits:
+      cpu: 50m
+      memory: 50Mi
+    requests:
+      cpu: 50m
+      memory: 50Mi
 
 containerSpec:
   lifecycle:
