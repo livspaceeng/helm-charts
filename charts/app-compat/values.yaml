@@ -37,9 +37,8 @@ waitForSecondsBeforeScalingDown: 30
 autoPromotionSeconds: 30
 
 Spec:
- Affinity:
+  Affinity:
   Key:
-#  Key: kops.k8s.io/instancegroup
   Values:
 
 
@@ -120,14 +119,14 @@ autoscaling:
 
 kedaAutoscaling:
   enabled: false
-  envSourceContainerName: "" # Optional. Default: .spec.template.spec.containers[0]
-  cooldownPeriod: 300 # Optional. Default: 300 seconds
+  envSourceContainerName: ""  # Optional. Default: .spec.template.spec.containers[0]
+  cooldownPeriod: 300  # Optional. Default: 300 seconds
   minReplicaCount: 1
   maxReplicaCount: 2
-  idleReplicaCount: 0 # Optional. Must be less than minReplicaCount
-  pollingInterval: 30 # Optional. Default: 30 seconds
+  idleReplicaCount: 0  # Optional. Must be less than minReplicaCount
+  pollingInterval: 30  # Optional. Default: 30 seconds
   # The fallback section is optional. It defines a number of replicas to fallback to if a scaler is in an error state.
-  fallback: {} # Optional. Section to specify fallback options
+  fallback: {}  # Optional. Section to specify fallback options
     # failureThreshold: 3 # Mandatory if fallback section is included
     # replicas: 6
   advanced: {}
@@ -269,9 +268,9 @@ canary:
     #  - uri:
     #      prefix: /
     # HTTP rewrite (optional)
-    #rewriteUri: /
+    # rewriteUri: /
     # timeout (optional)
-    #timeout:
+    # timeout:
   analysis:
     # schedule interval (default 60s)
     interval: 60s
@@ -467,12 +466,12 @@ dbMigrationConfig:
   enabled: false
 
 command:
- enabled: false
- value: []
+  enabled: false
+  value: []
 
 args:
- enabled: false
- value: []
+  enabled: false
+  value: []
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -499,7 +498,7 @@ podExtraSpecs: {}
 # then provide them here
 containerExtraSpecs: {}
 
-#used for deployment algo selection
+# used for deployment algo selection
 orchestrator.deploymant.algo: 1
 
 ConfigMaps:
