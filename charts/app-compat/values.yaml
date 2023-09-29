@@ -38,8 +38,8 @@ autoPromotionSeconds: 30
 
 Spec:
   Affinity:
-  Key:
-  Values:
+    Key:
+    Values:
 
 
 image:
