@@ -151,7 +151,6 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 {{- define "application.labels" -}}
-helm.sh/chart: {{ include "application.chart" . }}
 {{- with include "application.version" . }}
 app.kubernetes.io/version: {{ quote . }}
 {{- end }}
