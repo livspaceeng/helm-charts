@@ -88,12 +88,9 @@ spec:
                 values:
                 - {{ $.Values.Spec.Affinity.Values | default "nodes"  }}
 {{- end }}
-{{- if $.Values.serviceAccountName }}
-      serviceAccountName: {{ $.Values.serviceAccountName }}
-{{- else  }}
-      serviceAccountName: {{ template "serviceAccountName" . }}
-{{- end }}
-  {{- if .Values.tolerations }}
+      serviceAccountName: {{ include "serviceAccountName" . }}
+      automountServiceAccountToken: {{ default false $.Values.serviceAccount.automountServiceAccountToken }}
+{{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
   {{- end }}

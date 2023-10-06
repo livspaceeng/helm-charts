@@ -1143,6 +1143,11 @@
           "description": "name of service account",
           "title": "Name"
         },
+        "automountServiceAccountToken": {
+          "type": "boolean",
+          "description": "Enable auto-mounting of kubernetes service account token. Default `false`",
+          "title": "AutomountServiceAccountToken"
+        },
         "create": {
           "type": "boolean"
         }

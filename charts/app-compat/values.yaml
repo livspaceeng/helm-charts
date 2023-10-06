@@ -300,6 +300,10 @@ deployment:
   image:
     repository: livcr.io/livspace/app-name
     tag: 1-95af053
+  strategy:
+    rolling:
+      maxSurge: 25%
+      maxUnavailable: 1
 
 EnvVariablesFromFieldPath: []
 # - name: POD_NAME
@@ -630,6 +634,9 @@ serviceAccount:
   ## @param serviceAccount.create Enable creation of ServiceAccount for pods
   ##
   create: true
+  ## Enable auto-mounting of kubernetes service account token. Default "false"
+  ## Check here for details: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+  automountServiceAccountToken: false
   ## @param serviceAccount.name The name of the ServiceAccount to use.
   ## If not set and create is true, a name is generated using the `.Chart.Name .fullname` template
   name: ""
@@ -648,3 +655,4 @@ imagePullSecrets: []
   # - test1
   # - test2
 EnvVariablesFromContainers: []
+deploymentType: ROLLING
