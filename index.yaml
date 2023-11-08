@@ -449,6 +449,16 @@ entries:
     version: 1.0.0
   application:
   - apiVersion: v2
+    created: "2023-11-08T07:17:27.191412913Z"
+    description: Generic helm chart for all kind of applications
+    digest: 220e851e2823e80bf470319f10bf40172d52f77f6c01432cf8c898a4c04d4ea9
+    home: https://github.com/livspaceeng/helm-charts
+    name: application
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/application-1.0.12/application-1.0.12.tgz
+    version: 1.0.12
+  - apiVersion: v2
     created: "2023-07-14T14:33:01.264648886Z"
     description: Generic helm chart for all kind of applications
     digest: 3b662397a36d0b3436254c4ed337b1bff38edd40e3e821bc4b74a80fec5d1c64
@@ -1601,4 +1611,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2023-10-06T04:47:10.428693293Z"
+generated: "2023-11-08T07:17:27.191953212Z"
