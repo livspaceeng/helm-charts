@@ -246,6 +246,10 @@ api:
   #   - port: 81
   #     scheme: grpc
   #     retries: 3
+  # timeout:
+  #   connect: 60s  #default
+  #   read: 60s     #default
+  #   send: 60s     #default
 
 canary:
   enabled: false

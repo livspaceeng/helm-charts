@@ -1,4 +1,4 @@
-{{- if and .Values.api.enabled (or .Values.api.loadbalancer .Values.api.portLevelSettings) }}
+{{- if and .Values.api.enabled (or .Values.api.loadbalancer .Values.api.portLevelSettings .Values.api.timeout) }}
 {{- $svc := include ".servicename" . }}
 apiVersion: apisix.apache.org/v2
 kind: ApisixUpstream
@@ -8,7 +8,11 @@ spec:
   {{- if .Values.api.loadbalancer }}
   loadbalancer:
     type: {{ $.Values.api.loadbalancer | quote }}
-  {{- else }}
+  {{- end }}
+  {{- if .Values.api.portLevelSettings }}
   portLevelSettings: {{ toYaml $.Values.api.portLevelSettings | nindent 4 }}
+  {{- end }}
+  {{- if .Values.api.timeout }}
+  timeout: {{ toYaml $.Values.api.timeout | nindent 4 }}
   {{- end }}
 {{- end }}
