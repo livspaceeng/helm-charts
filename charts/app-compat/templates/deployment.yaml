@@ -93,6 +93,8 @@ spec:
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+    {{- else }}
+      tolerations: []
   {{- end }}
 {{- if $.Values.imagePullSecrets}}
       imagePullSecrets:
