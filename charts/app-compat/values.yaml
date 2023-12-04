@@ -572,10 +572,10 @@ initContainers:
       mountPath: /var/run/secrets/aws/token
     resources:
       limits:
-        memory: 50Mi
+        memory: 100Mi
       requests:
         cpu: 10m
-        memory: 100Mi
+        memory: 50Mi
   ## Additional init containers to run before the Scheduler pods.
   ## for example, be used to run a sidecar that chown Logs storage .
   # - name: volume-mount-hack
