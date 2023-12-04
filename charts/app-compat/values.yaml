@@ -570,6 +570,12 @@ initContainers:
     volumeMounts:
     - name: gtoken-vol
       mountPath: /var/run/secrets/aws/token
+    resources:
+      limits:
+        memory: 50Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
   ## Additional init containers to run before the Scheduler pods.
   ## for example, be used to run a sidecar that chown Logs storage .
   # - name: volume-mount-hack
@@ -592,6 +598,12 @@ containers:
     volumeMounts:
     - name: gtoken-vol
       mountPath: /var/run/secrets/aws/token
+    resources:
+      limits:
+        memory: 50Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
   ## Additional init containers to run before the Scheduler pods.
   ## for example, be used to run a sidecar that chown Logs storage .
   #- name: volume-mount-hack
