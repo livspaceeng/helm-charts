@@ -615,25 +615,6 @@ Containers section can be used to run side-car containers along with your main c
 
 It is a kubernetes monitoring tool and the name of the file to be monitored as monitoring in the given case.It describes the state of the prometheus.
 
-### rawYaml
-
-```yaml
-rawYaml: 
-  - apiVersion: v1
-    kind: Service
-    metadata:
-      name: my-service
-    spec:
-      selector:
-        app: MyApp
-      ports:
-        - protocol: TCP
-          port: 80
-          targetPort: 9376
-      type: ClusterIP
-```
-Accepts an array of Kubernetes objects. You can specify any kubernetes yaml here and it will be applied when your app gets deployed.
-
 ### Grace Period
 
 ```yaml
