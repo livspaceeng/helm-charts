@@ -483,6 +483,8 @@ resources: {}
 volumeMounts:
   - name: gtoken-vol
     mountPath: /var/run/secrets/aws/token
+  - mountPath: /.aws
+    name: aws-dir-volume
 #     - name: log-volume
 #       mountPath: /var/log
 
@@ -490,6 +492,8 @@ volumes:
   - name: gtoken-vol
     emptyDir:
       medium: Memory
+  - name: aws-dir-volume
+    emptyDir: {}
 #     - name: log-volume
 #       emptyDir: {}
 
