@@ -493,20 +493,11 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
 
-volumeMounts:
-  - name: gtoken-vol
-    mountPath: /var/run/secrets/aws/token
-  - mountPath: /.aws
-    name: aws-dir-volume
+volumeMounts: []
 #     - name: log-volume
 #       mountPath: /var/log
 
-volumes:
-  - name: gtoken-vol
-    emptyDir:
-      medium: Memory
-  - name: aws-dir-volume
-    emptyDir: {}
+volumes: []
 #     - name: log-volume
 #       emptyDir: {}
 
@@ -577,22 +568,7 @@ ConfigSecrets:
 #     key2: abc-2
 
 
-initContainers:
-  - image: doitintl/gtoken
-    name: gtoken-init
-    command:
-    - /gtoken
-    - --file=/var/run/secrets/aws/token/gtoken
-    - --refresh=false
-    volumeMounts:
-    - name: gtoken-vol
-      mountPath: /var/run/secrets/aws/token
-    resources:
-      limits:
-        memory: 100Mi
-      requests:
-        cpu: 10m
-        memory: 50Mi
+initContainers: []
   ## Additional init containers to run before the Scheduler pods.
   ## for example, be used to run a sidecar that chown Logs storage .
   # - name: volume-mount-hack
@@ -605,22 +581,7 @@ initContainers:
   # # This will assign your application's docker image to init container.
   #   reuseContainerImage: true
 
-containers:
-  - image: doitintl/gtoken
-    name: gtoken
-    command:
-    - /gtoken
-    - --file=/var/run/secrets/aws/token/gtoken
-    - --refresh=true
-    volumeMounts:
-    - name: gtoken-vol
-      mountPath: /var/run/secrets/aws/token
-    resources:
-      limits:
-        memory: 100Mi
-      requests:
-        cpu: 10m
-        memory: 50Mi
+containers: []
   ## Additional init containers to run before the Scheduler pods.
   ## for example, be used to run a sidecar that chown Logs storage .
   # - name: volume-mount-hack
