@@ -23,6 +23,9 @@
   {{- end }}
   {{- end }}
 
+  {{- $cloudProvider := .Values.cloud.provider }}
+  {{- $crossCloudAccess := .Values.cloud.crossCloudAccess.enabled }}
+  {{- $crossCloudRole := .Values.cloud.crossCloudAccess.roleName }}
   {{- $image := required "Undefined image for application container" .Values.deployment.image.repository }}
   {{- with .Values.deployment.image.tag    }} {{- $image = print $image ":" . }} {{- end }}
   {{- with .Values.deployment.image.digest }} {{- $image = print $image "@" . }} {{- end }}
@@ -131,6 +134,23 @@ spec:
 {{- end }}
 {{- if $.Values.initContainers}}
       initContainers:
+{{- if and (eq $cloudProvider "gcp") $crossCloudAccess }}
+        - image: doitintl/gtoken
+          name: gtoken-init
+          command:
+          - /gtoken
+          - --file=/var/run/secrets/aws/token/gtoken
+          - --refresh=false
+          volumeMounts:
+          - name: gtoken-vol
+            mountPath: /var/run/secrets/aws/token
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
+{{- end }}
 {{- range $i, $c := .Values.initContainers }}
 {{- if .reuseContainerImage}}
         - name: {{ template "application.name" $ }}-init-{{ add1 $i }}
@@ -186,6 +206,23 @@ spec:
 {{ toYaml . | indent 10 }}
 {{- end}}
 {{- end}}
+{{- end}}
+{{- if and (eq $cloudProvider "gcp") $crossCloudAccess }}
+        - image: doitintl/gtoken
+          name: gtoken
+          command:
+          - /gtoken
+          - --file=/var/run/secrets/aws/token/gtoken
+          - --refresh=true
+          volumeMounts:
+          - name: gtoken-vol
+            mountPath: /var/run/secrets/aws/token
+          resources:
+            limits:
+              memory: 100Mi
+            requests:
+              cpu: 10m
+              memory: 50Mi
 {{- end}}
         - name: {{ template "application.name" . }}
           image: {{ $image }}
@@ -255,6 +292,18 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
           {{- end }}
+          {{- end }}
+          {{- if and (eq $cloudProvider "gcp") $crossCloudAccess }}
+            - name: AWS_WEB_IDENTITY_TOKEN_FILE
+              value: /var/run/secrets/aws/token/gtoken
+            - name: AWS_ROLE_ARN
+              value: {{ $crossCloudRole }}
+            - name: AWS_ROLE_SESSION_NAME
+              value: gtoken-123
+            - name: AWS_REGION
+              value: ap-southeast-1
+            - name: AWS_DEFAULT_REGION
+              value: ap-southeast-1
           {{- end }}
           {{- range $.Values.EnvVariablesFromSecretKeys }}
           {{- if and .name .secretName .keyName }}
@@ -387,6 +436,12 @@ spec:
 {{- with .Values.volumeMounts }}
 {{ toYaml . | trim | indent 12 }}
 {{- end }}
+          {{- if and (eq $cloudProvider "gcp") $crossCloudAccess }}
+            - name: gtoken-vol
+              mountPath: /var/run/secrets/aws/token
+            - name: aws-dir-volume
+              mountPath: /root/.aws
+          {{- end }}
           {{- if and $hasCMVolumeExists (.Values.externalConfigMaps)}}
           {{- range $configMap := .Values.externalConfigMaps  }}
             {{- if $configMap.path  }}
@@ -427,6 +482,13 @@ spec:
 {{- with .Values.volumes }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
+      {{- if and (eq $cloudProvider "gcp") $crossCloudAccess }}
+        - emptyDir: {}
+          name: aws-dir-volume
+        - emptyDir:
+            medium: Memory
+          name: gtoken-vol
+      {{- end }}
       {{- if (.Values.externalConfigMaps)}}
       {{- range $item := .Values.externalConfigMaps  }}
         - name: {{$item.name}}

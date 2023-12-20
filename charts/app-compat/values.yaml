@@ -300,6 +300,12 @@ canary:
     #   url: http://flagger-loadtester.istio-system/
 
 
+cloud:
+  provider: "aws"
+  crossCloudAccess:
+    enabled: false
+    roleName: ""
+
 deployment:
   image:
     repository: livcr.io/livspace/app-name
