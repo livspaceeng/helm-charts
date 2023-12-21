@@ -302,9 +302,6 @@ canary:
 
 cloud:
   provider: "aws"
-  crossCloudAccess:
-    enabled: false
-    roleName: ""
 
 deployment:
   image:
