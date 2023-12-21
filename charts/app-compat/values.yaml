@@ -627,9 +627,9 @@ podDisruptionBudget: {}
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
 
-podSecurityContext:
-  runAsUser: 1001
-  fsGroup: 1001
+podSecurityContext: {}
+  # runAsUser: 1001
+  # fsGroup: 1001
   # runAsGroup: 1001
 
 containerSecurityContext: {}
