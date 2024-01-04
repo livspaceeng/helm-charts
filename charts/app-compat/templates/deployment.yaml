@@ -130,7 +130,6 @@ spec:
 {{- if $.Values.restartPolicy }}
       restartPolicy: {{  $.Values.restartPolicy }}
 {{- end }}
-{{- if $.Values.initContainers}}
       initContainers:
 {{- if eq $cloudProvider "gcp" }}
         - image: doitintl/gtoken
@@ -149,6 +148,7 @@ spec:
               cpu: 10m
               memory: 50Mi
 {{- end }}
+{{- if $.Values.initContainers}}
 {{- range $i, $c := .Values.initContainers }}
 {{- if .reuseContainerImage}}
         - name: {{ template "application.name" $ }}-init-{{ add1 $i }}
