@@ -272,8 +272,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-	    - name: CONTAINER_IMAGE
-	        value: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            - name: CONTAINER_IMAGE
+              value: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           {{- range $.Values.EnvVariablesFromFieldPath }}
             - name: {{ .name }}
               valueFrom:
