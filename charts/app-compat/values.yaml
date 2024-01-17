@@ -82,14 +82,30 @@ ambassadorMapping:
   #   extraSpec:
   #     min_tls_version: v1.2
 
+## Add a horizontal pod autoscaler
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+## @param autoscaling.enabled Deploy a HorizontalPodAutoscaler object for the Kong deployment
+## @param autoscaling.minReplicas Minimum number of replicas to scale back
+## @param autoscaling.maxReplicas Maximum number of replicas to scale out
+## @param autoscaling.metrics [array] Metrics to use when deciding to scale the deployment (evaluated as a template)
+##
 autoscaling:
   enabled: false
   MinReplicas: 1
   MaxReplicas: 2
-  # TargetCPUUtilizationPercentage: 90
-  # TargetMemoryUtilizationPercentage: 80
+  # Deprecated. Use autoscaling.metrics to define the autoscale metrics
+  TargetCPUUtilizationPercentage: 90
   annotations: {}
   labels: {}
+  metrics: []
+#    - type: Resource
+#      resource:
+#        name: cpu
+#        targetAverageUtilization: 80
+#    - type: Resource
+#      resource:
+#        name: memory
+#        targetAverageUtilization: 120
   behavior: {}
 #    scaleDown:
 #      stabilizationWindowSeconds: 300
