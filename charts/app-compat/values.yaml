@@ -101,11 +101,15 @@ autoscaling:
 #    - type: Resource
 #      resource:
 #        name: cpu
-#        targetAverageUtilization: 80
+#        target:
+#          averageUtilization: 90	
+#          type: Utilization
 #    - type: Resource
 #      resource:
 #        name: memory
-#        targetAverageUtilization: 120
+#        target:
+#          averageUtilization: 90	
+#          type: Utilization
   behavior: {}
 #    scaleDown:
 #      stabilizationWindowSeconds: 300
