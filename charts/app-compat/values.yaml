@@ -102,31 +102,31 @@ autoscaling:
 #      resource:
 #        name: cpu
 #        target:
-#          averageUtilization: 90	
+#          averageUtilization: 90
 #          type: Utilization
 #    - type: Resource
 #      resource:
 #        name: memory
 #        target:
-#          averageUtilization: 90	
+#          averageUtilization: 90
 #          type: Utilization
-  behavior: {}
-#    scaleDown:
-#      stabilizationWindowSeconds: 300
-#      policies:
-#      - type: Percent
-#        value: 100
-#        periodSeconds: 15
-#    scaleUp:
-#      stabilizationWindowSeconds: 0
-#      policies:
-#      - type: Percent
-#        value: 100
-#        periodSeconds: 15
-#      - type: Pods
-#        value: 4
-#        periodSeconds: 15
-#      selectPolicy: Max
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 180
+      policies:
+      - type: Percent
+        value: 40
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 90
+      policies:
+      - type: Percent
+        value: 40
+        periodSeconds: 30
+      - type: Pods
+        value: 2
+        periodSeconds: 30
+      selectPolicy: Max
   extraMetrics: []
 #    - external:
 #        metricName: pubsub.googleapis.com|subscription|num_undelivered_messages
