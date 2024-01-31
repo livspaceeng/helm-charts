@@ -3,31 +3,31 @@
 replicaCount: 1
 cluster:
   enabled: true
-  state: 
-    svc: scc-state
-    externalPort: 7777
-    internalPort: 7777
-    type: ClusterIP
-#    podLabels:
-#      lab: state
-#    podAnnotations:
-#      ann: state
-    replicaCount: 1
-    resources:
-      limits:
-        cpu: 500m
-        memory: 512Mi
-      requests:
-        cpu: 200m
-        memory: 256Mi
-    securityContext:
-      allowPrivilegeEscalation: false
-#    volumeMounts:
-#    - mountPath: /tmp
-#      name: tmp-dir-volume
-#    volumes:
-#    - name: tmp-dir-volume
-#      emptyDir: {}
+    state: 
+      svc: scc-state
+      externalPort: 7777
+      internalPort: 7777
+      type: ClusterIP
+  #    podLabels:
+  #      lab: state
+  #    podAnnotations:
+  #      ann: state
+      replicaCount: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 200m
+          memory: 256Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+  #    volumeMounts:
+  #    - mountPath: /tmp
+  #      name: tmp-dir-volume
+  #    volumes:
+  #    - name: tmp-dir-volume
+  #      emptyDir: {}
   broker:
     type: ClusterIP
     svc: scc-broker
