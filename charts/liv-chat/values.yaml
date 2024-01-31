@@ -3,7 +3,7 @@
 replicaCount: 1
 cluster:
   enabled: true
-  state: 
+  state:
     svc: scc-state
     externalPort: 7777
     internalPort: 7777
