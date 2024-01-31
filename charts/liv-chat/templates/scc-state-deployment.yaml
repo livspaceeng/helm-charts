@@ -4,7 +4,6 @@ kind: Deployment
 metadata:
   name: {{ .Values.cluster.state.svc }}
   labels:
-
 {{- if .Values.cluster.state.podLabels }}
 {{ toYaml .Values.cluster.state.podLabels | indent 4 }}
 {{- end }}
