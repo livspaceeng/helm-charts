@@ -6,7 +6,7 @@ metadata:
     draft: {{ default "draft-app" .Values.draft }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 {{- if .Values.cluster.scService.podLabels }}
-{{ toYaml .Values.cluster.scService.podLabels | indent 8 }}
+{{ toYaml .Values.cluster.scService.podLabels | indent 4 }}
 {{- end }}
 spec:
   replicas: {{ .Values.cluster.scService.replicaCount }}
