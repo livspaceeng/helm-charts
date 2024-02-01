@@ -3,6 +3,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.cluster.broker.svc }}
+  labels:
+{{- if .Values.cluster.broker.podLabels }}
+{{ toYaml .Values.cluster.broker.podLabels | indent 4 }}
+{{- end }}
 spec:
   replicas: {{ .Values.cluster.broker.replicaCount }}
   selector:
