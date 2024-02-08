@@ -132,7 +132,7 @@ spec:
 {{- end }}
       initContainers:
 {{- if eq $cloudProvider "gcp" }}
-        - image: doitintl/gtoken
+        - image: livcr.io/generic/doitintl-gtoken:v0.4.3
           name: gtoken-init
           command:
           - /gtoken
@@ -206,7 +206,7 @@ spec:
 {{- end}}
 {{- end}}
 {{- if eq $cloudProvider "gcp" }}
-        - image: doitintl/gtoken
+        - image: livcr.io/generic/doitintl-gtoken:v0.4.3
           name: gtoken
           command:
           - /gtoken
