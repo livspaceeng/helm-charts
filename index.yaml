@@ -1371,6 +1371,26 @@ entries:
     urls:
     - https://charts.livspace.com/matomo-0.1.0.tgz
     version: 0.1.0
+  rancher:
+  - apiVersion: v2
+    appVersion: v2.8.2
+    created: "2024-03-04T08:30:04.660709663Z"
+    description: Install Rancher Server to manage Kubernetes clusters across providers.
+    digest: 522e8dfe77d5d18e3cc6b5f8a884ba58fd5f937daba32d1a12194a1a24526590
+    home: https://rancher.com
+    icon: https://github.com/rancher/ui/blob/master/public/assets/images/logos/welcome-cow.svg
+    keywords:
+    - rancher
+    maintainers:
+    - email: charts@rancher.com
+      name: Rancher Labs
+    name: rancher
+    sources:
+    - https://github.com/rancher/rancher
+    - https://github.com/rancher/server-chart
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/rancher-2.8.2/rancher-2.8.2.tgz
+    version: 2.8.2
   rudderstack:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -1926,4 +1946,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-02-26T10:44:49.151517395Z"
+generated: "2024-03-04T08:30:04.661406807Z"
