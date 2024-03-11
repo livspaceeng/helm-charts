@@ -115,6 +115,8 @@ worker:
   enabled: true
   replicaCount: ""
 
+  resources: {}
+
   autoscaling:
     enabled: false
     minReplicas: 1
