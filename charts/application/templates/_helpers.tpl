@@ -62,3 +62,9 @@ Allow the release namespace to be overridden
 {{- define "application.namespace" -}}
 {{- default .Release.Namespace .Values.namespaceOverride -}}
 {{- end -}}
+{{- define "pod.systemLabels" -}}
+app: {{ include "application.name" . }}
+{{- if (.Values.ingress).enabled }}
+webapp: "true"
+{{- end }}
+{{- end }}
