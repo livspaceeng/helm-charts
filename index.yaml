@@ -263,6 +263,22 @@ entries:
     version: 2.0.0-next.1
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2024-03-20T12:49:31.470752358Z"
+    description: A Helm chart for Kubernetes
+    digest: cf340d0edf960b7194f704f7221d1b653d83abc211ac63ae9f72ab3dd2b0c60c
+    maintainers:
+    - email: praveen@livspace.com
+      name: Praveen
+      url: www.livspace.com
+    - email: ankit.a@livspace.com
+      name: Ankit
+      url: www.livspace.com
+    name: app-compat
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/app-compat-1.0.44/app-compat-1.0.44.tgz
+    version: 1.0.44
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2024-02-26T10:44:49.150914513Z"
     description: A Helm chart for Kubernetes
     digest: b0179bb591fa17f706fe3e7696206a790194372f741ab1d3fc99dc9bb8a518d6
@@ -1965,4 +1981,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-03-11T13:57:20.852071627Z"
+generated: "2024-03-20T12:49:31.471480007Z"
