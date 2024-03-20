@@ -161,6 +161,9 @@ app: {{ include "application.name" . }}
 {{- end }}
 {{- define "pod.compatLabels" -}}
 app: {{ include "application.name" . }}
+{{- if .Values.ingress.enabled }}
+webapp: "true"
+{{- end }}
 {{- end }}
 {{- define "application.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "application.name" . }}
