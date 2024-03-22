@@ -1,0 +1,54 @@
+gateway:
+  image:
+    registry: livcr.io/docker
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      memory: 500Mi
+  autoscaling:
+    enabled: false
+    minReplicas: "2"
+    maxReplicas: "5"
+    targetCPU: "70"
+    targetMemory: "90"
+  pdb:
+    ## @param pdb.create Created a PodDisruptionBudget
+    ##
+    create: false
+    ## @param pdb.minAvailable Min number of pods that must still be available after the eviction.
+    ## You can specify an integer or a percentage by setting the value to a string representation of a percentage (eg. "50%"). It will be disabled if set to 0
+    ##
+    minAvailable:
+    ## @param pdb.maxUnavailable Max number of pods that can be unavailable after the eviction.
+    ## You can specify an integer or a percentage by setting the value to a string representation of a percentage (eg. "50%"). It will be disabled if set to 0
+    ##
+    maxUnavailable: 1
+
+  existingServerBlockConfigmap: infra-gateway
+  ## @param staticSiteConfigmap Name of existing ConfigMap with the server static site content
+  ##
+  staticSiteConfigmap: ""
+  ## @param staticSitePVC Name of existing PVC with the server static site content
+  ## NOTE: This will override staticSiteConfigmap
+  ##
+  staticSitePVC: ""
+  ## @section Traffic Exposure parameters
+
+  ## NGINX Service properties
+  ##
+  service:
+    ## @param service.type Service type
+    ##
+    type: ClusterIP
+
+  ## Network Policies
+  ## Ref: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+  ##
+  networkPolicy:
+    ## @param networkPolicy.enabled Specifies whether a NetworkPolicy should be created
+    ##
+    enabled: false
+

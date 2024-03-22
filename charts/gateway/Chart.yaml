@@ -1,0 +1,11 @@
+apiVersion: v2
+name: gateway
+description: A Helm chart for System Gateways
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: nginx
+    alias: gateway
+    version: 15.14.0
+    repository: oci://registry-1.docker.io/bitnamicharts
