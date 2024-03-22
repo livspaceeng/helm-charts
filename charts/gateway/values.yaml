@@ -32,7 +32,7 @@ podLabels: {}
 podAnnotations: {}
 # -- PodDisruptionBudget https://kubernetes.io/docs/tasks/run-application/configure-pdb/
 podDisruptionBudget:
-  enabled: true
+  enabled: false
   maxUnavailable: 1
 # -- Additional CLI args for the container
 extraArgs: {}
