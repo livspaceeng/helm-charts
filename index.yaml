@@ -1126,6 +1126,22 @@ entries:
     urls:
     - https://charts.livspace.com/exposecontroller-2.3.110.tgz
     version: 2.3.110
+  gateway:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2024-03-22T03:29:30.255138661Z"
+    dependencies:
+    - alias: gateway
+      name: nginx
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 15.14.0
+    description: A Helm chart for deploying gateways for systems
+    digest: e9ed7c83927fbeaab0f6c928218bfc802e40ff4a1183187757703fe466d35ea8
+    name: gateway
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/gateway-0.1.0/gateway-0.1.0.tgz
+    version: 0.1.0
   heartbeat:
   - apiVersion: v1
     appVersion: 6.7.0
@@ -1991,4 +2007,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-03-20T14:08:12.103454055Z"
+generated: "2024-03-22T03:29:30.255391785Z"
