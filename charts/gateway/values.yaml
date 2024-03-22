@@ -165,8 +165,10 @@ nginx:
     locations:
       "= /":
         - return 200 'OK';
+        - access_log off;
       "= /ready":
         - return 200 'OK';
+        - access_log off;
 
     file: |
       worker_processes  5;  ## Default: 1
