@@ -164,7 +164,7 @@ nginx:
 
     locations:
       "/":
-        - return 404 'OK';
+        - return 404 'Not Found';
       "= /ready":
         - return 200 'OK';
         - access_log off;
