@@ -1129,6 +1129,16 @@ entries:
   gateway:
   - apiVersion: v2
     appVersion: "1.25"
+    created: "2024-03-22T09:28:57.013487804Z"
+    description: A Helm chart for deploying gateways for systems
+    digest: 35372f173796eddf9417fa352e3f926c62b016d654cfd75e1d7683c36c76ab23
+    name: gateway
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/gateway-0.1.4/gateway-0.1.4.tgz
+    version: 0.1.4
+  - apiVersion: v2
+    appVersion: "1.25"
     created: "2024-03-22T08:59:21.286610451Z"
     description: A Helm chart for deploying gateways for systems
     digest: 49c56a53771d3c6e4e43cf827a3ccdbba8fc6c4ed10784418ed4865b2d41458f
@@ -2037,4 +2047,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-03-22T08:59:21.286898394Z"
+generated: "2024-03-22T09:28:57.01375389Z"
