@@ -163,9 +163,8 @@ nginx:
 #      hydra: https://hydra
 
     locations:
-      "= /":
-        - return 200 'OK';
-        - access_log off;
+      "/":
+        - return 404 'OK';
       "= /ready":
         - return 200 'OK';
         - access_log off;
