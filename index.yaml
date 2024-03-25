@@ -1202,6 +1202,22 @@ entries:
     urls:
     - https://github.com/livspaceeng/helm-charts/releases/download/gateway-0.1.0/gateway-0.1.0.tgz
     version: 0.1.0
+  gateway-haproxy:
+  - apiVersion: v2
+    appVersion: 2.9.5
+    created: "2024-03-25T17:29:51.902016765Z"
+    dependencies:
+    - alias: gateway
+      name: haproxy
+      repository: https://haproxytech.github.io/helm-charts
+      version: 1.21.0
+    description: A Helm chart for deploying gateways for systems
+    digest: 16fb7a553b37cc825d30085eb42cd0e8056cdeae36a8e8d80a61bdd59ab55d49
+    name: gateway-haproxy
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/gateway-haproxy-0.1.0/gateway-haproxy-0.1.0.tgz
+    version: 0.1.0
   heartbeat:
   - apiVersion: v1
     appVersion: 6.7.0
@@ -2067,4 +2083,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-03-22T10:05:33.877995723Z"
+generated: "2024-03-25T17:29:51.902348973Z"
