@@ -1,5 +1,0 @@
-dependencies:
-  - name: haproxy
-    version: 1.21.0
-    alias: gateway
-    repository: https://haproxytech.github.io/helm-charts
