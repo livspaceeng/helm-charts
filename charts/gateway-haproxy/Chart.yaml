@@ -4,7 +4,6 @@ description: A Helm chart for deploying gateways for systems
 type: application
 version: 0.1.0
 appVersion: "2.9.5"
-
 dependencies:
   - name: haproxy
     version: 1.21.0
