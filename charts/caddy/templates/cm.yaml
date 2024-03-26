@@ -23,5 +23,10 @@ data:
         respond "OK"
       }
     }
-
+    (logging) {
+      log {
+        output stdout
+        format json
+      }
+    }
     {{ .Values.config.caddyFile | nindent 4 }}

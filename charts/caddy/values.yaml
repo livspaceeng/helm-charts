@@ -113,12 +113,6 @@ config:
     }
   # -- this is a place to add your own configuration. It will be appended after the global section
   caddyFile: |
-    (logging) {
-      log {
-        output stdout
-        format json
-      }
-    }
     {
       handle / {
         respond "Hello"
