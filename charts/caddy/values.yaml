@@ -1,0 +1,118 @@
+replicaCount: 1
+# -- port caddy container and service is listening to
+listenPort: &listenPort 8080
+
+# -- manage https
+https:
+  # -- enable https ports. If true, ingress will point to the https port and not http one
+  enabled: false
+  # -- https port
+  port: 443
+
+image:
+  repository: caddy
+  pullPolicy: IfNotPresent
+  # if set, will be used as
+  tagSuffix: "-alpine"
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: "gateway"
+fullnameOverride: ""
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # -- If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+# -- Annotations to add to the ConfigMap.
+configMapAnnotations: {}
+
+# -- Annotations to add to the Deployment.
+deploymentAnnotations: {}
+
+# -- Annotations to add to the Pod.
+podAnnotations: {}
+
+podSecurityContext:
+  {}
+  # fsGroup: 2000
+
+securityContext:
+  {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  # -- External traffic policy. Used only when `service.type` is LoadBalancer or Nodeport
+  externalTrafficPolicy: Cluster
+  annotations: {}
+
+resources:
+  limits:
+    memory: 128Mi
+  requests:
+    cpu: 32m
+    memory: 64Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+  annotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+health:
+  # -- Health check path
+  path: /
+  port: 9999
+
+# -- define additional volumes
+volumes: []
+#  - name: certs
+#    secret:
+#      secretName: mycerts-secret
+#      optional: false
+
+# -- define additional volumeMounts
+volumeMounts: []
+#  - name: certs
+#    mountPath: /certs
+#    readonly: true
+
+# -- Caddy configuration
+config:
+  # -- if true, it will enable debugging
+  debug: false
+  # -- config going to a global section. See https://caddyserver.com/docs/caddyfile/options for reference
+  global: |
+    auto_https off
+    acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+    log {
+      output stdout
+    }
+  # -- this is a place to add your own configuration. It will be appended after the global section
+  caddyFile: |
+    {
+      handle / {
+        respond "Hello"
+      }
+    }
