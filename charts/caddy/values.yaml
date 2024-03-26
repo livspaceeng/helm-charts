@@ -108,17 +108,17 @@ config:
   global: |
     auto_https off
     acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+    log {
+      output stdout
+    }
+  # -- this is a place to add your own configuration. It will be appended after the global section
+  caddyFile: |
     (logging) {
       log {
         output stdout
         format json
       }
     }
-    log {
-      output stdout
-    }
-  # -- this is a place to add your own configuration. It will be appended after the global section
-  caddyFile: |
     {
       handle / {
         respond "Hello"
