@@ -988,6 +988,18 @@ entries:
     urls:
     - https://github.com/livspaceeng/helm-charts/releases/download/boundary-0.1.0/boundary-0.1.0.tgz
     version: 0.1.0
+  caddy:
+  - apiVersion: v2
+    appVersion: 2.7.6
+    created: "2024-03-26T04:18:21.315814616Z"
+    description: 'The Caddy web server is an extensible, cross-platform, open-source
+      web server written in Go. '
+    digest: ae2e2604202ec1eef2eed86fb58894761c9d16d1c2d4acfdb58abd5e55228390
+    name: caddy
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/caddy-0.1.0/caddy-0.1.0.tgz
+    version: 0.1.0
   convoy:
   - apiVersion: v2
     appVersion: v0.4.21
@@ -2083,4 +2095,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-03-25T17:29:51.902348973Z"
+generated: "2024-03-26T04:18:21.316278785Z"
