@@ -39,6 +39,8 @@ deploymentAnnotations: {}
 # -- Annotations to add to the Pod.
 podAnnotations: {}
 
+podLabels: {}
+
 podSecurityContext:
   {}
   # fsGroup: 2000

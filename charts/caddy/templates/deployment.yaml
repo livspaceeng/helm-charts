@@ -24,6 +24,7 @@ spec:
       {{- end }}
       labels:
         {{- include "caddy.selectorLabels" . | nindent 8 }}
+        {{- toYaml .Values.podLabels | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
