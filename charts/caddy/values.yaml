@@ -108,6 +108,12 @@ config:
   global: |
     auto_https off
     acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
+    (logging) {
+      log {
+        output stdout
+        format json
+      }
+    }
     log {
       output stdout
     }
