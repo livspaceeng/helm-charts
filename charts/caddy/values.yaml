@@ -152,7 +152,7 @@ config:
           path {{ join " " $route.matchers.paths }}
       {{- end }}
       {{- if $route.matchers.methods }}
-          methods {{ join " " $route.matchers.methods }}
+          method {{ join " " $route.matchers.methods }}
       {{- end }}
       }
       {{- end }}
