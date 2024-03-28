@@ -105,16 +105,15 @@ structuredConfig:
 #    bouncer: reverse_proxy bouncer:80
 #    hydra: reverse_proxy hydra:80
 #    nms: reverse_proxy nms:80
-  components: {}
-#    auth:
-#      prefix: /auth/api/
-#      routes:
-#        - name: bouncer_user_roles
-#          path_regexp: ^/v[2-3]/(users|roles).*$
-#          service: bouncer
-#          methods: ["GET"]
-#          directives: []
-#          paths: []
+  routes:
+    auth:
+      - matchers:
+          path_regexp: ^/v[2-3]/(users|roles).*$
+          paths: []
+          methods: ["GET"]
+        name: bouncerAPIs
+        directives:
+          - invoke bouncer
 # -- Caddy configuration
 config:
   # -- if true, it will enable debugging
@@ -143,27 +142,27 @@ config:
     :{{ .Values.listenPort }} {
       import logging
       
-      {{- range  $v := .Values.structuredConfig.components }}
-        {{- range  $r := $v.routes }}
-      @{{ $r.name }} {
-        {{- if $r.path_regexp }}
-          path_regexp {{ $r.name }} {{ $r.path_regexp }}
-        {{- else if $r.paths }}
-          path {{ join " " $r.paths }}
-        {{- end }}
-        {{- if $r.methods }}
-          methods {{ join " " $r.methods }}
-        {{- end }}
+      {{- range  $componentName, $componentRoutes := .Values.structuredConfig.routes }}
+      {{- range  $route := $componentRoutes }}
+      
+      @{{ $route.name }} {
+      {{- if $route.matchers.path_regexp }}
+          path_regexp {{ $route.name }} {{ $route.matchers.path_regexp }}
+      {{- else if $route.matchers.paths }}
+          path {{ join " " $route.matchers.paths }}
+      {{- end }}
+      {{- if $route.matchers.methods }}
+          methods {{ join " " $route.matchers.methods }}
+      {{- end }}
       }
-        {{- end }}
+      {{- end }}
     
-      handle_path {{ $v.prefix }}* {
-        {{- range $r := $v.routes }}
+      handle_path /{{ $componentName }}/api/* {
+        {{- range $r := $componentRoutes }}
         handle @{{ $r.name }} {
           {{- range $d := $r.directives }}
           {{ $d }}  
           {{- end }}
-          invoke {{ $r.service }}
         }
         {{- end }}
       }
