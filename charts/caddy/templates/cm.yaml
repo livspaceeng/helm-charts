@@ -23,10 +23,6 @@ data:
         respond "OK"
       }
     }
-    (logging) {
-      log {
-        output stdout
-        format json
-      }
-    }
-    {{ .Values.config.caddyFile | nindent 4 }}
+    {{ tpl .Values.config.services . | nindent 4 }}
+
+    {{ tpl .Values.config.caddyFile . | nindent 4 }}

@@ -100,6 +100,21 @@ volumeMounts: []
 #    mountPath: /certs
 #    readonly: true
 
+structuredConfig:
+  services: {}
+#    bouncer: reverse_proxy bouncer:80
+#    hydra: reverse_proxy hydra:80
+#    nms: reverse_proxy nms:80
+  components: {}
+#    auth:
+#      prefix: /auth/api/
+#      routes:
+#        - name: bouncer_user_roles
+#          path_regexp: ^/v[2-3]/(users|roles).*$
+#          service: bouncer
+#          methods: ["GET"]
+#          directives: []
+#          paths: []
 # -- Caddy configuration
 config:
   # -- if true, it will enable debugging
@@ -111,10 +126,49 @@ config:
     log {
       output stdout
     }
+  services: |
+    {{- range $k, $v := .Values.structuredConfig.services }}
+    &({{ $k }}) {
+      {{ $v }}
+    }    
+    {{- end }}
   # -- this is a place to add your own configuration. It will be appended after the global section
   caddyFile: |
-    {
-      handle / {
-        respond "Hello"
+    (logging) {
+      log {
+        output stdout
+        format json
       }
     }
+    :{{ .Values.listenPort }} {
+      import logging
+      
+      {{- range  $v := .Values.structuredConfig.components }}
+        {{- range  $r := $v.routes }}
+      @{{ $r.name }} {
+        {{- if $r.path_regexp }}
+          path_regexp {{ $r.name }} {{ $r.path_regexp }}
+        {{- else if $r.paths }}
+          path {{ join " " $r.paths }}
+        {{- end }}
+        {{- if $r.methods }}
+          methods {{ join " " $r.methods }}
+        {{- end }}
+      }
+        {{- end }}
+    
+      handle_path {{ $v.prefix }}* {
+        {{- range $r := $v.routes }}
+        handle @{{ $r.name }} {
+          {{- range $d := $r.directives }}
+          {{ $d }}  
+          {{- end }}
+          invoke {{ $r.service }}
+        }
+        {{- end }}
+      }
+      {{- end }}
+    }
+    
+    
+    
