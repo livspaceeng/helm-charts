@@ -105,15 +105,15 @@ structuredConfig:
 #    bouncer: reverse_proxy bouncer:80
 #    hydra: reverse_proxy hydra:80
 #    nms: reverse_proxy nms:80
-  routes:
-    auth:
-      - matchers:
-          path_regexp: ^/v[2-3]/(users|roles).*$
-          paths: []
-          methods: ["GET"]
-        name: bouncerAPIs
-        directives:
-          - invoke bouncer
+  routes: {}
+#    auth:
+#      - matchers:
+#          path_regexp: ^/v[2-3]/(users|roles).*$
+#          paths: []
+#          methods: ["GET"]
+#        name: bouncerAPIs
+#        directives:
+#          - invoke bouncer
 # -- Caddy configuration
 config:
   # -- if true, it will enable debugging
