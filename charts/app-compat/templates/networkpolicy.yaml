@@ -2,14 +2,14 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: {{ template ".Chart.Name .name" . }}-egress
+  name: {{ template "application.name" . }}-egress
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ template ".Chart.Name .name" . }}
+    app: {{ template "application.name" . }}
 spec:
   endpointSelector:
     matchLabels:
-      app: {{ template ".Chart.Name .name" . }}
+      app: {{ template "application.name" . }}
   egress:
   {{- range $egress := .Values.networkPolicy.egress }}
   - toEndpoints:
@@ -19,8 +19,10 @@ spec:
       - ports: 
         - port: "{{ $egress.port }}"
           protocol: TCP
+        {{- if eq $egress.protocol "http" }}
         rules:
           http: [{}]
+        {{- end }}
   {{- end }}
   - toEndpoints:
       - matchLabels:
