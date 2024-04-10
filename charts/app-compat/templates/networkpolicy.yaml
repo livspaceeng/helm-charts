@@ -1,0 +1,36 @@
+{{- if $.Values.networkPolicy.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ template ".Chart.Name .name" . }}-egress
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template ".Chart.Name .name" . }}
+spec:
+  endpointSelector:
+    matchLabels:
+      app: {{ template ".Chart.Name .name" . }}
+  egress:
+  {{- range $egress := .Values.networkPolicy.egress }}
+  - toEndpoints:
+      - matchLabels:
+          app: {{ $egress.host }}
+    toPorts:
+      - ports: 
+        - port: "{{ $egress.port }}"
+          protocol: TCP
+        rules:
+          http: [{}]
+  {{- end }}
+  - toEndpoints:
+      - matchLabels:
+          k8s:io.kubernetes.pod.namespace: kube-system
+          k8s:k8s-app: kube-dns
+    toPorts:
+      - ports:
+        - port: "53"
+          protocol: ANY
+        rules:
+          dns:
+          - matchPattern: '*'
+{{- end }}
