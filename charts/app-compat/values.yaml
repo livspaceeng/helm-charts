@@ -492,6 +492,12 @@ networkPolicy:
   policyTypes: []
   ingress: []
   egress: []
+    # toApps:
+    #   - name: AppName
+    #     namespace: TargetNamespace
+    #     httpPorts: [8080]
+    #     tcpPorts: [8081]
+    #     udpPorts: []
 
 dbMigrationConfig:
   enabled: false

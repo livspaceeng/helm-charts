@@ -11,18 +11,35 @@ spec:
     matchLabels:
       app: {{ template "application.name" . }}
   egress:
-  {{- range $egress := .Values.networkPolicy.egress }}
+  {{- if .Values.networkPolicy.egress }}
+  {{- range $app := .Values.networkPolicy.egress.toApps }}
+  {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
   - toEndpoints:
       - matchLabels:
-          app: {{ $egress.host }}
+          "k8s:app": {{ $app.name }}
+          {{- if $app.namespace }}
+          "k8s:io.kubernetes.pod.namespace": {{ $app.namespace }}
+          {{- end }}
     toPorts:
+      {{- range $port := $app.httpPorts }}
       - ports: 
-        - port: "{{ $egress.port }}"
+        - port: "{{ $port }}"
           protocol: TCP
-        {{- if eq $egress.protocol "http" }}
         rules:
           http: [{}]
-        {{- end }}
+      {{- end }}
+      {{- range $port := $app.tcpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: TCP
+      {{- end }}
+      {{- range $port := $app.udpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: UDP
+      {{- end }}
+  {{- end }}
+  {{- end }}
   {{- end }}
   - toEndpoints:
       - matchLabels:
