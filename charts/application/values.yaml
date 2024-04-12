@@ -502,3 +502,14 @@ pdb:
   enabled: false
   minAvailable: 1
 # maxUnavailable: 1
+
+networkPolicy:
+  enabled: false
+  ingress: []
+  egress: []
+    # toApps:
+    #   - name: AppName
+    #     namespace: TargetNamespace
+    #     httpPorts: [8080]
+    #     tcpPorts: [8081]
+    #     udpPorts: []
