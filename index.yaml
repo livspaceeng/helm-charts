@@ -791,6 +791,16 @@ entries:
     version: 1.0.0
   application:
   - apiVersion: v2
+    created: "2024-04-16T10:08:16.098636931Z"
+    description: Generic helm chart for all kind of applications
+    digest: 17931dada7c13f9866880fff26fca4fb03b07d0a11373fc6f42d10768e3a421f
+    home: https://github.com/livspaceeng/helm-charts
+    name: application
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/application-2.0.15/application-2.0.15.tgz
+    version: 2.0.15
+  - apiVersion: v2
     created: "2024-04-12T10:56:49.009819087Z"
     description: Generic helm chart for all kind of applications
     digest: 90e8fd952cd81a4d6461da715db9ea26af75fb9ca9526d19a59e0c49ec5cc0f1
@@ -953,6 +963,25 @@ entries:
   boundary:
   - apiVersion: v2
     appVersion: 0.11.0
+    created: "2024-04-16T10:08:16.274386915Z"
+    description: A Helm chart for Hashicorp Boundary deployment
+    digest: 6207b90dcd3162007dd8d171a20f5b1c1044405c85c3dfb53547f190f125a5ec
+    home: https://boundaryproject.io
+    keywords:
+    - Hashicorp
+    - Boundary
+    maintainers:
+    - name: Ankit
+      url: https://charts.livspace.com
+    name: boundary
+    sources:
+    - https://github.com/hashicorp/boundary
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/boundary-1.1.4/boundary-1.1.4.tgz
+    version: 1.1.4
+  - apiVersion: v2
+    appVersion: 0.11.0
     created: "2024-03-11T13:57:20.851471743Z"
     description: A Helm chart for Hashicorp Boundary deployment
     digest: 2ba8a9c4f15f284903572f779e82576d357768812d3e2ec8754eade5b407aec2
@@ -1047,6 +1076,17 @@ entries:
     - https://github.com/livspaceeng/helm-charts/releases/download/boundary-0.1.0/boundary-0.1.0.tgz
     version: 0.1.0
   caddy:
+  - apiVersion: v2
+    appVersion: 2.7.6
+    created: "2024-04-16T10:08:16.451227499Z"
+    description: 'The Caddy web server is an extensible, cross-platform, open-source
+      web server written in Go. '
+    digest: 9ca077852c48deb87bed8c4f073a0de2dfb459c45d6127931c6fb1e7515d408e
+    name: caddy
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/caddy-1.1.8/caddy-1.1.8.tgz
+    version: 1.1.8
   - apiVersion: v2
     appVersion: 2.7.6
     created: "2024-03-29T04:44:52.272245726Z"
@@ -1147,6 +1187,16 @@ entries:
     - https://github.com/livspaceeng/helm-charts/releases/download/caddy-0.1.0/caddy-0.1.0.tgz
     version: 0.1.0
   convoy:
+  - apiVersion: v2
+    appVersion: v0.4.21
+    created: "2024-04-16T10:08:16.61462382Z"
+    description: A Helm chart for Kubernetes
+    digest: 78481a0e65fbbe2d0ab37074e264c40dcbcc8bd76d8e2765d42fcc2b6c70ef42
+    name: convoy
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/convoy-v1.5.9/convoy-v1.5.9.tgz
+    version: v1.5.9
   - apiVersion: v2
     appVersion: v0.4.21
     created: "2022-12-16T12:06:23.023087635Z"
@@ -1287,6 +1337,16 @@ entries:
   gateway:
   - apiVersion: v2
     appVersion: "1.25"
+    created: "2024-04-16T10:08:16.793672271Z"
+    description: A Helm chart for deploying gateways for systems
+    digest: c88b7a87305ac109b9cae92a7c5bbcb35bd1cd795c614e30b3a5a286fac23fcd
+    name: gateway
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/gateway-1.1.6/gateway-1.1.6.tgz
+    version: 1.1.6
+  - apiVersion: v2
+    appVersion: "1.25"
     created: "2024-03-22T10:05:33.877626163Z"
     description: A Helm chart for deploying gateways for systems
     digest: 1c66127eb73e638ca085a9ea7b9b963b5bf9d1263c942390f191e97086ece60b
@@ -1363,6 +1423,21 @@ entries:
   gateway-haproxy:
   - apiVersion: v2
     appVersion: 2.9.5
+    created: "2024-04-16T10:08:16.936876533Z"
+    dependencies:
+    - alias: gateway
+      name: haproxy
+      repository: https://haproxytech.github.io/helm-charts
+      version: 1.21.0
+    description: A Helm chart for deploying gateways for systems
+    digest: 0db5c5f22caed1d20ddf06a02c64bef1c486e07d65e7c2a61f6ccc967b5f3dcf
+    name: gateway-haproxy
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/gateway-haproxy-1.1.0/gateway-haproxy-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
+    appVersion: 2.9.5
     created: "2024-03-25T17:29:51.902016765Z"
     dependencies:
     - alias: gateway
@@ -1395,6 +1470,19 @@ entries:
     - https://charts.livspace.com/heartbeat-1.2.0.tgz
     version: 1.2.0
   hydra:
+  - apiVersion: v2
+    created: "2024-04-16T10:08:17.086208072Z"
+    description: A Helm chart for Ory Hydra
+    digest: 495fe672d35f6a643952b31b6f3a043b9ea1ecd6b175b581f7691fc440185261
+    maintainers:
+    - email: ankit.a@livspace.com
+      name: ankit-ls
+    - email: praveen@livspace.com
+      name: praveen-livspace
+    name: hydra
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/hydra-2.29.0/hydra-2.29.0.tgz
+    version: 2.29.0
   - apiVersion: v2
     created: "2024-01-15T11:53:14.932368922Z"
     description: A Helm chart for Ory Hydra
@@ -1609,6 +1697,20 @@ entries:
     version: 0.1.0-SNAPSHOT
   liv-chat:
   - apiVersion: v1
+    created: "2024-04-16T10:08:17.242418522Z"
+    description: A Helm chart for Kubernetes
+    digest: 8d8e90ee7071afb2dd4dc2090e63fb7815af2ddccd4849c3f5a4e17ae151e253
+    icon: https://raw.githubusercontent.com/jenkins-x/jenkins-x-platform/d273e09/images/nodejs.png
+    maintainers:
+    - email: ankit.a@livspace.com
+      name: ankit-ls
+    - email: praveen@livspace.com
+      name: praveen-livspace
+    name: liv-chat
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/liv-chat-2.0.2/liv-chat-2.0.2.tgz
+    version: 2.0.2
+  - apiVersion: v1
     created: "2024-02-01T06:48:26.983078114Z"
     description: A Helm chart for Kubernetes
     digest: e3ca6a5212a53796ff86abe658b518aa55411549b914d2829aa95ee79bc410a5
@@ -1669,6 +1771,25 @@ entries:
   rancher:
   - apiVersion: v2
     appVersion: v2.8.2
+    created: "2024-04-16T10:08:17.424742195Z"
+    description: Install Rancher Server to manage Kubernetes clusters across providers.
+    digest: e32add5cdb38d0254fc6258355f389347a85a9486c54dba7cf33ab0c9ad1e800
+    home: https://rancher.com
+    icon: https://github.com/rancher/ui/blob/master/public/assets/images/logos/welcome-cow.svg
+    keywords:
+    - rancher
+    maintainers:
+    - email: charts@rancher.com
+      name: Rancher Labs
+    name: rancher
+    sources:
+    - https://github.com/rancher/rancher
+    - https://github.com/rancher/server-chart
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/rancher-3.8.2/rancher-3.8.2.tgz
+    version: 3.8.2
+  - apiVersion: v2
+    appVersion: v2.8.2
     created: "2024-03-04T08:30:04.660709663Z"
     description: Install Rancher Server to manage Kubernetes clusters across providers.
     digest: 522e8dfe77d5d18e3cc6b5f8a884ba58fd5f937daba32d1a12194a1a24526590
@@ -1687,6 +1808,28 @@ entries:
     - https://github.com/livspaceeng/helm-charts/releases/download/rancher-2.8.2/rancher-2.8.2.tgz
     version: 2.8.2
   rudderstack:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-04-16T10:08:17.622614507Z"
+    dependencies:
+    - condition: transformer.enabled
+      name: transformer
+      repository: file://subcharts/transformer
+      version: 0.1.0
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: file://subcharts/postgresql
+      version: 7.7.2
+    description: A Helm chart for Kubernetes
+    digest: 336304c3d379b196af30f3e6b5dc1c5fef70f0905ca1d1276b032e72f0c3a219
+    maintainers:
+    - email: swayam.arora@livspace.com
+      name: Swayam
+    name: rudderstack
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/rudderstack-1.4.19/rudderstack-1.4.19.tgz
+    version: 1.4.19
   - apiVersion: v2
     appVersion: 1.16.0
     created: "2023-03-13T11:43:54.125227513Z"
@@ -2241,4 +2384,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-04-12T10:56:49.010434677Z"
+generated: "2024-04-16T10:08:17.623100255Z"
