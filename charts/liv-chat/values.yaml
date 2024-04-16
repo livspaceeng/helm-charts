@@ -3,7 +3,7 @@
 replicaCount: 1
 cluster:
   enabled: true
-  state: 
+  state:
     svc: scc-state
     externalPort: 7777
     internalPort: 7777
@@ -21,7 +21,7 @@ cluster:
         cpu: 200m
         memory: 256Mi
     securityContext:
-     allowPrivilegeEscalation: false
+      allowPrivilegeEscalation: false
 #    volumeMounts:
 #    - mountPath: /tmp
 #      name: tmp-dir-volume

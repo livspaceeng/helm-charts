@@ -67,7 +67,7 @@ spec:
             tcpSocket:
               port: proxy
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}
       volumes:
         - name: boundary-config
           configMap:

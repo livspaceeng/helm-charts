@@ -82,31 +82,51 @@ ambassadorMapping:
   #   extraSpec:
   #     min_tls_version: v1.2
 
+## Add a horizontal pod autoscaler
+## ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+## @param autoscaling.enabled Deploy a HorizontalPodAutoscaler object for the Kong deployment
+## @param autoscaling.minReplicas Minimum number of replicas to scale back
+## @param autoscaling.maxReplicas Maximum number of replicas to scale out
+## @param autoscaling.metrics [array] Metrics to use when deciding to scale the deployment (evaluated as a template)
+##
 autoscaling:
   enabled: false
   MinReplicas: 1
   MaxReplicas: 2
-  # TargetCPUUtilizationPercentage: 90
-  # TargetMemoryUtilizationPercentage: 80
+  # Deprecated. Use autoscaling.metrics to define the autoscale metrics
+  TargetCPUUtilizationPercentage: 90
   annotations: {}
   labels: {}
-  behavior: {}
-#    scaleDown:
-#      stabilizationWindowSeconds: 300
-#      policies:
-#      - type: Percent
-#        value: 100
-#        periodSeconds: 15
-#    scaleUp:
-#      stabilizationWindowSeconds: 0
-#      policies:
-#      - type: Percent
-#        value: 100
-#        periodSeconds: 15
-#      - type: Pods
-#        value: 4
-#        periodSeconds: 15
-#      selectPolicy: Max
+  metrics: []
+#    - type: Resource
+#      resource:
+#        name: cpu
+#        target:
+#          averageUtilization: 90
+#          type: Utilization
+#    - type: Resource
+#      resource:
+#        name: memory
+#        target:
+#          averageUtilization: 90
+#          type: Utilization
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 180
+      policies:
+      - type: Percent
+        value: 40
+        periodSeconds: 60
+    scaleUp:
+      stabilizationWindowSeconds: 90
+      policies:
+      - type: Percent
+        value: 40
+        periodSeconds: 30
+      - type: Pods
+        value: 2
+        periodSeconds: 30
+      selectPolicy: Max
   extraMetrics: []
 #    - external:
 #        metricName: pubsub.googleapis.com|subscription|num_undelivered_messages
@@ -472,6 +492,12 @@ networkPolicy:
   policyTypes: []
   ingress: []
   egress: []
+    # toApps:
+    #   - name: AppName
+    #     namespace: TargetNamespace
+    #     httpPorts: [8080]
+    #     tcpPorts: [8081]
+    #     udpPorts: []
 
 dbMigrationConfig:
   enabled: false
