@@ -162,6 +162,31 @@ spec:
           command:
 {{ toYaml .command | indent 12 -}}
 {{- end}}
+          env:
+{{- range $.Values.EnvVariables }}
+{{- if and .name .value }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+{{- end }}
+{{- end }}
+{{- range $.Values.EnvVariablesFromSecretKeys }}
+{{- if and .name .secretName .keyName }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .secretName }}
+                  key: {{ .keyName }}
+{{- end }}
+{{- end }}
+{{- range $.Values.EnvVariablesFromConfigMapKeys }}
+{{- if and .name .configMapName .keyName }}
+            - name: {{ .name }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .configMapName }}
+                  key: {{ .keyName }}
+{{- end }}
+{{- end }}
 {{- if or $hasCMEnvExists $hasSecretEnvExists }}
           envFrom:
 {{- if (.Values.externalConfigMaps)}}
