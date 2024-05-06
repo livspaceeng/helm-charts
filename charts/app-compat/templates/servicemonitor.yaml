@@ -9,11 +9,11 @@ metadata:
 spec:
   endpoints:
     - port: metrics
-      {{- if .Values.metrics.serviceMonitor.interval }}
-      interval: {{ .Values.metrics.serviceMonitor.interval }}
+      {{- if .Values.metrics.interval }}
+      interval: {{ .Values.metrics.interval }}
       {{- end }}
-      {{- if .Values.metrics.serviceMonitor.scrapeTimeout }}
-      scrapeTimeout: {{ .Values.metrics.serviceMonitor.scrapeTimeout }}
+      {{- if .Values.metrics.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.scrapeTimeout }}
       {{- end }}
   namespaceSelector:
     matchNames:
