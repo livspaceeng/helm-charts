@@ -393,7 +393,7 @@ metrics:
   enabled: false
   port: metrics
   interval: 30s
-  scrapeTimeout: 20s
+  scrapeTimeout: 10s
 
 servicemonitor:
   additionalLabels: {}
