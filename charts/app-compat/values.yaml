@@ -389,6 +389,12 @@ StartupProbe:
 prometheus:
   release: monitoring
 
+metrics:
+  enabled: false
+  port: metrics
+  interval: 10s
+  scrapeTimeout: 20s
+
 servicemonitor:
   additionalLabels: {}
 
