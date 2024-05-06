@@ -1,0 +1,24 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ template "application.name" . }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "application.name" . }}
+spec:
+  endpoints:
+    - port: metrics
+      {{- if .Values.metrics.interval }}
+      interval: {{ .Values.metrics.interval }}
+      {{- end }}
+      {{- if .Values.metrics.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.metrics.scrapeTimeout }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "application.name" . }}
+{{- end }}
