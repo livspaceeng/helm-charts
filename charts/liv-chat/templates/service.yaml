@@ -8,6 +8,9 @@ metadata:
 {{- end }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+{{- if .Values.cluster.scService.podLabels }}
+{{ toYaml .Values.cluster.scService.podLabels | indent 4 }}
+{{- end }}
   annotations:
     livspace.com/service: {{ .Values.service.name }}
 {{- if .Values.service.annotations }}
