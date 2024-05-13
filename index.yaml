@@ -1895,6 +1895,29 @@ entries:
   oneuptime:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-05-13T17:23:43.188030008Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.19.1
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.1.0
+    description: The Complete Open-Source Observability Platform
+    digest: bf6f98f91a221bb4a813863299b2c0b8dd4a1c0823aaef21bbb27070d116229e
+    name: oneuptime
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/oneuptime-0.1.1/oneuptime-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2024-05-13T17:01:32.71867151Z"
     dependencies:
     - condition: postgresql.enabled
@@ -2532,4 +2555,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-05-13T17:01:32.719029851Z"
+generated: "2024-05-13T17:23:43.188328244Z"
