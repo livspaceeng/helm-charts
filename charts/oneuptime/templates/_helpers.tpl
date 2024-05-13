@@ -154,16 +154,24 @@ Usage:
   value: default
 
 - name: DATABASE_HOST
+  {{- if $.Values.postgresql.enabled }}
   value: {{ $.Release.Name }}-postgresql.{{ $.Release.Namespace }}.svc.{{ $.Values.global.clusterDomain }}
+  {{- else }}
+  value: {{ $.Values.postgresql.external.host }}
+  {{- end }}
 - name: DATABASE_PORT 
   value: {{ printf "%s" $.Values.postgresql.primary.service.ports.postgresql | squote }}
 - name: DATABASE_USERNAME
   value: postgres
-- name: DATABASE_PASSWORD 
+- name: DATABASE_PASSWORD
+  {{- if $.Values.postgresql.enabled }}
   valueFrom: 
     secretKeyRef:
         name: {{ printf "%s-%s" $.Release.Name "postgresql"  }}
         key: postgres-password
+  {{- else }}
+  value: {{ $.Values.postgresql.external.password }}
+  {{- end }}
 - name: DATABASE_DATABASE 
   value: {{ $.Values.postgresql.auth.database }}
 

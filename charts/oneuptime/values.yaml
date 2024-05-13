@@ -33,7 +33,10 @@ nginx:
       # - 51.158.55.153 # Please make sure this is the same as the one in metalLb.ipAdddressPool.addresses
 
 postgresql:
-  enabled: false
+  enabled: true
+  external:
+    host: ""
+    password: ""
   clusterDomain: *global-cluster-domain
   auth: 
     username: oneuptime
@@ -52,7 +55,7 @@ postgresql:
       size: 25Gi
 
 clickhouse:
-  enabled: false
+  enabled: true
   clusterDomain: *global-cluster-domain
   service:
     ports: 
@@ -74,7 +77,7 @@ externalRedis:
   host: redis.example.com
   port: 6379
 redis:
-  enabled: false
+  enabled: true
   clusterDomain: *global-cluster-domain
   architecture: standalone
   auth:
