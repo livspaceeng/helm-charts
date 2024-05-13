@@ -1892,6 +1892,30 @@ entries:
     urls:
     - https://charts.livspace.com/matomo-0.1.0.tgz
     version: 0.1.0
+  oneuptime:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-05-13T17:01:32.71867151Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.0
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.19.1
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.1.0
+    description: The Complete Open-Source Observability Platform
+    digest: 42324e49315b9b31e95494053d01e1a38255b092457a9aae48a650142725ef44
+    name: oneuptime
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/oneuptime-0.1.0/oneuptime-0.1.0.tgz
+    version: 0.1.0
   rancher:
   - apiVersion: v2
     appVersion: v2.8.2
@@ -2508,4 +2532,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-05-13T12:14:10.699002773Z"
+generated: "2024-05-13T17:01:32.719029851Z"
