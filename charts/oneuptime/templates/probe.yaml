@@ -1,0 +1,83 @@
+{{- range $key, $val := $.Values.probes }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name (printf "probe-%s" $key)  }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ printf "%s-%s" $.Release.Name (printf "probe-%s" $key)  }}
+    app.kubernetes.io/part-of: oneuptime
+    app.kubernetes.io/managed-by: Helm
+    appname: oneuptime
+    date: "{{ now | unixEpoch }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ printf "%s-%s" $.Release.Name (printf "probe-%s" $key)  }}
+  replicas: {{ $val.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ printf "%s-%s" $.Release.Name (printf "probe-%s" $key)  }}
+        date: "{{ now | unixEpoch }}"
+    spec:
+      {{- if $.Values.podSecurityContext }}
+      securityContext: {{- $.Values.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.affinity }}
+      affinity: {{- $.Values.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.tolerations }}
+      tolerations: {{- $.Values.tolerations | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.nodeSelector }}
+      nodeSelector: {{- $.Values.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+        - image: {{ printf "%s/%s/%s:%s" $.Values.image.registry $.Values.image.repository "probe" $.Values.image.tag }}
+          name: {{ printf "%s-%s" $.Release.Name (printf "probe-%s" $key)  }}
+          {{- if $.Values.containerSecurityContext }}
+          securityContext: {{- $.Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          env:
+            - name: LOG_LEVEL
+              value: {{ $.Values.logLevel }}
+            - name: PORT
+              value: {{ $.Values.port.probe | squote }}
+            - name: OPENTELEMETRY_EXPORTER_OTLP_HEADERS
+              value: {{ $val.openTelemetryExporter.headers }}
+            - name: OPENTELEMETRY_EXPORTER_OTLP_ENDPOINT
+              value: {{ $.Values.openTelemetryExporter.endpoint.server }}
+            - name: ONEUPTIME_URL
+              value: http://{{ $.Release.Name }}-ingestor.{{ $.Release.Namespace }}.svc.{{ $.Values.global.clusterDomain }}:{{ $.Values.port.ingestor }}
+            - name: PROBE_NAME
+              value: {{ $val.name }}
+            - name: PROBE_DESCRIPTION
+              value: {{ $val.description }}
+            - name: PROBE_MONITORING_WORKERS
+              value: {{ $val.monitoringWorkers | squote }}
+            - name: PROBE_KEY
+              {{- if $val.key }}
+              value: {{ $val.key }}
+              {{- else }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-%s" $.Release.Name "secrets"  }}
+                  key: {{printf "probe-%s" $key}}
+              {{- end }}
+            - name: PROBE_MONITOR_FETCH_LIMIT
+              value: {{ $val.monitorFetchLimit | squote }}
+            {{- include "oneuptime.env.oneuptimeSecret" $ | nindent 12 }}
+          
+      restartPolicy: {{ $.Values.image.restartPolicy }}
+---
+
+
+# OneUptime probe autoscaler
+{{- $probeAutoScalerArgs := dict "ServiceName" (printf "probe-%s" $key) "Release" $.Release "Values" $.Values -}}
+{{- include "oneuptime.autoscaler" $probeAutoScalerArgs }}
+---
+
+{{- end }}
+

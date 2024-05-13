@@ -1,0 +1,145 @@
+
+# OneUptime nginx Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+    app.kubernetes.io/part-of: oneuptime
+    app.kubernetes.io/managed-by: Helm
+    appname: oneuptime
+    date: "{{ now | unixEpoch }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  replicas: {{ $.Values.deployment.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+        date: "{{ now | unixEpoch }}"
+        appname: oneuptime
+    spec:
+      volumes:
+        - name: status-page-certs
+          emptyDir:
+            sizeLimit: "1Gi"
+        - name: cache
+          emptyDir:
+            sizeLimit: "1Gi"
+        - name: conf
+          emptyDir:
+            sizeLimit: "1Gi"
+        - name: run
+          emptyDir:
+            sizeLimit: "1Gi"
+      {{- if $.Values.podSecurityContext }}
+      securityContext: {{- $.Values.podSecurityContext | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.affinity }}
+      affinity: {{- $.Values.affinity | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.tolerations }}
+      tolerations: {{- $.Values.tolerations | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.nodeSelector }}
+      nodeSelector: {{- $.Values.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+        - image: {{ printf "%s/%s/%s:%s" $.Values.image.registry $.Values.image.repository "nginx" $.Values.image.tag }}
+          name: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+          # Liveness probe
+          livenessProbe:
+            httpGet:
+              path: /status/live
+              port: 7851
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          # Readyness Probe
+          readinessProbe:
+            httpGet:
+              path: /status/ready
+              port: 7851
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          volumeMounts:
+            - name: status-page-certs
+              mountPath: /etc/nginx/certs/StatusPageCerts
+            - name: cache
+              mountPath: /var/cache/nginx
+            - name: conf
+              mountPath: /etc/nginx/conf.d
+            - name: run
+              mountPath: /var/run
+          {{- if $.Values.containerSecurityContext }}
+          securityContext: {{- $.Values.containerSecurityContext | toYaml | nindent 12 }}
+          {{- end }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          env:
+            {{- include "oneuptime.env.common" . | nindent 12 }}
+            {{- include "oneuptime.env.commonServer" . | nindent 12 }}
+            {{- include "oneuptime.env.oneuptimeSecret" . | nindent 12 }}
+            - name: OPENTELEMETRY_EXPORTER_OTLP_HEADERS
+              value: {{ $.Values.openTelemetryExporter.headers.nginx }}
+            - name: PORT
+              value: "7851" # Port for the nodejs server for live and ready status
+          ports:
+            - containerPort: 7849
+              protocol: TCP
+              name: http
+            - containerPort: 7850
+              protocol: TCP
+              name: https
+      restartPolicy: {{ $.Values.image.restartPolicy }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+    app.kubernetes.io/part-of: oneuptime
+    app.kubernetes.io/managed-by: Helm
+    appname: oneuptime
+  name: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  namespace: {{ $.Release.Namespace }}
+  annotations:
+  {{- if $.Values.metalLb.enabled }}
+    metallb.universe.tf/address-pool: {{ printf "%s-%s" $.Release.Name "metallb-address-pool"  }}
+  {{- end }}
+spec:
+  {{- if $.Values.nginx.service.loadBalancerIP }}
+  loadBalancerIP: {{ $.Values.nginx.service.loadBalancerIP }}
+  {{- end }}
+  {{- if $.Values.nginx.service.externalIPs }}
+  externalIPs:
+    {{- range $key, $val := $.Values.nginx.service.externalIPs }}
+    - {{ $val }}
+    {{- end }}
+  {{- end }}
+  ports:
+    - port: {{ $.Values.port.nginxHttp }}
+      targetPort: 7849
+      name: http
+    - port: {{ $.Values.port.nginxHttps }}
+      targetPort: 7850
+      name: https
+  selector:
+      app: {{ printf "%s-%s" $.Release.Name "nginx"  }}
+  {{- if and ($.Values.nginx.service.type) (eq $.Values.oneuptimeIngress.enabled false) }}
+  type: {{ $.Values.nginx.service.type }}
+  {{- else }}
+  type: ClusterIP
+  {{- end}}
+---
+
+# OneUptime nginx autoscaler
+{{- $nginxAutoScalerArgs := dict "ServiceName" "nginx" "Release" $.Release "Values" $.Values -}}
+{{- include "oneuptime.autoscaler" $nginxAutoScalerArgs }}
+---
