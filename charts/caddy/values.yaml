@@ -99,7 +99,8 @@ volumeMounts: []
 #  - name: certs
 #    mountPath: /certs
 #    readonly: true
-
+networkPolicy:
+  enabled: true
 structuredConfig:
   services: {}
 #    bouncer: reverse_proxy bouncer:80
