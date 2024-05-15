@@ -8,7 +8,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "caddy.name" . }}
+      app.kubernetes.io/name: {{ include "caddy.fullname" . }}
   egress:
   {{- if .Values.networkPolicy.egress }}
   {{- range $app := .Values.networkPolicy.egress.toApps }}
