@@ -1,23 +1,20 @@
-{{- if .Values.metrics.enabled }}
+{{- if eq "true" (include "serviceMonitorEnabled" .) }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: {{ template "application.name" . }}
-  namespace: {{ $.Release.Namespace }}
   labels:
     app: {{ template "application.name" . }}
 spec:
   endpoints:
-    - port: metrics
-      {{- if .Values.metrics.interval }}
-      interval: {{ .Values.metrics.interval }}
-      {{- end }}
-      {{- if .Values.metrics.scrapeTimeout }}
-      scrapeTimeout: {{ .Values.metrics.scrapeTimeout }}
-      {{- end }}
-  namespaceSelector:
-    matchNames:
-      - {{ .Release.Namespace }}
+    {{- range $.Values.ContainerPort }}
+    {{- if (.servicemonitor).enabled }}
+    - port: {{ .port }}
+      path: {{ default "/metrics" (.servicemonitor).path }}
+      interval: {{ default "30s" (.servicemonitor).interval }}
+      scrapeTimeout: {{ default "20s" (.servicemonitor).scrapeTimeout }}
+    {{- end }}
+    {{- end }}
   selector:
     matchLabels:
       app: {{ template "application.name" . }}

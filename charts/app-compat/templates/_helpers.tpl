@@ -124,7 +124,7 @@ Create chart name and version as used by the chart label.
    {{- $SMenabled := false -}}
    {{- range .Values.ContainerPort }}
        {{- if .servicemonitor }}
-             {{- if and .servicemonitor.enabled }}
+             {{- if .servicemonitor.enabled }}
                  {{- $SMenabled = true -}}
              {{- end }}
        {{- end }}

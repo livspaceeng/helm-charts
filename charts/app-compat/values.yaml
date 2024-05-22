@@ -16,11 +16,11 @@ ContainerPort:
     supportStreaming: false
     idleTimeout: 1800s
 #    servicemonitor:
-#      enabled: true
+#      enabled: false
 #      path: /abc
 #      scheme: 'http'
 #      interval: 30s
-#      scrapeTimeout: 20s
+#      scrapeTimeout: 10s
 #      metricRelabelings:
 #        - sourceLabels: [namespace]
 #          regex: '(.*)'
