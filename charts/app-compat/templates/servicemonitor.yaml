@@ -9,7 +9,7 @@ spec:
   endpoints:
     {{- range $.Values.ContainerPort }}
     {{- if (.servicemonitor).enabled }}
-    - port: {{ .port }}
+    - port: {{ int .port }}
       path: {{ default "/metrics" (.servicemonitor).path }}
       interval: {{ default "30s" (.servicemonitor).interval }}
       scrapeTimeout: {{ default "20s" (.servicemonitor).scrapeTimeout }}
