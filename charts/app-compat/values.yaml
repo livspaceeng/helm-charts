@@ -15,12 +15,12 @@ ContainerPort:
     useHTTP2: false
     supportStreaming: false
     idleTimeout: 1800s
-#    servicemonitor:
-#      enabled: false
-#      path: /abc
-#      scheme: 'http'
-#      interval: 30s
-#      scrapeTimeout: 10s
+    # servicemonitor:
+    #   enabled: false
+    #   path: /abc
+    #   scheme: 'http'
+    #   interval: 30s
+    #   scrapeTimeout: 10s
 #      metricRelabelings:
 #        - sourceLabels: [namespace]
 #          regex: '(.*)'
