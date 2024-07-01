@@ -9,7 +9,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app: {{ .Values.service.name }}
+      app: {{ template "fullname" . }}
   egress:
   {{- if .Values.cluster.scService.networkPolicy.egress }}
   {{- range $app := .Values.cluster.scService.networkPolicy.egress.toApps }}
