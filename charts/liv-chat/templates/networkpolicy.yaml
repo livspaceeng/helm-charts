@@ -1,0 +1,173 @@
+{{- if $.Values.cluster.scService.networkPolicy.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ .Values.service.name }}-egress
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+spec:
+  endpointSelector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  egress:
+  {{- if .Values.cluster.scService.networkPolicy.egress }}
+  {{- range $app := .Values.cluster.scService.networkPolicy.egress.toApps }}
+  {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
+  - toEndpoints:
+      - matchLabels:
+          "k8s:app": {{ $app.name }}
+          {{- if $app.namespace }}
+          "k8s:io.kubernetes.pod.namespace": {{ $app.namespace }}
+          {{- end }}
+    toPorts:
+      {{- range $port := $app.httpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: TCP
+        rules:
+          http: [{}]
+      {{- end }}
+      {{- range $port := $app.tcpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: TCP
+      {{- end }}
+      {{- range $port := $app.udpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: UDP
+      {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  - toEndpoints:
+      - matchLabels:
+          k8s:io.kubernetes.pod.namespace: kube-system
+          k8s:k8s-app: kube-dns
+    toPorts:
+      - ports:
+        - port: "53"
+          protocol: ANY
+        rules:
+          dns:
+          - matchPattern: '*'
+{{- end }}
+
+
+---
+
+{{- if $.Values.cluster.broker.networkPolicy.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ .Values.cluster.broker.svc }}-egress
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ .Values.cluster.broker.svc }}
+spec:
+  endpointSelector:
+    matchLabels:
+      component: {{ .Values.cluster.broker.svc }}
+  egress:
+  {{- if .Values.cluster.broker.networkPolicy.egress }}
+  {{- range $app := .Values.cluster.broker.networkPolicy.egress.toApps }}
+  {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
+  - toEndpoints:
+      - matchLabels:
+          "k8s:app": {{ $app.name }}
+          {{- if $app.namespace }}
+          "k8s:io.kubernetes.pod.namespace": {{ $app.namespace }}
+          {{- end }}
+    toPorts:
+      {{- range $port := $app.httpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: TCP
+        rules:
+          http: [{}]
+      {{- end }}
+      {{- range $port := $app.tcpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: TCP
+      {{- end }}
+      {{- range $port := $app.udpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: UDP
+      {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  - toEndpoints:
+      - matchLabels:
+          k8s:io.kubernetes.pod.namespace: kube-system
+          k8s:k8s-app: kube-dns
+    toPorts:
+      - ports:
+        - port: "53"
+          protocol: ANY
+        rules:
+          dns:
+          - matchPattern: '*'
+{{- end }}
+
+
+---
+
+{{- if $.Values.cluster.state.networkPolicy.enabled }}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ .Values.cluster.state.svc }}-egress
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ .Values.cluster.state.svc }}
+spec:
+  endpointSelector:
+    matchLabels:
+      component: {{ .Values.cluster.state.svc }}
+  egress:
+  {{- if .Values.cluster.state.networkPolicy.egress }}
+  {{- range $app := .Values.cluster.state.networkPolicy.egress.toApps }}
+  {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
+  - toEndpoints:
+      - matchLabels:
+          "k8s:app": {{ $app.name }}
+          {{- if $app.namespace }}
+          "k8s:io.kubernetes.pod.namespace": {{ $app.namespace }}
+          {{- end }}
+    toPorts:
+      {{- range $port := $app.httpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: TCP
+        rules:
+          http: [{}]
+      {{- end }}
+      {{- range $port := $app.tcpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: TCP
+      {{- end }}
+      {{- range $port := $app.udpPorts }}
+      - ports: 
+        - port: "{{ $port }}"
+          protocol: UDP
+      {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  - toEndpoints:
+      - matchLabels:
+          k8s:io.kubernetes.pod.namespace: kube-system
+          k8s:k8s-app: kube-dns
+    toPorts:
+      - ports:
+        - port: "53"
+          protocol: ANY
+        rules:
+          dns:
+          - matchPattern: '*'
+{{- end }}
