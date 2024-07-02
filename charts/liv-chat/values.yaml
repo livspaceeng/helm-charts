@@ -34,9 +34,9 @@ cluster:
         # toApps:
         #   - name: AppName
         #     namespace: TargetNamespace
-            # httpPorts: [8080]
-            # tcpPorts: [8081]
-            # udpPorts: []
+        #     httpPorts: [8080]
+        #     tcpPorts: [8081]
+        #     udpPorts: []
   broker:
     type: ClusterIP
     svc: scc-broker
@@ -68,9 +68,9 @@ cluster:
         # toApps:
         #   - name: AppName
         #     namespace: TargetNamespace
-            # httpPorts: [8080]
-            # tcpPorts: [8081]
-            # udpPorts: []
+        #     httpPorts: [8080]
+        #     tcpPorts: [8081]
+        #     udpPorts: []
   scService:
     image:
       repository: draft
@@ -102,9 +102,9 @@ cluster:
         # toApps:
         #   - name: AppName
         #     namespace: TargetNamespace
-            # httpPorts: [8080]
-            # tcpPorts: [8081]
-            # udpPorts: []
+        #     httpPorts: [8080]
+        #     tcpPorts: [8081]
+        #     udpPorts: []
 service:
   name: chat
   type: ClusterIP

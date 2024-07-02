@@ -68,7 +68,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app: {{ .Values.cluster.broker.svc }}
+      component: {{ .Values.cluster.broker.svc }}
   egress:
   {{- if .Values.cluster.broker.networkPolicy.egress }}
   {{- range $app := .Values.cluster.broker.networkPolicy.egress.toApps }}
@@ -127,7 +127,7 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app: {{ .Values.cluster.state.svc }}
+      component: {{ .Values.cluster.state.svc }}
   egress:
   {{- if .Values.cluster.state.networkPolicy.egress }}
   {{- range $app := .Values.cluster.state.networkPolicy.egress.toApps }}
