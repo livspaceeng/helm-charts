@@ -46,6 +46,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "caddy.selectorLabels" -}}
+app: {{ .Release.Name }}
 app.kubernetes.io/name: {{ include "caddy.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
