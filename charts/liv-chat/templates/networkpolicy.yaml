@@ -11,7 +11,7 @@ spec:
     matchLabels:
       app: {{ template "fullname" . }}
   egress:
-  {{- if .Values.cluster.scService.networkPolicy.enabled }}
+  {{- if .Values.cluster.scService.networkPolicy.egress }}
   {{- range $app := .Values.cluster.scService.networkPolicy.egress.toApps }}
   {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
   - toEndpoints:
