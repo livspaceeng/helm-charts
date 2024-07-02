@@ -70,7 +70,7 @@ spec:
     matchLabels:
       app: {{ .Values.cluster.broker.svc }}
   egress:
-  {{- if .Values.cluster.broker.networkPolicy.egress }}
+  {{- if .Values.cluster.broker.networkPolicy.enabled }}
   {{- range $app := .Values.cluster.broker.networkPolicy.egress.toApps }}
   {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
   - toEndpoints:
