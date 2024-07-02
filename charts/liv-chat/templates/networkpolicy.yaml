@@ -5,7 +5,7 @@ metadata:
   name: {{ .Values.service.name }}-egress
   namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ .Values.service.name }}
+    app: {{ template "fullname" . }}
 spec:
   endpointSelector:
     matchLabels:
