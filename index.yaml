@@ -1915,6 +1915,20 @@ entries:
     - https://github.com/livspaceeng/helm-charts/releases/download/liv-chat-2.0.2/liv-chat-2.0.2.tgz
     version: 2.0.2
   - apiVersion: v1
+    created: "2024-07-02T06:29:20.874060612Z"
+    description: A Helm chart for Kubernetes
+    digest: 0f8faa5182721f24afbc0189d252417d494ec20668789685473a6599a1a39410
+    icon: https://raw.githubusercontent.com/jenkins-x/jenkins-x-platform/d273e09/images/nodejs.png
+    maintainers:
+    - email: ankit.a@livspace.com
+      name: ankit-ls
+    - email: praveen@livspace.com
+      name: praveen-livspace
+    name: liv-chat
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/liv-chat-1.0.5/liv-chat-1.0.5.tgz
+    version: 1.0.5
+  - apiVersion: v1
     created: "2024-05-13T12:14:10.698714895Z"
     description: A Helm chart for Kubernetes
     digest: 383550ae35d52d8e9ed83fc4af6681f12321fc70e8e9366542071662c3736cc2
@@ -2663,4 +2677,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-06-28T10:55:55.880882594Z"
+generated: "2024-07-02T06:29:20.874513396Z"
