@@ -61,3 +61,18 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "caddy.servicename" -}}
+{{- if .Values.service.name -}}
+{{- .Values.service.name | trunc 63 | trimSuffix "-" -}}
+{{- else if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 55 | trimSuffix "-" -}}-service
+{{- else -}}
+{{- $name := coalesce .Values.nameOverride .Release.Name -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 55 | trimSuffix "-" -}}-service
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 55 | trimSuffix "-" -}}-service
+{{- end -}}
+{{- end -}}
+{{- end -}}
