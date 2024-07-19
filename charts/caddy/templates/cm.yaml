@@ -27,6 +27,9 @@ data:
       {{ .Values.config.global | nindent 6 }}
     }
 
+    http:// {
+    }
+
     :9999 {
       handle {{ .Values.health.path }} {
         respond "OK"
