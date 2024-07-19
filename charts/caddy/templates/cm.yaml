@@ -18,10 +18,12 @@ data:
     {{- if .Values.config.metrics.enabled }}
       servers {
     	metrics
-        name {{ include "caddy.name" . }}
       }
       admin :{{ .Values.adminPort }}
     {{- end }}
+      servers :{{ .Values.listenPort }} {
+        name {{ include "caddy.name" . }}
+      }
       {{ .Values.config.global | nindent 6 }}
     }
 
