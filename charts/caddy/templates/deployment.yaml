@@ -45,6 +45,11 @@ spec:
             - name: http
               containerPort: {{ .Values.listenPort }}
               protocol: TCP
+            {{- if .Values.config.metrics.enabled }}
+            - name: admin
+              containerPort: {{ .Values.adminPort }}
+              protocol: TCP
+            {{- end }}
             {{- if .Values.https.enabled }}
             - name: https
               containerPort: {{ .Values.https.port }}

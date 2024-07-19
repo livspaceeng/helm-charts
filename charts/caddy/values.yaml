@@ -2,6 +2,8 @@ replicaCount: 1
 # -- port caddy container and service is listening to
 listenPort: &listenPort 8080
 
+adminPort: &adminPort 2019
+
 # -- manage https
 https:
   # -- enable https ports. If true, ingress will point to the https port and not http one
@@ -119,6 +121,8 @@ structuredConfig:
 config:
   # -- if true, it will enable debugging
   debug: false
+  metrics:
+    enabled: false
   # -- config going to a global section. See https://caddyserver.com/docs/caddyfile/options for reference
   global: |
     auto_https off
