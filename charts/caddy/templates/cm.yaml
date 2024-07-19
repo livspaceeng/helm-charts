@@ -21,13 +21,7 @@ data:
       }
       admin :{{ .Values.adminPort }}
     {{- end }}
-      servers :{{ .Values.listenPort }} {
-        name {{ include "caddy.name" . }}
-      }
       {{ .Values.config.global | nindent 6 }}
-    }
-
-    http:// {
     }
 
     :9999 {
