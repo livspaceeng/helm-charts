@@ -1809,6 +1809,25 @@ entries:
     urls:
     - https://charts.livspace.com/heartbeat-1.2.0.tgz
     version: 1.2.0
+  hertzbeat:
+  - apiVersion: v2
+    appVersion: v1.6.0
+    created: "2024-08-07T13:04:01.700124174Z"
+    description: An open-source, real-time monitoring system with custom monitoring,
+      high performance cluster and agentless capabilities.
+    digest: 8356fcf59cc22c3ff451a11eb758f2c2f7d6796ee19e304be292160b4eb40b7f
+    home: https://hertzbeat.apache.org/
+    icon: https://raw.githubusercontent.com/apache/hertzbeat/master/home/static/img/hertzbeat-logo.png
+    maintainers:
+    - email: dev@hertzbeat.apache.org
+      name: hertzbeat-dev
+    name: hertzbeat
+    sources:
+    - https://github.com/livspaceeng/helm-chart
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/hertzbeat-1.6.0/hertzbeat-1.6.0.tgz
+    version: 1.6.0
   hydra:
   - apiVersion: v2
     created: "2024-04-16T10:08:17.086208072Z"
@@ -2827,4 +2846,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-08-05T08:25:37.710420615Z"
+generated: "2024-08-07T13:04:01.70075698Z"
