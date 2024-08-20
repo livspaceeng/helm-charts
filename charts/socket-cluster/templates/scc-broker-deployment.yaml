@@ -1,0 +1,74 @@
+{{- if .Values.cluster.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.cluster.broker.svc }}
+  labels:
+{{- if .Values.cluster.broker.podLabels }}
+{{ toYaml .Values.cluster.broker.podLabels | indent 4 }}
+{{- end }}
+spec:
+  replicas: {{ .Values.cluster.broker.replicaCount }}
+  selector:
+    matchLabels:
+      component: {{ .Values.cluster.broker.svc }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Values.cluster.broker.svc }}
+{{- if .Values.cluster.broker.podLabels }}
+{{ toYaml .Values.cluster.broker.podLabels | indent 8 }}
+{{- end }}
+{{- if .Values.cluster.broker.podAnnotations }}
+      annotations:
+{{ toYaml .Values.cluster.broker.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+        -
+          name: {{ .Values.cluster.broker.svc }}
+          image: {{ default "socketcluster/scc-broker:v6.0.1" .Values.cluster.broker.image | quote }}
+          ports:
+            -
+              containerPort: {{ .Values.cluster.broker.internalPort }}
+          env:
+            -
+              name: SCC_STATE_SERVER_HOST
+              value: {{ .Values.cluster.state.svc }}
+            -
+              name: SOCKETCLUSTER_WORKERS
+              value: '{{ .Values.cluster.scService.replicaCount }}'
+            -
+              name: SOCKETCLUSTER_BROKERS
+              value: '{{ .Values.cluster.broker.replicaCount }}'
+            -
+              name: SCC_INSTANCE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            -
+              name: SCC_BROKER_SERVER_LOG_LEVEL
+              value: '2'
+          readinessProbe:
+            httpGet:
+              path: /health-check
+              port: {{ .Values.cluster.broker.internalPort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health-check
+              port: {{ .Values.cluster.broker.internalPort }}
+            initialDelaySeconds: 15
+            timeoutSeconds: 20
+          resources:
+{{ toYaml .Values.brokerResources | indent 12 }}
+{{- if .Values.cluster.broker.volumeMounts }}
+          volumeMounts:
+{{ toYaml .Values.cluster.broker.volumeMounts | indent 12 }}
+{{- end }}
+{{- if .Values.cluster.broker.volumes }}
+      volumes:
+{{ toYaml .Values.cluster.broker.volumes | indent 8 }}
+{{- end }}
+{{ end -}}
