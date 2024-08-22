@@ -1,6 +1,6 @@
 cluster:
   enabled: true
-  state: 
+  state:
     svc: scc-state-canvas
     externalPort: 7777
     internalPort: 7777
