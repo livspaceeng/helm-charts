@@ -26,7 +26,8 @@ cluster:
       team: canvas
       owner: akshay
   scService:
-    replicaCount: '1' #Must be same as worker (chat service) replica count
+    replicaCount: '1'
+#Must be same as worker (chat service) replica count
 brokerResources:
   limits:
     cpu: 200m
