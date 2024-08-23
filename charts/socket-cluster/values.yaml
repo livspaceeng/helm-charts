@@ -9,6 +9,15 @@ cluster:
       team: canvas
       owner: akshay
     replicaCount: 1
+    networkPolicy:
+      enabled: false
+      egress: []
+        # toApps:
+        #   - name: AppName
+        #     namespace: TargetNamespace
+        #     httpPorts: [8080]
+        #     tcpPorts: [8081]
+        #     udpPorts: []
   broker:
     type: ClusterIP
     svc: scc-broker-canvas
@@ -25,6 +34,15 @@ cluster:
     podLabels:
       team: canvas
       owner: akshay
+    networkPolicy:
+      enabled: false
+      egress: []
+        # toApps:
+        #   - name: AppName
+        #     namespace: TargetNamespace
+        #     httpPorts: [8080]
+        #     tcpPorts: [8081]
+        #     udpPorts: []
   scService:
     replicaCount: '1'
 # Must be same as worker (chat service) replica count
