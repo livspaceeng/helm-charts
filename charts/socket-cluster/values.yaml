@@ -1,0 +1,44 @@
+cluster:
+  enabled: true
+  state:
+    svc: scc-state-canvas
+    externalPort: 7777
+    internalPort: 7777
+    type: ClusterIP
+    podLabels:
+      team: canvas
+      owner: akshay
+    replicaCount: 1
+  broker:
+    type: ClusterIP
+    svc: scc-broker-canvas
+    serviceAccountName: ec-apps-socket-cluster-sa
+    replicaCount: 1
+    externalPort: 8888
+    internalPort: 8888
+    volumeMounts:
+    - mountPath: /tmp
+      name: tmp-dir-volume
+    volumes:
+    - name: tmp-dir-volume
+      emptyDir: {}
+    podLabels:
+      team: canvas
+      owner: akshay
+  scService:
+    replicaCount: '1'
+# Must be same as worker (chat service) replica count
+brokerResources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 110m
+    memory: 256Mi
+stateResources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 110m
+    memory: 256Mi
