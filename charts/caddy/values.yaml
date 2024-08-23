@@ -169,14 +169,14 @@ config:
           {{ $d }}  
           {{- end }}
         }
-        respond * 500 {
+        respond * 404 {
             body "no handlers were found"
             close
         }
         {{- end }}
       }
       handle_path /* {
-        respond * 500 {
+        respond * 404 {
             body "no handlers were found"
             close
         }
