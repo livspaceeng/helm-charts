@@ -147,6 +147,9 @@ config:
     :{{ .Values.listenPort }} {
       import logging
       
+      @catchAllAPI {
+          path_regexp catchAllAPI ^.*$
+      }      
       {{- range  $componentName, $componentRoutes := .Values.structuredConfig.routes }}
       {{- range  $route := $componentRoutes }}
       
@@ -161,9 +164,7 @@ config:
       {{- end }}
       }
       {{- end }}
-      @catchAllAPI {
-          path_regexp catchAllAPI ^.*$
-      }
+      
     
       handle_path /{{ $componentName }}/api/* {
         {{- range $r := $componentRoutes }}
