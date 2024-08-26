@@ -15,6 +15,12 @@ data:
     {{- if .Values.config.debug }}
       debug
     {{- end }}
+    {{- if .Values.config.metrics.enabled }}
+      servers {
+    	metrics
+      }
+      admin :{{ .Values.adminPort }}
+    {{- end }}
       {{ .Values.config.global | nindent 6 }}
     }
 

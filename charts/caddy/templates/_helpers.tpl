@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "caddy.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -46,6 +46,7 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "caddy.selectorLabels" -}}
+app: {{ .Release.Name }}
 app.kubernetes.io/name: {{ include "caddy.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
@@ -60,3 +61,18 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "caddy.servicename" -}}
+{{- if .Values.service.name -}}
+{{- .Values.service.name | trunc 63 | trimSuffix "-" -}}
+{{- else if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 55 | trimSuffix "-" -}}-service
+{{- else -}}
+{{- $name := coalesce .Values.nameOverride .Release.Name -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 55 | trimSuffix "-" -}}-service
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 55 | trimSuffix "-" -}}-service
+{{- end -}}
+{{- end -}}
+{{- end -}}

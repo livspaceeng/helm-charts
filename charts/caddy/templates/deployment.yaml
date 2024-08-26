@@ -19,6 +19,11 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/cm.yaml") . | sha256sum }}
+        {{- if .Values.config.metrics.enabled }}
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/metrics'
+        prometheus.io/port: {{ .Values.adminPort | quote }}
+        {{- end }}
         {{- if .Values.podAnnotations }}
         {{- toYaml .Values.podAnnotations | nindent 8 }}
         {{- end }}
@@ -45,6 +50,11 @@ spec:
             - name: http
               containerPort: {{ .Values.listenPort }}
               protocol: TCP
+            {{- if .Values.config.metrics.enabled }}
+            - name: admin
+              containerPort: {{ .Values.adminPort }}
+              protocol: TCP
+            {{- end }}
             {{- if .Values.https.enabled }}
             - name: https
               containerPort: {{ .Values.https.port }}

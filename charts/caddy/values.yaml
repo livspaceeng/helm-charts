@@ -2,6 +2,8 @@ replicaCount: 1
 # -- port caddy container and service is listening to
 listenPort: &listenPort 8080
 
+adminPort: &adminPort 2019
+
 # -- manage https
 https:
   # -- enable https ports. If true, ingress will point to the https port and not http one
@@ -18,7 +20,7 @@ image:
   tag: ""
 
 imagePullSecrets: []
-nameOverride: "gateway"
+nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
@@ -99,7 +101,8 @@ volumeMounts: []
 #  - name: certs
 #    mountPath: /certs
 #    readonly: true
-
+networkPolicy:
+  enabled: true
 structuredConfig:
   services: {}
 #    bouncer: reverse_proxy bouncer:80
@@ -118,6 +121,8 @@ structuredConfig:
 config:
   # -- if true, it will enable debugging
   debug: false
+  metrics:
+    enabled: false
   # -- config going to a global section. See https://caddyserver.com/docs/caddyfile/options for reference
   global: |
     auto_https off
@@ -156,7 +161,10 @@ config:
       {{- end }}
       }
       {{- end }}
-    
+      @catchAllAPI {
+          path_regexp catchAllAPI ^.*$
+      }
+      
       handle_path /{{ $componentName }}/api/* {
         {{- range $r := $componentRoutes }}
         handle @{{ $r.name }} {
@@ -164,9 +172,25 @@ config:
           {{ $d }}  
           {{- end }}
         }
+        respond * 404 {
+          body "Not Found"
+          close
+        }
         {{- end }}
+        handle @catchAllAPI {
+          respond * 404 {
+            body "Not Found"
+            close
+          }
+        }
       }
       {{- end }}
+      handle_path /* {
+        respond * 404 {
+          body "Not Found"
+          close
+        }
+      }
     }
     
     
