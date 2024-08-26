@@ -3,5 +3,5 @@ name: caddy
 description: |
   The Caddy web server is an extensible, cross-platform, open-source web server written in Go.
 type: application
-version: 1.1.12
+version: 1.1.13
 appVersion: "2.7.6"
