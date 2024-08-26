@@ -164,7 +164,7 @@ config:
       @catchAllAPI {
           path_regexp catchAllAPI ^.*$
       }
-      
+    
       handle_path /{{ $componentName }}/api/* {
         {{- range $r := $componentRoutes }}
         handle @{{ $r.name }} {
@@ -177,6 +177,7 @@ config:
           close
         }
         {{- end }}
+
         handle @catchAllAPI {
           respond * 404 {
             body "Not Found"
