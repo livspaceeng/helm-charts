@@ -1898,6 +1898,19 @@ entries:
     - https://github.com/livspaceeng/helm-charts/releases/download/hydra-2.29.0/hydra-2.29.0.tgz
     version: 2.29.0
   - apiVersion: v2
+    created: "2024-08-30T09:29:39.298404711Z"
+    description: A Helm chart for Ory Hydra
+    digest: 12c5a552aaa6e9a6a5100f0420aa1dc106ceaac91700ce22a1f1ca1af262ff46
+    maintainers:
+    - email: ankit.a@livspace.com
+      name: ankit-ls
+    - email: praveen@livspace.com
+      name: praveen-livspace
+    name: hydra
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/hydra-1.31.0/hydra-1.31.0.tgz
+    version: 1.31.0
+  - apiVersion: v2
     created: "2024-08-30T09:20:43.331283294Z"
     description: A Helm chart for Ory Hydra
     digest: 060c91164c8fea334cb0feb6eb420db0a054d5de14eb5b173630d0232d1f33a0
@@ -2942,4 +2955,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-08-30T09:20:43.331753976Z"
+generated: "2024-08-30T09:29:39.299019607Z"
