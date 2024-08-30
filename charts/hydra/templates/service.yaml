@@ -8,6 +8,8 @@ metadata:
 {{- end }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "fullname" . }}
+    app.kubernetes.io/name: {{ .Values.service.name }}
   annotations:
     livspace.com/service: {{ .Values.service.name }}
 {{- if .Values.service.annotations }}
