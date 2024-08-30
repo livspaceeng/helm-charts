@@ -15,53 +15,6 @@ metadata:
 {{- if .Values.service.annotations }}
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-{{- if .Values.service.gateway }}
-{{- if .Values.service.gateway.enabled }}
-{{- if .Values.service.gateway.routes }}
-    getambassador.io/config: |
-{{- range $key , $route := .Values.service.gateway.routes }} 
-      ---
-      apiVersion: ambassador/v1
-      kind:  Mapping
-      name:  {{ template "fullname" $ }}-{{ $key }}-mapping
-{{- if $route.ambassador_id }}
-      ambassador_id: {{ $route.ambassador_id }}
-{{- else }}
-      ambassador_id: gw-{{ $.Release.Namespace }}
-{{- end }}
-{{- if $route.prefix }}
-      prefix: {{ $route.prefix }}
-{{- else }}
-      prefix: /{{ $.Values.service.name }}/
-{{- end }}
-      service: {{ $.Values.service.name }}.{{ $.Release.Namespace }}:{{ $.Values.service.externalPort }}
-{{- if $route.extra }}
-{{ toYaml $route.extra | indent 6 }}
-{{- end }}
-{{- if $route.legacy }}
-      ---
-      apiVersion: ambassador/v1
-      kind:  Mapping
-      name:  {{ template "fullname" $ }}-{{ $key }}-proxy-mapping
-{{- if $route.ambassador_id }}
-      ambassador_id: {{ $route.ambassador_id }}
-{{- else }}
-      ambassador_id: gw-{{ $.Release.Namespace }}
-{{- end }}
-{{- if $route.prefix }}
-      prefix: /proxy{{ $route.prefix }}
-{{- else }}
-      prefix: /proxy/{{ $.Values.service.name }}/
-{{- end }}
-      service: {{ $.Values.service.name }}.{{ $.Release.Namespace }}:{{ $.Values.service.externalPort }}
-{{- if $route.extra }}
-{{ toYaml $route.extra | indent 6 }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
