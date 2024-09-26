@@ -76,14 +76,18 @@ spec:
             {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.env }}
           env:
             {{- with .Values.env }}
               {{ toYaml . | nindent 12 }}
             {{- end }}
+          {{- end }}
+          {{- if .Values.extraEnvFrom }}
           envFrom:
             {{- with .Values.extraEnvFrom }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
