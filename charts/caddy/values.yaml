@@ -70,6 +70,10 @@ resources:
     cpu: 32m
     memory: 64Mi
 
+env: []
+
+extraEnvFrom: []
+
 autoscaling:
   enabled: false
   minReplicas: 1
