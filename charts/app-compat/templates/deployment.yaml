@@ -115,8 +115,12 @@ spec:
 {{ toYaml .customLabelSelector | indent 12 }}
           {{- else if .autoLabelSelector }}
             app: {{ template ".Chart.Name .name" $ }}
+{{- if $.Values.app }}
             appId: {{ $.Values.app | quote }}
+{{- end}}
+{{- if $.Values.env }}
             envId: {{ $.Values.env | quote }}
+{{- end}}
           {{- else if .customLabelSelector }}
 {{ toYaml .customLabelSelector | indent 12 }}
           {{- end }}
