@@ -620,12 +620,12 @@ containers: []
   #   - mountPath: /usr/local/airflow/logs
   #     name: logs-data
 
-topologySpreadConstraints: []
-  # - maxSkew: 1
-  #   topologyKey: zone
-  #   whenUnsatisfiable: DoNotSchedule
-  #   autoLabelSelector: true
-  #   customLabelSelector: {}
+topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: zone
+    whenUnsatisfiable: ScheduleAnyway
+    autoLabelSelector: true
+    customLabelSelector: {}
 
 envoyproxy:
   image: docker.io/envoyproxy/envoy:v1.16.0

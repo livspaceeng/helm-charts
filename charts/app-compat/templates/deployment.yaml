@@ -103,27 +103,7 @@ spec:
         - name: {{ . }}
   {{- end }}
 {{- end}}
-{{- $defaultTopologySpreadConstraints := list (dict "maxSkew" 1 "topologyKey" "kubernetes.io/hostname" "whenUnsatisfiable" "ScheduleAnyway" "autoLabelSelector" true) }}
-{{- if not (hasKey $.Values "topologySpreadConstraints") }}
-      topologySpreadConstraints:
-      {{- range $defaultTopologySpreadConstraints }}
-      - maxSkew: {{ .maxSkew }}
-        topologyKey: {{ .topologyKey }}
-        whenUnsatisfiable: {{ .whenUnsatisfiable }}
-        labelSelector:
-          matchLabels:
-          {{- if and .autoLabelSelector .customLabelSelector }}
-{{ toYaml .customLabelSelector | indent 12 }}
-          {{- else if .autoLabelSelector }}
-            app: {{ template ".Chart.Name .name" $ }}
-            appId: {{ $.Values.app | quote }}
-            envId: {{ $.Values.env | quote }}
-            release: {{ $.Release.Name }}
-          {{- else if .customLabelSelector }}
-{{ toYaml .customLabelSelector | indent 12 }}
-          {{- end }}
-{{- end }}
-{{- else if gt (len $.Values.topologySpreadConstraints) 0  }}
+{{- if $.Values.topologySpreadConstraints }}
       topologySpreadConstraints:
 {{- range $.Values.topologySpreadConstraints }}
       - maxSkew: {{ .maxSkew }}
