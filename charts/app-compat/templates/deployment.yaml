@@ -104,7 +104,7 @@ spec:
   {{- end }}
 {{- end}}
 {{- $defaultTopologySpreadConstraints := list (dict "maxSkew" 1 "topologyKey" "kubernetes.io/hostname" "whenUnsatisfiable" "ScheduleAnyway" "autoLabelSelector" true) }}
-{{- if and (not $.Values.topologySpreadConstraints) (eq $.Values.topologySpreadConstraints nil) }}
+{{- if not (hasKey $.Values "topologySpreadConstraints") }}
       topologySpreadConstraints:
       {{- range $defaultTopologySpreadConstraints }}
       - maxSkew: {{ .maxSkew }}
