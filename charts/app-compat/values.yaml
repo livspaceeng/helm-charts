@@ -622,7 +622,7 @@ containers: []
 
 topologySpreadConstraints:
   - maxSkew: 1
-    topologyKey: zone
+    topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
     autoLabelSelector: true
     customLabelSelector: {}
