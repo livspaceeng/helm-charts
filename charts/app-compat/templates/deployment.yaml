@@ -114,7 +114,7 @@ spec:
           {{- if and .autoLabelSelector .customLabelSelector }}
 {{ toYaml .customLabelSelector | indent 12 }}
           {{- else if .autoLabelSelector }}
-            app: {{ template ".Chart.Name .name" $ }}
+            app.kubernetes.io/name: {{ template "application.name" $ }}
 {{- if $.Values.app }}
             appId: {{ $.Values.app | quote }}
 {{- end}}
