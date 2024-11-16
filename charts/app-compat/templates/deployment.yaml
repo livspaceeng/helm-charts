@@ -114,8 +114,7 @@ spec:
           {{- if and .autoLabelSelector .customLabelSelector }}
 {{ toYaml .customLabelSelector | indent 12 }}
           {{- else if .autoLabelSelector }}
-{{ include "application.selectorLabels" . | indent 12 }}
-{{ include "pod.compatLabels" . | indent 12 }}
+            app: {{ template ".Chart.Name .name" $ }}
 {{- if $.Values.app }}
             appId: {{ $.Values.app | quote }}
 {{- end}}
