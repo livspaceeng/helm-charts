@@ -85,11 +85,14 @@ env:
 
 containerSpec:
   lifecycle:
-    enabled: false
+    enabled: true
+    preStop:
+      exec:
+        command: ["/bin/sh", "-c", "sleep 10"]
     # preStop: {}
 #       exec:
 #         command: ["sleep","10"]
-    postStart: {}
+    # postStart: {}
 #       httpGet:
 #         host: example.com
 #         path: /example
