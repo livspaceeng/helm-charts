@@ -46,6 +46,17 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if $.Values.containerSpec.lifecycle.enabled }}
+        lifecycle:
+          {{- if $.Values.containerSpec.lifecycle.preStop }}
+          preStop:
+{{ toYaml $.Values.containerSpec.lifecycle.preStop | indent 12 -}}
+          {{- end }}
+          {{- if $.Values.containerSpec.lifecycle.postStart }}
+          postStart:
+{{ toYaml $.Values.containerSpec.lifecycle.postStart | indent 12 -}}
+          {{- end }}
+        {{- end }}
 {{- if .Values.run }}
 {{ toYaml .Values.run | indent 8 -}}
 {{- end }}
@@ -87,4 +98,4 @@ spec:
         configMap:
           name: {{ template "fullname" . }}
       {{- end }}
-      
+
