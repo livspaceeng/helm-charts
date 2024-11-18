@@ -85,10 +85,7 @@ env:
 
 containerSpec:
   lifecycle:
-    enabled: true
-    preStop:
-      exec:
-        command: ["/bin/sh", "-c", "sleep 10"]
+    enabled: false
     # preStop: {}
 #       exec:
 #         command: ["sleep","10"]
