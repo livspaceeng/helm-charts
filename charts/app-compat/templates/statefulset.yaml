@@ -1,4 +1,4 @@
-{{- if not .Values.statefulset.enabled }}
+{{- if .Values.statefulset.enabled }}
   {{- $hasCMEnvExists := false -}}
   {{- $hasCMVolumeExists := false -}}
   {{- if .Values.externalConfigMaps }}
@@ -30,7 +30,7 @@
   {{- with .Values.deployment.image.digest }} {{- $image = print $image "@" . }} {{- end }}
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ template "application.name" . }}
   labels:
@@ -477,6 +477,8 @@ spec:
 {{- with .Values.volumeMounts }}
 {{ toYaml . | trim | indent 12 }}
 {{- end }}
+            - name: {{ .Values.statefulset.volume.name }}
+              mountPath: {{ .Values.statefulset.volume.mountPath }}
           {{- if eq $cloudProvider "gcp" }}
             - name: gtoken-vol
               mountPath: /var/run/secrets/aws/token
@@ -560,4 +562,13 @@ spec:
     {{- if eq .Values.deploymentType "RECREATE" }}
     type: "Recreate"
     {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: {{ .Values.statefulset.volume.name }}
+    spec:
+      accessModes:
+        - {{ .Values.statefulset.volume.accessMode | default "ReadWriteOnce" }}
+      resources:
+        requests:
+          storage: {{ .Values.statefulset.volume.storage }}
 {{- end }}

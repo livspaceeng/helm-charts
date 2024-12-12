@@ -505,6 +505,13 @@ networkPolicy:
     #     tcpPorts: [8081]
     #     udpPorts: []
 
+statefulset:
+  enabled: false
+  volume:
+    name: data
+    mountPath: /data
+    storage: 1Gi
+
 dbMigrationConfig:
   enabled: false
 
