@@ -18,10 +18,11 @@ data:
     log_format    = "standard"
     
     worker {
-      name        = "kubernetes-worker"
-      description = "Boundary kubernetes-worker"
-      controllers = [{{ include "boundary.controller.cluster_address" . | quote }}]
-      public_addr = {{ include "boundary.worker.public_address" . | quote }}
+      name              = "kubernetes-worker"
+      description       = "Boundary kubernetes-worker"
+      controllers       = [{{ include "boundary.controller.cluster_address" . | quote }}]
+      public_addr       = {{ include "boundary.worker.public_address" . | quote }}
+      initial_upstreams = [{{ include "boundary.controller.cluster_address" . | quote }}]
     }
 
     listener "tcp" {
