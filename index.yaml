@@ -1296,6 +1296,25 @@ entries:
     version: 1.1.4
   - apiVersion: v2
     appVersion: 0.11.0
+    created: "2024-12-13T07:25:58.784173741Z"
+    description: A Helm chart for Hashicorp Boundary deployment
+    digest: 13ce5d62ed7c30f5cba29f7ccf5d108669a2b53c821d47f2704f376cd18e3c56
+    home: https://boundaryproject.io
+    keywords:
+    - Hashicorp
+    - Boundary
+    maintainers:
+    - name: Ankit
+      url: https://charts.livspace.com
+    name: boundary
+    sources:
+    - https://github.com/hashicorp/boundary
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/boundary-0.1.5/boundary-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: 0.11.0
     created: "2024-03-11T13:57:20.851471743Z"
     description: A Helm chart for Hashicorp Boundary deployment
     digest: 2ba8a9c4f15f284903572f779e82576d357768812d3e2ec8754eade5b407aec2
@@ -3129,4 +3148,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-12-12T05:39:33.961634509Z"
+generated: "2024-12-13T07:25:58.784722183Z"
