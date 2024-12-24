@@ -552,15 +552,11 @@ spec:
   revisionHistoryLimit: 3
 ##  pauseForSecondsBeforeSwitchActive: {{ $.Values.pauseForSecondsBeforeSwitchActive }}
 #  waitForSecondsBeforeScalingDown: {{ $.Values.waitForSecondsBeforeScalingDown }}
-  strategy:
+  updateStrategy:
     {{- if eq .Values.deploymentType "ROLLING" }}
     type: "RollingUpdate"
     rollingUpdate:
-      maxSurge: {{ $.Values.deployment.strategy.rolling.maxSurge }}
-      maxUnavailable: {{ $.Values.deployment.strategy.rolling.maxUnavailable }}
-    {{- end }}
-    {{- if eq .Values.deploymentType "RECREATE" }}
-    type: "Recreate"
+      partition: {{ $.Values.deployment.strategy.rolling.partition | default 1 }}
     {{- end }}
   volumeClaimTemplates:
   - metadata:
