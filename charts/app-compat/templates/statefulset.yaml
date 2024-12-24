@@ -556,7 +556,7 @@ spec:
     {{- if eq .Values.deploymentType "ROLLING" }}
     type: "RollingUpdate"
     rollingUpdate:
-      partition: {{ $.Values.deployment.strategy.rolling.partition | default 1 }}
+      partition: {{ $.Values.deployment.strategy.rolling.partition | default 0 }}
     {{- end }}
   volumeClaimTemplates:
   - metadata:
