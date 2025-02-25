@@ -1,0 +1,45 @@
+image:
+  repository: busybox # or your custom image repository/name
+  tag: latest
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+job:
+  name: k8s-job
+  restartPolicy: OnFailure # or Never.  Jobs don't usually restart automatically.
+  backoffLimit: 4 # Number of retries before considering the job failed.
+  activeDeadlineSeconds: 600 # Timeout for the job in seconds (optional)
+
+  # Configure the container within the job
+  container:
+    name: busybox
+    command: ["/bin/sh", "-c", "echo 'Hello from the Job!'; sleep 5; echo 'Job completed.'"]
+    resources: {} #Resource requests and limits (optional)
+    #  limits:
+    #    cpu: 200m
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 64Mi
+
+  #  nodeSelector: {} #optional - Node affinity/selector.  Example below
+  #  tolerations: []  #optional - Taints/Tolerations.  Example below
+  #  affinity: {} #optional - Node affinity/selector. Example below
+
+  #  nodeSelector:
+  #   kubernetes.io/os: linux
+  #  tolerations:
+  #  - key: "example.com/gpu-node"
+  #    operator: "Exists"
+  #    effect: "NoSchedule"
+  #  affinity:
+  #  nodeAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #      - matchExpressions:
+  #        - key: kubernetes.io/arch
+  #          operator: In
+  #          values:
+  #          - amd64

@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "k8s-job.fullname" . }}
+  labels:
+    {{- include "k8s-job.labels" . | nindent 4 }}
+spec:
+  backoffLimit: {{ .Values.job.backoffLimit }}
+  {{- if .Values.job.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.job.activeDeadlineSeconds }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "k8s-job.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: {{ .Values.job.restartPolicy }}
+      {{- if .Values.job.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.job.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.job.tolerations }}
+      tolerations:
+        {{- toYaml .Values.job.tolerations | nindent 8 }}
+      {{- end }}
+      {{- if .Values.job.affinity }}
+      affinity:
+        {{- toYaml .Values.job.affinity | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Values.job.container.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: {{ .Values.job.container.command | toJson }}
+          resources:
+            {{- toYaml .Values.job.container.resources | nindent 12 }}
