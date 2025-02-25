@@ -2364,6 +2364,16 @@ entries:
   k8s-job:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2025-02-25T08:56:45.557907577Z"
+    description: A Helm chart for deploying a Kubernetes Job.
+    digest: 0609556c37a79c9e643e9d21bb4f318dab9239caed5fe6c872405143fe04d351
+    name: k8s-job
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/k8s-job-0.1.1/k8s-job-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2025-02-25T04:35:47.440562097Z"
     description: A Helm chart for deploying a Kubernetes Job.
     digest: fdaf2408013c7dac79deab278fd7d6139afe76ef6bc6f35b09208cee0f0513f9
@@ -3210,4 +3220,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2025-02-25T04:35:47.441058464Z"
+generated: "2025-02-25T08:56:45.558738327Z"
