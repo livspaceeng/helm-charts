@@ -2361,6 +2361,17 @@ entries:
     urls:
     - https://charts.livspace.com/hydra-0.1.0-SNAPSHOT.tgz
     version: 0.1.0-SNAPSHOT
+  k8s-job:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-02-25T04:35:47.440562097Z"
+    description: A Helm chart for deploying a Kubernetes Job.
+    digest: fdaf2408013c7dac79deab278fd7d6139afe76ef6bc6f35b09208cee0f0513f9
+    name: k8s-job
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/k8s-job-0.1.0/k8s-job-0.1.0.tgz
+    version: 0.1.0
   keto:
   - apiVersion: v1
     created: "2021-11-19T11:32:06.264015+05:30"
@@ -3199,4 +3210,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2024-12-24T11:49:51.413419485Z"
+generated: "2025-02-25T04:35:47.441058464Z"
