@@ -1,7 +1,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "k8s-job.fullname" . }}
+  {{- if .Values.job.name }}
+  name: {{ .Values.job.name }}
+  {{- else }}
+  name: {{ template "k8s-job.fullname" . }}-{{ now | date "20060102150405" }}
+  {{- end }}
   labels:
     {{- include "k8s-job.labels" . | nindent 4 }}
 spec:

@@ -7,7 +7,7 @@ nameOverride: ""
 fullnameOverride: ""
 
 job:
-  name: k8s-job
+  #name: k8s-job
   restartPolicy: OnFailure # or Never.  Jobs don't usually restart automatically.
   backoffLimit: 4 # Number of retries before considering the job failed.
   activeDeadlineSeconds: 600 # Timeout for the job in seconds (optional)
