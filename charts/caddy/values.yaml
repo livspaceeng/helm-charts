@@ -12,7 +12,7 @@ https:
   port: 443
 
 image:
-  repository: caddy
+  repository: livcr.io/docker/caddy
   pullPolicy: IfNotPresent
   # if set, will be used as
   tagSuffix: "-alpine"
