@@ -118,14 +118,14 @@ autoscaling:
         value: 40
         periodSeconds: 60
     scaleUp:
-      stabilizationWindowSeconds: 90
+      stabilizationWindowSeconds: 15
       policies:
       - type: Percent
-        value: 40
-        periodSeconds: 30
+        value: 100
+        periodSeconds: 15
       - type: Pods
         value: 2
-        periodSeconds: 30
+        periodSeconds: 15
       selectPolicy: Max
   extraMetrics: []
 #    - external:
