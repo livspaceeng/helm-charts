@@ -671,6 +671,15 @@ podSecurityContext: {}
   # fsGroup: 1001
   # runAsGroup: 1001
 
+podAnnotations:
+  linkerd.io/inject: enabled
+  config.linkerd.io/skip-outbound-ports: 3306,5432,5671,6379,26379,9200,587,7233,9042
+  config.linkerd.io/proxy-cpu-request: 10m
+  config.linkerd.io/proxy-memory-request: 25Mi
+  config.linkerd.io/proxy-memory-limit: 120Mi
+  config.linkerd.io/init-image: livcr.io/l5d/linkerd/proxy-init
+  config.linkerd.io/proxy-image: livcr.io/l5d/linkerd/proxy
+
 containerSecurityContext: {}
   # allowPrivilegeEscalation: false
 ## Pods Service Account
