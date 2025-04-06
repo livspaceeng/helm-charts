@@ -118,7 +118,7 @@ autoscaling:
         value: 40
         periodSeconds: 60
     scaleUp:
-      stabilizationWindowSeconds: 15
+      stabilizationWindowSeconds: 0
       policies:
       - type: Percent
         value: 100
