@@ -28,7 +28,7 @@ spec:
 {{- end  }}
       initContainers:
 {{- if .Values.init }}
-      - name: {{ .Chart.Name }}-init
+      - name: {{ template "application.name" $ }}-init
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
 {{ toYaml .Values.init | indent 8 -}}
@@ -43,7 +43,7 @@ spec:
         {{- end }}
 {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ template "application.name" $ }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         {{- if $.Values.containerSpec.lifecycle.enabled }}
