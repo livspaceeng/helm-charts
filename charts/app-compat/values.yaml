@@ -677,8 +677,8 @@ podAnnotations:
   config.linkerd.io/proxy-cpu-request: 10m
   config.linkerd.io/proxy-memory-request: 25Mi
   config.linkerd.io/proxy-memory-limit: 75Mi
-  config.linkerd.io/init-image: livcr.io/l5d/linkerd/proxy-init
-  config.linkerd.io/proxy-image: livcr.io/l5d/linkerd/proxy
+  config.linkerd.io/init-image: cr.l5d.io/linkerd/proxy-init
+  config.linkerd.io/proxy-image: cr.l5d.io/linkerd/proxy
 
 containerSecurityContext: {}
   # allowPrivilegeEscalation: false
