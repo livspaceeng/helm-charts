@@ -46,6 +46,13 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}{{ .Values.image.tagSuffix }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if and .Values.command .Values.command.enabled }}
+          {{- if .Values.command.value  }}
+          command:
+          {{ toYaml .Values.command.value | indent 12 -}}
+          {{- end}}
+          {{- end}}
+
           ports:
             - name: http
               containerPort: {{ .Values.listenPort }}
