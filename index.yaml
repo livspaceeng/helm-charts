@@ -1618,6 +1618,17 @@ entries:
     version: 1.1.8
   - apiVersion: v2
     appVersion: 2.9.1
+    created: "2025-04-13T15:30:32.969284917Z"
+    description: 'The Caddy web server is an extensible, cross-platform, open-source
+      web server written in Go. '
+    digest: f0fb644d3f5e56f12338cd4089e2c52a5575c1d96d97a5db6f6fb700f3f17bc8
+    name: caddy
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/caddy-0.1.33/caddy-0.1.33.tgz
+    version: 0.1.33
+  - apiVersion: v2
+    appVersion: 2.9.1
     created: "2025-04-09T17:13:55.261667725Z"
     description: 'The Caddy web server is an extensible, cross-platform, open-source
       web server written in Go. '
@@ -3389,4 +3400,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2025-04-09T17:13:55.26223626Z"
+generated: "2025-04-13T15:30:32.96987329Z"
