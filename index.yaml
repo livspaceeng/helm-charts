@@ -29,6 +29,25 @@ entries:
     urls:
     - https://charts.livspace.com/ambassador-6.3.3.tgz
     version: 6.3.3
+  apisix-ingress-controller:
+  - apiVersion: v2
+    appVersion: 1.8.0
+    created: "2025-04-19T14:23:18.224101599Z"
+    description: Apache APISIX Ingress Controller for Kubernetes
+    digest: f2accac5aa8a70f440f1d1fab32c86d95cf289bb3e88e7e8eaf015ab288ccb1f
+    icon: https://apache.org/logos/res/apisix/apisix.png
+    keywords:
+    - ingress
+    - apisix
+    - nginx
+    - crd
+    name: apisix-ingress-controller
+    sources:
+    - https://github.com/apache/apisix-helm-chart
+    type: application
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/apisix-ingress-controller-0.14.0-1/apisix-ingress-controller-0.14.0-1.tgz
+    version: 0.14.0-1
   app-compat:
   - apiVersion: v1
     appVersion: "1.0"
@@ -3400,4 +3419,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2025-04-13T15:30:32.96987329Z"
+generated: "2025-04-19T14:23:18.224456264Z"
