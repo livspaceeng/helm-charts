@@ -1,7 +1,7 @@
 apiVersion: v2
 description: A Helm chart for Ory Hydra
 name: hydra
-version: 1.32.1
+version: 1.32.2
 maintainers:
   - email: ankit.a@livspace.com
     name: ankit-ls
