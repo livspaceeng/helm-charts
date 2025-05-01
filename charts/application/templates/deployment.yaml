@@ -87,6 +87,8 @@ spec:
       {{- if .Values.deployment.tolerations }}
       tolerations:
 {{ toYaml .Values.deployment.tolerations | indent 8 -}}
+      {{- else }}
+      tolerations: []
       {{- end }}
       {{- if .Values.deployment.affinity }}
       affinity:
