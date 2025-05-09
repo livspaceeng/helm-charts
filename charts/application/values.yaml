@@ -344,6 +344,41 @@ ingress:
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
+ingressInternal:
+  enabled: false
+
+  # Name of the ingress class
+  ingressClassName: ''
+
+  # Port of the service that serves pods
+  servicePort: http
+
+  #Set pathType: default is ImplementationSpecific; Options: Exact, Prefix
+  pathType: ImplementationSpecific
+
+  # List of host addresses to be exposed by this Ingress
+  hosts:
+    - host: chart-example.local
+      # paths:
+      # - path: /
+      #  pathType: ''
+      #  serviceName: ''
+      #  servicePort: ''
+  # Additional labels for this Ingress
+  additionalLabels:
+
+  # Add annotations to this Ingress
+  annotations:
+  # kubernetes.io/ingress.class: external-ingress
+  # ingress.kubernetes.io/rewrite-target: /
+  # ingress.kubernetes.io/force-ssl-redirect: true
+
+  # TLS details for this Ingress
+  tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
 ##########################################################
 # Role Based Access Control (RBAC)
