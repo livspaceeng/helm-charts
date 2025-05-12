@@ -105,6 +105,10 @@ tolerations: []
 
 affinity: {}
 
+podDisruptionBudget:
+  enabled: false
+  maxUnavailable: 1
+
 health:
   # -- Health check path
   path: /
