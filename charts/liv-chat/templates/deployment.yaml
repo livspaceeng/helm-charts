@@ -64,6 +64,12 @@ spec:
         resources:
 {{ toYaml .Values.cluster.scService.resources | indent 12 }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- else }}
+      tolerations: []
+  {{- end }}
       {{ if .Values.config.enabled -}}
       volumes:
       - name: {{ template "fullname" . }}
