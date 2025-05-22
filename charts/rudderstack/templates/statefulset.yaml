@@ -39,9 +39,9 @@ spec:
       {{- if .Values.backend.serviceAccount.enabled }}
       serviceAccountName: {{ .Values.backend.serviceAccount.name }}
       {{- end }}
-{{- if .Values.backend.tolerations }}
+{{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.backend.tolerations | indent 8 }}
+{{ toYaml .Values.tolerations | indent 8 }}
     {{- else }}
       tolerations: []
   {{- end }}
