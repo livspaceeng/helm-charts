@@ -180,14 +180,30 @@ config:
       {{- range  $route := $componentRoutes }}
       
       @{{ $route.name }} {
-      {{- if $route.matchers.path_regexp }}
+        {{- if $route.matchers.path_regexp }}
           path_regexp {{ $route.name }} {{ $route.matchers.path_regexp }}
-      {{- else if $route.matchers.paths }}
+        {{- else if $route.matchers.paths }}
           path {{ join " " $route.matchers.paths }}
-      {{- end }}
-      {{- if $route.matchers.methods }}
+        {{- end }}
+        {{- if $route.matchers.methods }}
           method {{ join " " $route.matchers.methods }}
-      {{- end }}
+        {{- end }}
+        {{- if $route.matchers.headers }}
+          {{- range  $header := $route.matchers.headers }}
+          header {{ $header }}
+          {{- end }}
+        {{- end }}
+        {{- if $route.matchers.expressions }}
+          {{- range  $exp := $route.matchers.expressions }}
+          expression {{ $exp }}
+          {{- end }}
+        {{- end }}
+        {{- if $route.matchers.headers_regexp }}
+          {{- range  $hRegex := $route.matchers.headers_regexp }}
+          header_regexp {{ $hRegex }}
+          {{- end }}
+        {{- end }}
+
       }
       {{- end }}
     
