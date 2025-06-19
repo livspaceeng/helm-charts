@@ -42,9 +42,14 @@ metadata:
 {{ toYaml .Values.appLabels | indent 4 }}
 {{- end }}
 
-{{- if .Values.deploymentAnnotations }}
+{{- if or .Values.deploymentAnnotations (or .Values.externalConfigMaps .Values.externalSecrets) }}
   annotations:
+{{- if .Values.deploymentAnnotations }}
 {{ toYaml .Values.deploymentAnnotations | indent 4 }}
+{{- end }}
+{{- if and (or .Values.externalConfigMaps .Values.externalSecrets) (not (get .Values.deploymentAnnotations "reloader.stakater.com/auto")) }}
+    reloader.stakater.com/auto: "true"
+{{- end }}
 {{- end }}
 
 spec:
