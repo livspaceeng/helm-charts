@@ -680,6 +680,8 @@ podAnnotations:
   config.linkerd.io/init-image: cr.l5d.io/linkerd/proxy-init
   config.linkerd.io/proxy-image: cr.l5d.io/linkerd/proxy
 
+deploymentAnnotations: {}
+
 containerSecurityContext: {}
   # allowPrivilegeEscalation: false
 ## Pods Service Account
