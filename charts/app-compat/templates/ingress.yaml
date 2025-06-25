@@ -81,7 +81,7 @@ metadata:
 {{ toYaml .Values.ingressInternal.annotations | indent 4 }}
 {{- end }}
 spec:
-  {{- if .Values.ingress.className }}
+  {{- if .Values.ingressInternal.className }}
   ingressClassName: {{ .Values.ingressInternal.className }}
   {{- end }}
   rules:
