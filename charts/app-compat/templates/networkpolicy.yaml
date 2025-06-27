@@ -14,9 +14,10 @@ spec:
   {{- if .Values.networkPolicy.egress }}
   {{- range $app := .Values.networkPolicy.egress.toApps }}
   {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
+  {{- $labelKey := default "k8s:app" $app.labelKey }}
   - toEndpoints:
       - matchLabels:
-          "k8s:app": {{ $app.name }}
+          "{{ $labelKey }}": {{ $app.name }}
           {{- if $app.namespace }}
           "k8s:io.kubernetes.pod.namespace": {{ $app.namespace }}
           {{- end }}

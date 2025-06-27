@@ -498,12 +498,13 @@ networkPolicy:
   policyTypes: []
   ingress: []
   egress: []
-    # toApps:
-    #   - name: AppName
-    #     namespace: TargetNamespace
-    #     httpPorts: [8080]
-    #     tcpPorts: [8081]
-    #     udpPorts: []
+#     toApps:
+#       - name: AppName
+#         labelKey: app.kubernetes.io/name
+#         namespace: TargetNamespace
+#         httpPorts: [8080]
+#         tcpPorts: [8081]
+#         udpPorts: []
 
 statefulset:
   enabled: false
