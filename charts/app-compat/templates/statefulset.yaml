@@ -186,7 +186,7 @@ spec:
                   key: {{ .keyName }}
 {{- end }}
 {{- end }}
-{{- if or $hasCMEnvExists $hasSecretEnvExists }}
+{{- if or $hasCMEnvExists $hasSecretEnvExists .Values.externalSecretsv2.enabled }}
           envFrom:
 {{- if ($values.externalConfigMaps)}}
 {{- range $configMap := $values.externalConfigMaps }}
@@ -202,6 +202,12 @@ spec:
             - secretRef:
                 name: {{ .name }}
 {{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.externalSecretsv2.enabled }}
+{{- range .Values.externalSecretsv2.secrets }}
+            - secretRef:
+                name: {{ . }}-secret
 {{- end }}
 {{- end }}
 {{- end }}
@@ -364,7 +370,7 @@ spec:
                   key: {{ .keyName }}
           {{- end }}
           {{- end }}
-          {{- if or $hasCMEnvExists $hasSecretEnvExists }}
+          {{- if or $hasCMEnvExists $hasSecretEnvExists .Values.externalSecretsv2.enabled }}
           envFrom:
           {{- if (.Values.externalConfigMaps)}}
           {{- range $configMap := .Values.externalConfigMaps  }}
@@ -380,6 +386,12 @@ spec:
             - secretRef:
                 name: {{ .name }}
           {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.externalSecretsv2.enabled }}
+          {{- range .Values.externalSecretsv2.secrets }}
+            - secretRef:
+                name: {{ . }}-secret
           {{- end }}
           {{- end }}
           {{- end }}
