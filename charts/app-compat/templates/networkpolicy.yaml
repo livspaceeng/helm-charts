@@ -1,14 +1,14 @@
 {{- if $.Values.networkPolicy.enabled }}
 apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
+kind: CiliumClusterwideNetworkPolicy
 metadata:
-  name: {{ template "application.name" . }}-egress
-  namespace: {{ $.Release.Namespace }}
+  name: {{ $.Release.Namespace }}-{{ template "application.name" . }}-egress
   labels:
     app: {{ template "application.name" . }}
 spec:
   endpointSelector:
     matchLabels:
+      "k8s:io.kubernetes.pod.namespace": {{ $.Release.Namespace }}
       app: {{ template "application.name" . }}
   egress:
   {{- if .Values.networkPolicy.egress }}
@@ -48,7 +48,4 @@ spec:
       - ports:
         - port: "53"
           protocol: ANY
-        rules:
-          dns:
-          - matchPattern: '*'
 {{- end }}

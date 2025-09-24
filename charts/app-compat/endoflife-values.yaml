@@ -1,0 +1,81 @@
+# Extracted values from endoflife HelmRelease
+EnvVariables:
+- name: ENV
+  value: prod
+GracePeriod: 30
+podAnnotations:
+  linkerd.io/inject: disabled
+MaxSurge: 1
+MaxUnavailable: 0
+MinReadySeconds: 60
+args:
+  enabled: false
+autoscaling:
+  MaxReplicas: 2
+  MinReplicas: 1
+  TargetCPUUtilizationPercentage: 90
+  TargetMemoryUtilizationPercentage: 80
+  annotations: {}
+  behavior: {}
+  enabled: true
+  extraMetrics: []
+  labels: {}
+command:
+  enabled: false
+  value: []
+  workingDir: {}
+containerSecurityContext: {}
+containers: []
+dbMigrationConfig:
+  enabled: false
+hostAliases: []
+image:
+  pullPolicy: IfNotPresent
+imagePullSecrets: []
+ingress:
+  annotations:
+    kubernetes.io/tls-acme: "true"
+  className: haproxy-internal
+  enabled: true
+  hosts:
+    - host: endoflife.eng.livspace.com
+      pathType: ImplementationSpecific
+      paths:
+        - /
+  tls:
+    - hosts:
+        - "*.eng.livspace.com"
+      secretName: eng.livspace.com-tls
+initContainers: []
+pauseForSecondsBeforeSwitchActive: 30
+podLabels:
+  owner: shlok.srivastava
+  team: core-infra
+podSecurityContext: {}
+replicaCount: 1
+resources:
+  limits:
+    cpu: '0.2'
+    memory: 200Mi
+  requests:
+    cpu: '0.1'
+    memory: 100Mi
+rolloutAnnotations: {}
+rolloutLabels: {}
+secret:
+  data: {}
+  enabled: false
+externalSecretsv2:
+  enabled: true
+  secrets:
+    - endoflife-api-key
+    - monitoring-token
+    - session-key
+global:
+  environment: prod
+server:
+  deployment:
+    image: 'livcr.io/livspace/endoflife'
+service:
+  annotations: {}
+  loadBalancerSourceRanges: []
