@@ -180,7 +180,7 @@ externalSecretsv2:
   enabled: false
   secrets: []
   # - stripe-api-key
-  # - jwt-signing-key  
+  # - jwt-signing-key
   # - database-users/app_user
   # - redis-auth
 

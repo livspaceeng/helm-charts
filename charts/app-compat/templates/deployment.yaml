@@ -209,7 +209,7 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
-{{- if ((.Values.externalSecretsv2).enabled) }}
+{{- if and .Values.externalSecretsv2 .Values.externalSecretsv2.enabled }}
 {{- $application := ((.Values.global).application) | default .Values.application | default .Release.Name }}
 {{- range .Values.externalSecretsv2.secrets }}
             - secretRef:
