@@ -1,6 +1,6 @@
 {{- if $.Values.networkPolicy.enabled }}
 apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
+kind: CiliumClusterwideNetworkPolicy
 metadata:
   name: {{ include "caddy.fullname" . }}
   labels:
@@ -13,25 +13,26 @@ spec:
   {{- if .Values.networkPolicy.egress }}
   {{- range $app := .Values.networkPolicy.egress.toApps }}
   {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
+  {{- $labelKey := default "k8s:app" $app.labelKey }}
   - toEndpoints:
       - matchLabels:
-          "k8s:app": {{ $app.name }}
+          "{{ $labelKey }}": {{ $app.name }}
           {{- if $app.namespace }}
           "k8s:io.kubernetes.pod.namespace": {{ $app.namespace }}
           {{- end }}
     toPorts:
       {{- range $port := $app.httpPorts }}
-      - ports: 
+      - ports:
         - port: "{{ $port }}"
           protocol: TCP
       {{- end }}
       {{- range $port := $app.tcpPorts }}
-      - ports: 
+      - ports:
         - port: "{{ $port }}"
           protocol: TCP
       {{- end }}
       {{- range $port := $app.udpPorts }}
-      - ports: 
+      - ports:
         - port: "{{ $port }}"
           protocol: UDP
       {{- end }}
