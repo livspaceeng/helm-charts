@@ -498,21 +498,37 @@ winterSoldier:
 
 networkPolicy:
   enabled: false
-  annotations: {}
-  labels: {}
-  podSelector:
-    matchExpressions: []
-    matchLabels: {}
-  policyTypes: []
-  ingress: []
-  egress: []
-#     toApps:
-#       - name: AppName
-#         labelKey: app.kubernetes.io/name
-#         namespace: TargetNamespace
-#         httpPorts: [8080]
-#         tcpPorts: [8081]
-#         udpPorts: []
+  # ingress defines rules for incoming traffic to your application pods
+  # ingress:
+  #   fromApps:
+  #     - name: frontend                    # Name of the source app (matches the app label)
+  #       labelKey: app                      # Optional: Label key to match (defaults to "app")
+  #       namespace: frontend-ns             # Optional: Source namespace (omit for same namespace)
+  #       httpPorts: [8080]                  # Optional: List of HTTP/TCP ports
+  #       tcpPorts: [9090]                   # Optional: List of TCP ports
+  #       udpPorts: []                       # Optional: List of UDP ports
+  #     - name: api-gateway
+  #       httpPorts: [3000]
+  #     - name: monitoring-system
+  #       labelKey: app.kubernetes.io/name
+  #       namespace: monitoring
+  #       tcpPorts: [8081]
+
+  # egress defines rules for outgoing traffic from your application pods
+  # egress:
+  #   toApps:
+  #     - name: database                    # Name of the target app (matches the app label)
+  #       labelKey: app                      # Optional: Label key to match (defaults to "app")
+  #       namespace: database-ns             # Optional: Target namespace (omit for same namespace)
+  #       tcpPorts: [5432]                   # Optional: List of TCP ports
+  #     - name: redis
+  #       tcpPorts: [6379]
+  #     - name: external-api
+  #       labelKey: app.kubernetes.io/name
+  #       namespace: external-services
+  #       httpPorts: [443, 80]
+  #       udpPorts: []
+  # Note: DNS egress to kube-system (port 53 UDP/TCP) is automatically included when egress is enabled
 
 statefulset:
   enabled: false

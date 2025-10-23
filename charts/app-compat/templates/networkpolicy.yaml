@@ -1,51 +1,92 @@
 {{- if $.Values.networkPolicy.enabled }}
-apiVersion: cilium.io/v2
-kind: CiliumClusterwideNetworkPolicy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
 metadata:
-  name: {{ $.Release.Namespace }}-{{ template "application.name" . }}-egress
+  name: {{ template "application.name" . }}
+  namespace: {{ $.Release.Namespace }}
   labels:
-    app: {{ template "application.name" . }}
+    app.kubernetes.io/name: {{ template "application.name" . }}
 spec:
-  endpointSelector:
+  podSelector:
     matchLabels:
-      "k8s:io.kubernetes.pod.namespace": {{ $.Release.Namespace }}
-      app: {{ template "application.name" . }}
-  egress:
+      app.kubernetes.io/name: {{ template "application.name" . }}
+  policyTypes:
+  {{- if .Values.networkPolicy.ingress }}
+  - Ingress
+  {{- end }}
   {{- if .Values.networkPolicy.egress }}
+  - Egress
+  {{- end }}
+  {{- if .Values.networkPolicy.ingress }}
+  ingress:
+  {{- range $rule := .Values.networkPolicy.ingress.fromApps }}
+  {{- if or $rule.httpPorts $rule.tcpPorts $rule.udpPorts }}
+  {{- $labelKey := default "app" $rule.labelKey }}
+  - from:
+    - podSelector:
+        matchLabels:
+          {{ $labelKey }}: {{ $rule.name }}
+      {{- if $rule.namespace }}
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ $rule.namespace }}
+      {{- end }}
+    ports:
+    {{- range $port := $rule.httpPorts }}
+    - port: {{ $port }}
+      protocol: TCP
+    {{- end }}
+    {{- range $port := $rule.tcpPorts }}
+    - port: {{ $port }}
+      protocol: TCP
+    {{- end }}
+    {{- range $port := $rule.udpPorts }}
+    - port: {{ $port }}
+      protocol: UDP
+    {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.networkPolicy.egress }}
+  egress:
   {{- range $app := .Values.networkPolicy.egress.toApps }}
   {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
-  {{- $labelKey := default "k8s:app" $app.labelKey }}
-  - toEndpoints:
-      - matchLabels:
-          "{{ $labelKey }}": {{ $app.name }}
-          {{- if $app.namespace }}
-          "k8s:io.kubernetes.pod.namespace": {{ $app.namespace }}
-          {{- end }}
-    toPorts:
-      {{- range $port := $app.httpPorts }}
-      - ports: 
-        - port: "{{ $port }}"
-          protocol: TCP
+  {{- $labelKey := default "app" $app.labelKey }}
+  - to:
+    - podSelector:
+        matchLabels:
+          {{ $labelKey }}: {{ $app.name }}
+      {{- if $app.namespace }}
+      namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ $app.namespace }}
       {{- end }}
-      {{- range $port := $app.tcpPorts }}
-      - ports: 
-        - port: "{{ $port }}"
-          protocol: TCP
-      {{- end }}
-      {{- range $port := $app.udpPorts }}
-      - ports: 
-        - port: "{{ $port }}"
-          protocol: UDP
-      {{- end }}
+    ports:
+    {{- range $port := $app.httpPorts }}
+    - port: {{ $port }}
+      protocol: TCP
+    {{- end }}
+    {{- range $port := $app.tcpPorts }}
+    - port: {{ $port }}
+      protocol: TCP
+    {{- end }}
+    {{- range $port := $app.udpPorts }}
+    - port: {{ $port }}
+      protocol: UDP
+    {{- end }}
   {{- end }}
   {{- end }}
   {{- end }}
-  - toEndpoints:
-      - matchLabels:
-          k8s:io.kubernetes.pod.namespace: kube-system
-          k8s:k8s-app: kube-dns
-    toPorts:
-      - ports:
-        - port: "53"
-          protocol: ANY
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
 {{- end }}
