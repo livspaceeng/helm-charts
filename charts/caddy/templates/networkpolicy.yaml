@@ -24,7 +24,7 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-          {{ $labelKey }}: {{ $rule.name }}
+              {{ $labelKey }}: {{ $rule.name }}
       {{- if $rule.namespace }}
           namespaceSelector:
             matchLabels:
@@ -54,7 +54,7 @@ spec:
     - to:
         - podSelector:
             matchLabels:
-          {{ $labelKey }}: {{ $app.name }}
+              {{ $labelKey }}: {{ $app.name }}
       {{- if $app.namespace }}
           namespaceSelector:
             matchLabels:
