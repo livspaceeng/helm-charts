@@ -329,7 +329,7 @@ canary:
 
 
 cloud:
-  provider: "aws"
+  provider: "gcp"
 
 deployment:
   image:
