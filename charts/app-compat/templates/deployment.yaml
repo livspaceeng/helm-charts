@@ -24,7 +24,6 @@
   {{- end }}
   {{- end }}
 
-  {{- $cloudProvider := .Values.cloud.provider }}
   {{- $image := required "Undefined image for application container" .Values.deployment.image.repository }}
   {{- with .Values.deployment.image.tag    }} {{- $image = print $image ":" . }} {{- end }}
   {{- with .Values.deployment.image.digest }} {{- $image = print $image "@" . }} {{- end }}
@@ -131,10 +130,10 @@ spec:
 {{ toYaml .Values.podSecurityContext | indent 8 }}
 {{- end }}
 {{- if $.Values.restartPolicy }}
-      restartPolicy: {{  $.Values.restartPolicy }}
+      restartPolicy: {{  $.Values.restartPolicy }}x
 {{- end }}
       initContainers:
-{{- if eq $cloudProvider "gcp" }}
+{{- if .Values.mountGToken  }}
         - image: livcr.io/generic/doitintl-gtoken:v0.4.3
           name: gtoken-init
           command:
@@ -260,7 +259,7 @@ spec:
 {{- end}}
 {{- end}}
 {{- end}}
-{{- if eq $cloudProvider "gcp" }}
+    {{- if .Values.mountGToken  }}
         - image: livcr.io/generic/doitintl-gtoken:v0.4.3
           name: gtoken
           command:
@@ -346,7 +345,7 @@ spec:
               value: {{ .value | quote }}
           {{- end }}
           {{- end }}
-          {{- if eq $cloudProvider "gcp" }}
+          {{- if .Values.mountGToken }}
             - name: AWS_WEB_IDENTITY_TOKEN_FILE
               value: /var/run/secrets/aws/token/gtoken
             - name: AWS_ROLE_ARN
@@ -496,7 +495,7 @@ spec:
 {{- with .Values.volumeMounts }}
 {{ toYaml . | trim | indent 12 }}
 {{- end }}
-          {{- if eq $cloudProvider "gcp" }}
+          {{- if .Values.mountGToken }}
             - name: gtoken-vol
               mountPath: /var/run/secrets/aws/token
             - name: aws-dir-volume
@@ -522,7 +521,7 @@ spec:
           {{- end}}
           {{- if and $hasSecretVolumeExists .Values.externalSecrets }}
           {{- range $secrets := .Values.externalSecrets  }}
-            {{- if and $secrets.path  }}
+            {{- if $secrets.path }}
             {{- if $secrets.files  }}
             {{- range $file := $secrets.files  }}
             - mountPath: {{$secrets.path}}/{{$file}}
@@ -542,7 +541,7 @@ spec:
 {{- with .Values.volumes }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
-      {{- if eq $cloudProvider "gcp" }}
+      {{- if .Values.mountGToken }}
         - emptyDir: {}
           name: aws-dir-volume
         - emptyDir:

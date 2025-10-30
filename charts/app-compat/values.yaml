@@ -327,9 +327,7 @@ canary:
     #   # load tester address
     #   url: http://flagger-loadtester.istio-system/
 
-
-cloud:
-  provider: "gcp"
+mountGToken: false
 
 deployment:
   image:
