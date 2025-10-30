@@ -130,7 +130,7 @@ spec:
 {{ toYaml .Values.podSecurityContext | indent 8 }}
 {{- end }}
 {{- if $.Values.restartPolicy }}
-      restartPolicy: {{  $.Values.restartPolicy }}x
+      restartPolicy: {{  $.Values.restartPolicy }}
 {{- end }}
       initContainers:
 {{- if .Values.mountGToken  }}
