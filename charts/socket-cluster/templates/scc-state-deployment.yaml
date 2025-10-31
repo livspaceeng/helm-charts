@@ -49,6 +49,8 @@ spec:
           volumeMounts:
 {{ toYaml .Values.cluster.state.volumeMounts | indent 12 }}
 {{- end }}
+      tolerations:
+{{ toYaml (default list .Values.cluster.state.tolerations) | indent 8 }}
 {{- if .Values.cluster.state.volumes }}
       volumes:
 {{ toYaml .Values.cluster.state.volumes | indent 8 }}
