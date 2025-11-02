@@ -9,6 +9,7 @@ cluster:
       team: canvas
       owner: akshay
     replicaCount: 1
+    tolerations: []
     networkPolicy:
       enabled: false
       egress: []
@@ -34,6 +35,7 @@ cluster:
     podLabels:
       team: canvas
       owner: akshay
+    tolerations: []
     networkPolicy:
       enabled: false
       egress: []
