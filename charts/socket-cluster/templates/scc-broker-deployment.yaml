@@ -67,10 +67,12 @@ spec:
           volumeMounts:
 {{ toYaml .Values.cluster.broker.volumeMounts | indent 12 }}
 {{- end }}
-{{- if .Values.cluster.broker.tolerations }}
+  {{- if .Values.cluster.broker.tolerations }}
       tolerations:
-{{ toYaml .Values.cluster.broker.tolerations | indent 8 }}
-{{- end }}
+  {{ toYaml .Values.cluster.broker.tolerations | indent 8 }}
+  {{- else }}
+      tolerations: []
+  {{- end }}
 {{- if .Values.cluster.broker.volumes }}
       volumes:
 {{ toYaml .Values.cluster.broker.volumes | indent 8 }}
