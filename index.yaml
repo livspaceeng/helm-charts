@@ -3614,6 +3614,20 @@ entries:
   socket-cluster:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2025-11-02T15:05:52.876862241Z"
+    description: Helm chart for socket cluster
+    digest: 414d5a27b0b1d67aa59c43cc40138a4df04f096a6e2437d7f93bc8fa370399bc
+    maintainers:
+    - email: ankit.a@livspace.com
+      name: ankit-ls
+    - email: praveen@livspace.com
+      name: praveen-livspace
+    name: socket-cluster
+    urls:
+    - https://github.com/livspaceeng/helm-charts/releases/download/socket-cluster-1.2.4/socket-cluster-1.2.4.tgz
+    version: 1.2.4
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2025-11-02T14:36:05.334887014Z"
     description: Helm chart for socket cluster
     digest: ea19f58a2992dc363b0900dbb954e3689d6333cd013f2e21e5c68000eb92bb3c
@@ -3893,4 +3907,4 @@ entries:
     urls:
     - https://charts.livspace.com/zeeqs-1.0.0.tgz
     version: 1.0.0
-generated: "2025-11-02T14:36:05.335421721Z"
+generated: "2025-11-02T15:05:52.877566872Z"
