@@ -696,7 +696,7 @@ podSecurityContext: {}
 
 podAnnotations:
   linkerd.io/inject: enabled
-  config.linkerd.io/skip-outbound-ports: 3306,5432,5671,6379,26379,9200,587,7233,9042
+  config.linkerd.io/skip-outbound-ports: 3306,5432,5671,6379,26379,9200,587,7233,9042,11010,11011,11012,11013,11014,11015,11016,11017
   config.linkerd.io/proxy-cpu-request: 10m
   config.linkerd.io/proxy-memory-request: 25Mi
   config.linkerd.io/proxy-memory-limit: 75Mi
