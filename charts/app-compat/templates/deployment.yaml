@@ -212,7 +212,7 @@ spec:
 {{- $application := (($values.global).application) | default $values.application | default $.Release.Name }}
 {{- range $values.externalSecretsv2.secrets }}
             - secretRef:
-                name: {{ $application }}-{{ . }}-secret
+                name: {{ $application }}-{{ .name }}-secret
 {{- end }}
 {{- end }}
 {{- end }}
@@ -397,7 +397,7 @@ spec:
           {{- $application := ((.Values.global).application) | default .Values.application | default .Release.Name }}
           {{- range .Values.externalSecretsv2.secrets }}
             - secretRef:
-                name: {{ $application }}-{{ . }}-secret
+                name: {{ $application }}-{{ .name }}-secret
           {{- end }}
           {{- end }}
           {{- end }}
