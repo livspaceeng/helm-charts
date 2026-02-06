@@ -128,6 +128,12 @@ volumeMounts: []
 #    readonly: true
 networkPolicy:
   enabled: true
+
+# -- ServiceProfile configuration for Linkerd
+serviceProfile:
+  # -- Enable ServiceProfile resource
+  enabled: true
+
 structuredConfig:
   services: {}
 #    bouncer: reverse_proxy bouncer:80

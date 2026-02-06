@@ -1,0 +1,17 @@
+{{- if .Values.serviceProfile.enabled }}
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: {{ template "caddy.servicename" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  namespace: {{ .Release.Namespace }}
+spec:
+  retryBudget:
+    retryRatio: 0.2
+    minRetriesPerSecond: 10
+    ttl: 10s
+  routes:
+    - name: GET /*
+      condition:
+        pathRegex: /.*
+        method: GET
+{{- end }}
