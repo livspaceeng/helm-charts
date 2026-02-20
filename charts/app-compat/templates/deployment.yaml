@@ -209,10 +209,9 @@ spec:
 {{- end }}
 {{- end }}
 {{- if and $values.externalSecretsv2 $values.externalSecretsv2.enabled }}
-{{- $application := (($values.global).application) | default $values.application | default $.Release.Name }}
 {{- range $values.externalSecretsv2.secrets }}
             - secretRef:
-                name: {{ $application }}-{{ .name }}-secret
+                name: {{ .name }}-secret
 {{- end }}
 {{- end }}
 {{- end }}
@@ -394,10 +393,9 @@ spec:
           {{- end }}
           {{- end }}
           {{- if and .Values.externalSecretsv2 .Values.externalSecretsv2.enabled }}
-          {{- $application := ((.Values.global).application) | default .Values.application | default .Release.Name }}
           {{- range .Values.externalSecretsv2.secrets }}
             - secretRef:
-                name: {{ $application }}-{{ .name }}-secret
+                name: {{ .name }}-secret
           {{- end }}
           {{- end }}
           {{- end }}
