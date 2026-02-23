@@ -736,3 +736,18 @@ imagePullSecrets: []
   # - test2
 EnvVariablesFromContainers: []
 deploymentType: ROLLING
+
+# -- ServiceProfile configuration for Linkerd
+serviceProfile:
+  # -- Enable ServiceProfile resource (enabled by default for production, disable in staging)
+  enabled: true
+  # -- Retry budget configuration
+  retryBudget:
+    retryRatio: 0.2
+    minRetriesPerSecond: 10
+    ttl: 10s
+  # -- Route definitions for traffic profiling
+  routes:
+    - name: "all"
+      condition:
+        pathRegex: /.*

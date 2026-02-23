@@ -131,7 +131,7 @@ networkPolicy:
 
 # -- ServiceProfile configuration for Linkerd
 serviceProfile:
-  # -- Enable ServiceProfile resource
+  # -- Enable ServiceProfile resource (enabled by default for production, disable in staging)
   enabled: true
 
 structuredConfig:
