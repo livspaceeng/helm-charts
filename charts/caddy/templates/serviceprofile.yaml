@@ -1,17 +1,18 @@
-{{- if .Values.serviceProfile.enabled }}
+{{- if and .Values.serviceProfile.enabled (not .Values.serviceProfile.external) }}
 apiVersion: linkerd.io/v1alpha2
 kind: ServiceProfile
 metadata:
   name: {{ template "caddy.servicename" . }}.{{ .Release.Namespace }}.svc.cluster.local
   namespace: {{ .Release.Namespace }}
+  labels:
+{{- include "caddy.labels" . | nindent 4 }}
 spec:
+  {{- with .Values.serviceProfile.retryBudget }}
   retryBudget:
-    retryRatio: 0.2
-    minRetriesPerSecond: 10
-    ttl: 10s
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.serviceProfile.routes }}
   routes:
-    - name: GET /*
-      condition:
-        pathRegex: /.*
-        method: GET
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}

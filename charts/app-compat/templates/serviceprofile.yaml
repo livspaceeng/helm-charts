@@ -1,0 +1,27 @@
+{{- /* Check if rawYaml already contains a ServiceProfile to avoid duplicates */ -}}
+{{- $hasRawYamlServiceProfile := false }}
+{{- if .Values.rawYaml }}
+  {{- range .Values.rawYaml }}
+    {{- if eq (index . "kind") "ServiceProfile" }}
+      {{- $hasRawYamlServiceProfile = true }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- if and .Values.serviceProfile.enabled (not .Values.serviceProfile.external) (not $hasRawYamlServiceProfile) }}
+apiVersion: linkerd.io/v1alpha2
+kind: ServiceProfile
+metadata:
+  name: {{ template ".servicename" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{- include "application.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.serviceProfile.retryBudget }}
+  retryBudget:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  {{- with .Values.serviceProfile.routes }}
+  routes:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
