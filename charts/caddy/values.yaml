@@ -19,6 +19,11 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- Custom command to run instead of the default entrypoint
+command:
+  enabled: false
+  value: []
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
