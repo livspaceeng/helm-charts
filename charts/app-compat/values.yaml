@@ -744,6 +744,9 @@ serviceProfile:
   # -- Enable ServiceProfile resource generation (default: true for production)
   # Set to false in staging/beta deployments or for services with separate serviceprofile.yaml
   enabled: true
+  # -- Set to true if this service has a separate serviceprofile.yaml managed outside the chart
+  # This prevents duplicate ServiceProfile resources when using Kustomize overlays
+  external: false
   # -- Retry budget configuration (matches existing services)
   retryBudget:
     retryRatio: 0.2

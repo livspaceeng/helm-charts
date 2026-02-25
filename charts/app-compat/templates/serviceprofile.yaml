@@ -7,7 +7,7 @@
     {{- end }}
   {{- end }}
 {{- end }}
-{{- if and .Values.serviceProfile.enabled (not $hasRawYamlServiceProfile) }}
+{{- if and .Values.serviceProfile.enabled (not .Values.serviceProfile.external) (not $hasRawYamlServiceProfile) }}
 apiVersion: linkerd.io/v1alpha2
 kind: ServiceProfile
 metadata:

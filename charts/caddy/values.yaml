@@ -135,6 +135,9 @@ serviceProfile:
   # -- Enable ServiceProfile resource generation (default: true for production)
   # Set to false in staging/beta deployments or for services with separate serviceprofile.yaml
   enabled: true
+  # -- Set to true if this service has a separate serviceprofile.yaml managed outside the chart
+  # This prevents duplicate ServiceProfile resources when using Kustomize overlays
+  external: false
   # -- Retry budget configuration (matches existing services)
   retryBudget:
     retryRatio: 0.2
@@ -185,7 +188,7 @@ config:
     {{- range $k, $v := .Values.structuredConfig.services }}
     &({{ $k }}) {
       {{ $v }}
-    }    
+    }
     {{- end }}
   # -- this is a place to add your own configuration. It will be appended after the global section
   caddyFile: |
@@ -197,14 +200,14 @@ config:
     }
     :{{ .Values.listenPort }} {
       import logging
-      
+
       @catchAllAPI {
           path_regexp catchAllAPI ^.*$
       }
 
       {{- range  $componentName, $componentRoutes := .Values.structuredConfig.routes }}
       {{- range  $route := $componentRoutes }}
-      
+
       @{{ $route.name }} {
         {{- if $route.matchers.path_regexp }}
           path_regexp {{ $route.name }} {{ $route.matchers.path_regexp }}
@@ -232,12 +235,12 @@ config:
 
       }
       {{- end }}
-    
+
       handle_path /{{ $componentName }}/api/* {
         {{- range $r := $componentRoutes }}
         handle @{{ $r.name }} {
           {{- range $d := $r.directives }}
-          {{ $d }}  
+          {{ $d }}
           {{- end }}
         }
         {{- end }}
@@ -250,7 +253,7 @@ config:
         }
       }
       {{- end }}
-      
+
       handle_path /* {
         respond * 404 {
           body "Not Found"
@@ -258,6 +261,6 @@ config:
         }
       }
     }
-    
-    
-    
+
+
+
