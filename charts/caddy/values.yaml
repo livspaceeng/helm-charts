@@ -130,9 +130,29 @@ networkPolicy:
   enabled: true
 
 # -- ServiceProfile configuration for Linkerd
+# Enabled by default for production. Disable in staging by setting enabled: false
 serviceProfile:
-  # -- Enable ServiceProfile resource (enabled by default for production, disable in staging)
+  # -- Enable ServiceProfile resource generation (default: true for production)
+  # Set to false in staging/beta deployments or for services with separate serviceprofile.yaml
   enabled: true
+  # -- Retry budget configuration (matches existing services)
+  retryBudget:
+    retryRatio: 0.2
+    minRetriesPerSecond: 10
+    ttl: 10s
+  # -- Route definitions for traffic profiling
+  # Default: catch-all route with standard failure detection (400-599)
+  # Override with specific routes as needed for detailed API profiling
+  routes:
+    - name: "all"
+      condition:
+        pathRegex: /.*
+      responseClasses:
+        - condition:
+            status:
+              min: 400
+              max: 599
+          isFailure: true
 
 structuredConfig:
   services: {}

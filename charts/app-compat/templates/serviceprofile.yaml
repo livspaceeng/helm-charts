@@ -1,4 +1,13 @@
-{{- if .Values.serviceProfile.enabled }}
+{{- /* Check if rawYaml already contains a ServiceProfile to avoid duplicates */ -}}
+{{- $hasRawYamlServiceProfile := false }}
+{{- if .Values.rawYaml }}
+  {{- range .Values.rawYaml }}
+    {{- if eq (index . "kind") "ServiceProfile" }}
+      {{- $hasRawYamlServiceProfile = true }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- if and .Values.serviceProfile.enabled (not $hasRawYamlServiceProfile) }}
 apiVersion: linkerd.io/v1alpha2
 kind: ServiceProfile
 metadata:
