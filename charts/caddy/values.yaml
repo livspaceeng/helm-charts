@@ -135,11 +135,10 @@ networkPolicy:
   enabled: true
 
 # -- ServiceProfile configuration for Linkerd
-# Enabled by default for production. Disable in staging by setting enabled: false
 serviceProfile:
-  # -- Enable ServiceProfile resource generation (default: true for production)
-  # Set to false in staging/beta deployments or for services with separate serviceprofile.yaml
-  enabled: true
+  # -- Enable ServiceProfile resource generation
+  # Set to true to generate ServiceProfile for Linkerd traffic management
+  enabled: false
   # -- Set to true if this service has a separate serviceprofile.yaml managed outside the chart
   # This prevents duplicate ServiceProfile resources when using Kustomize overlays
   external: false
