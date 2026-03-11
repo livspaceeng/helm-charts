@@ -149,18 +149,22 @@ serviceProfile:
     minRetriesPerSecond: 10
     ttl: 10s
   # -- Route definitions for traffic profiling
-  # Default: catch-all route with standard failure detection (400-599)
-  # Override with specific routes as needed for detailed API profiling
+  # Default: catch-all route without responseClasses (devs can add as needed)
+  # Example with failure classification:
+  #   routes:
+  #     - name: "all"
+  #       condition:
+  #         pathRegex: /.*
+  #       responseClasses:
+  #         - condition:
+  #             status:
+  #               min: 500
+  #               max: 599
+  #           isFailure: true
   routes:
     - name: "all"
       condition:
         pathRegex: /.*
-      responseClasses:
-        - condition:
-            status:
-              min: 400
-              max: 599
-          isFailure: true
 
 structuredConfig:
   services: {}
