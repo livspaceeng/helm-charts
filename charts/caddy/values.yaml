@@ -19,6 +19,11 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+# -- Custom command to run instead of the default entrypoint
+command:
+  enabled: false
+  value: []
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -131,8 +136,34 @@ networkPolicy:
 
 # -- ServiceProfile configuration for Linkerd
 serviceProfile:
-  # -- Enable ServiceProfile resource
-  enabled: true
+  # -- Enable ServiceProfile resource generation
+  # Set to true to generate ServiceProfile for Linkerd traffic management
+  enabled: false
+  # -- Set to true if this service has a separate serviceprofile.yaml managed outside the chart
+  # This prevents duplicate ServiceProfile resources when using Kustomize overlays
+  external: false
+  # -- Retry budget configuration (matches existing services)
+  retryBudget:
+    retryRatio: 0.2
+    minRetriesPerSecond: 10
+    ttl: 10s
+  # -- Route definitions for traffic profiling
+  # Default: catch-all route without responseClasses (devs can add as needed)
+  # Example with failure classification:
+  #   routes:
+  #     - name: "all"
+  #       condition:
+  #         pathRegex: /.*
+  #       responseClasses:
+  #         - condition:
+  #             status:
+  #               min: 500
+  #               max: 599
+  #           isFailure: true
+  routes:
+    - name: "all"
+      condition:
+        pathRegex: /.*
 
 structuredConfig:
   services: {}
@@ -165,7 +196,7 @@ config:
     {{- range $k, $v := .Values.structuredConfig.services }}
     &({{ $k }}) {
       {{ $v }}
-    }    
+    }
     {{- end }}
   # -- this is a place to add your own configuration. It will be appended after the global section
   caddyFile: |
@@ -177,14 +208,14 @@ config:
     }
     :{{ .Values.listenPort }} {
       import logging
-      
+
       @catchAllAPI {
           path_regexp catchAllAPI ^.*$
       }
 
       {{- range  $componentName, $componentRoutes := .Values.structuredConfig.routes }}
       {{- range  $route := $componentRoutes }}
-      
+
       @{{ $route.name }} {
         {{- if $route.matchers.path_regexp }}
           path_regexp {{ $route.name }} {{ $route.matchers.path_regexp }}
@@ -212,12 +243,12 @@ config:
 
       }
       {{- end }}
-    
+
       handle_path /{{ $componentName }}/api/* {
         {{- range $r := $componentRoutes }}
         handle @{{ $r.name }} {
           {{- range $d := $r.directives }}
-          {{ $d }}  
+          {{ $d }}
           {{- end }}
         }
         {{- end }}
@@ -230,7 +261,7 @@ config:
         }
       }
       {{- end }}
-      
+
       handle_path /* {
         respond * 404 {
           body "Not Found"
@@ -238,6 +269,3 @@ config:
         }
       }
     }
-    
-    
-    
