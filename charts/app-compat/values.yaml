@@ -768,3 +768,25 @@ serviceProfile:
     - name: "all"
       condition:
         pathRegex: /.*
+
+# -- Automatic Testing Configuration
+# Enable automated post-deployment testing using centralized test runner
+autoTest:
+  # -- Enable automatic testing after deployment
+  enabled: false
+  # -- Test suite to run (smoke, regression, integration)
+  suite: "smoke"
+  # -- Number of parallel threads for test execution
+  threads: 3
+  # -- Test execution timeout
+  timeout: "10m"
+  # -- Cluster where tests should run (auto-detected from deployment context)
+  cluster: ""
+  # -- Environment for test execution (auto-detected from deployment context)
+  environment: ""
+  # -- GitHub authentication for private repository access
+  github:
+    # -- Secret name containing GitHub Personal Access Token
+    secretName: "github-pat-secret"
+    # -- Key name in the secret containing the token
+    secretKey: "token"
