@@ -774,34 +774,78 @@ serviceProfile:
 autoTest:
   # -- Enable automatic testing after deployment
   enabled: false
+  
+  # -- Test framework (maven, python, go, node)
+  framework: "maven"
+  
+  # -- Container image for test execution (auto-selected based on framework)
+  # Maven: maven:3.8.6-eclipse-temurin-17
+  # Python: python:3.11-slim
+  # Go: golang:1.21
+  # Node: node:18
+  image: ""
+  
   # -- Test suite to run (smoke, regression, integration)
   suite: "smoke"
+  
   # -- Number of parallel threads for test execution
   threads: 3
-  # -- Test execution timeout
-  timeout: "10m"
-  # -- Cluster where tests should run (auto-detected from deployment context)
-  cluster: ""
-  # -- Environment for test execution (auto-detected from deployment context)
+  
+  # -- Job retry limit (0 = no retries)
+  backoffLimit: 0
+  
+  # -- Test repository configuration
+  repository: "https://github.com/livspaceeng/sdet-live-livspace.git"
+  branch: "main"
+  scriptPath: "framework/k8s/run-post-deploy-tests.sh"
+  
+  # -- Environment configuration (auto-detected if not specified)
   environment: ""
+  cluster: ""
+  
+  # -- Cache directory configuration
+  cacheDir: "/cache"
+  allureHome: "/tmp/allure"
+  
+  # -- Language-specific settings (auto-configured based on framework)
+  mavenOpts: "-Xmx512m -Dmaven.repo.local=/cache/maven"
+  javaHome: "/opt/java/openjdk"
+  pipCacheDir: "/cache/pip"
+  pythonPath: "/workspace"
+  goPath: "/cache/go"
+  goCache: "/cache/go-build"
+  npmCache: "/cache/npm"
+  
   # -- GitHub authentication for private repository access
   github:
-    # -- Secret name containing GitHub Personal Access Token
     secretName: "github-pat-secret"
-    # -- Key name in the secret containing the token
     secretKey: "token"
-  # -- Additional secrets for comprehensive test pipeline
+  
+  # -- Optional secrets (won't fail if not present)
+  # Leave empty to skip, or set to secret name to enable
+  authSecret: "auth-secrets"  # Contains client-id and client-secret keys
+  gcsSecret: ""  # Contains service-account-key
+  slackSecret: ""  # Contains webhook-url
+  
+  # -- Additional custom environment variables
+  extraEnvVars: {}
+    # CUSTOM_VAR: "value"
+    # ANOTHER_VAR: "another-value"
+  
+  # -- Additional volumes (for custom configurations)
+  extraVolumes: []
+    # - name: custom-config
+    #   configMap:
+    #     name: test-config
+  
+  # -- Additional volume mounts
+  extraVolumeMounts: []
+    # - name: custom-config
+    #   mountPath: /config
+  
+  # -- DEPRECATED: Use simplified secret configuration above
   secrets:
-    # -- Auth client ID secret reference (optional)
     authClientId:
-      secretName: "auth-secrets"
-      secretKey: "client-id"
-    # -- Auth client secret reference (optional)  
-    authClientSecret:
-      secretName: "auth-secrets"
-      secretKey: "client-secret"
-    # -- GCS service account key for report uploads (optional)
-    gcsServiceAccountKey:
       secretName: "gcs-secrets"
       secretKey: "service-account-key"
     # -- Slack webhook URL for notifications (optional)
