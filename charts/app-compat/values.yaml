@@ -790,3 +790,21 @@ autoTest:
     secretName: "github-pat-secret"
     # -- Key name in the secret containing the token
     secretKey: "token"
+  # -- Additional secrets for comprehensive test pipeline
+  secrets:
+    # -- Auth client ID secret reference (optional)
+    authClientId:
+      secretName: "auth-secrets"
+      secretKey: "client-id"
+    # -- Auth client secret reference (optional)  
+    authClientSecret:
+      secretName: "auth-secrets"
+      secretKey: "client-secret"
+    # -- GCS service account key for report uploads (optional)
+    gcsServiceAccountKey:
+      secretName: "gcs-secrets"
+      secretKey: "service-account-key"
+    # -- Slack webhook URL for notifications (optional)
+    slackWebhookUrl:
+      secretName: "slack-secrets"
+      secretKey: "webhook-url"

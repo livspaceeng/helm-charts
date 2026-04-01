@@ -26,7 +26,7 @@ spec:
         emptyDir: {}
       containers:
       - name: test-runner
-        image: maven:3.9-eclipse-temurin-17
+        image: google/cloud-sdk:alpine
         volumeMounts:
         - name: workspace
           mountPath: /workspace
@@ -44,7 +44,9 @@ spec:
         - name: THREADS
           value: {{ .Values.autoTest.threads | quote }}
         - name: TRIGGER
-          value: "automatic-postsync-helm"
+          value: "argocd-post-sync"
+        - name: CI_PIPELINE_NUMBER
+          value: {{ .Release.Revision | quote }}
         - name: MAVEN_OPTS
           value: "-Xmx512m"
         - name: GITHUB_TOKEN
@@ -52,22 +54,54 @@ spec:
             secretRef:
               name: {{ .Values.autoTest.github.secretName | quote }}
               key: {{ .Values.autoTest.github.secretKey | quote }}
+        {{- if .Values.autoTest.secrets }}
+        {{- if .Values.autoTest.secrets.authClientId }}
+        - name: AUTH_CLIENT_ID
+          valueFrom:
+            secretRef:
+              name: {{ .Values.autoTest.secrets.authClientId.secretName | quote }}
+              key: {{ .Values.autoTest.secrets.authClientId.secretKey | quote }}
+        {{- end }}
+        {{- if .Values.autoTest.secrets.authClientSecret }}
+        - name: AUTH_CLIENT_SECRET
+          valueFrom:
+            secretRef:
+              name: {{ .Values.autoTest.secrets.authClientSecret.secretName | quote }}
+              key: {{ .Values.autoTest.secrets.authClientSecret.secretKey | quote }}
+        {{- end }}
+        {{- if .Values.autoTest.secrets.gcsServiceAccountKey }}
+        - name: GCS_SERVICE_ACCOUNT_KEY
+          valueFrom:
+            secretRef:
+              name: {{ .Values.autoTest.secrets.gcsServiceAccountKey.secretName | quote }}
+              key: {{ .Values.autoTest.secrets.gcsServiceAccountKey.secretKey | quote }}
+        {{- end }}
+        {{- if .Values.autoTest.secrets.slackWebhookUrl }}
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretRef:
+              name: {{ .Values.autoTest.secrets.slackWebhookUrl.secretName | quote }}
+              key: {{ .Values.autoTest.secrets.slackWebhookUrl.secretKey | quote }}
+        {{- end }}
+        {{- end }}
         command: ["/bin/bash"]
         args:
         - -c
         - |
           set -e
           echo "====================================="
-          echo "Starting Centralized Test Execution"
+          echo "Starting Post-Deploy Test Execution"
           echo "====================================="
           echo "Service: $SERVICE_NAME"
           echo "Environment: $DEPLOY_ENV" 
           echo "Suite: $SUITE"
-          echo "Target Cluster: $CLUSTER"
-          echo "Target Namespace: $TARGET_NAMESPACE"
           echo "Threads: $THREADS"
           echo "Trigger: $TRIGGER"
+          echo "Pipeline: $CI_PIPELINE_NUMBER"
           echo "====================================="
+          
+          # Install required tools
+          apk add --no-cache git maven openjdk17 curl
           
           # Change to workspace directory
           cd /workspace
@@ -77,59 +111,9 @@ spec:
           git clone --depth 1 https://${GITHUB_TOKEN}@github.com/livspaceeng/sdet-live-livspace.git test-repo
           cd test-repo
           
-          # Resolve internal auth DNS to IP and map external hostname to it
-          case "$DEPLOY_ENV" in
-            staging)
-              AUTH_INTERNAL="auth-beta-staging.default.svc.cluster.local"
-              AUTH_EXTERNAL="auth.beta.staging.livspace.com"
-              CI_AUTH_TOKEN_URL="http://auth.beta.staging.livspace.com/oauth2/token"
-              ;;
-            qa)
-              AUTH_INTERNAL="auth-beta-qa.default.svc.cluster.local"
-              AUTH_EXTERNAL="auth.beta.qa.livspace.com"
-              CI_AUTH_TOKEN_URL="http://auth.beta.qa.livspace.com/oauth2/token"
-              ;;
-            *)
-              AUTH_INTERNAL=""
-              AUTH_EXTERNAL=""
-              CI_AUTH_TOKEN_URL=""
-              ;;
-          esac
-          
-          if [ -n "$AUTH_INTERNAL" ]; then
-            AUTH_IP=$(getent hosts $AUTH_INTERNAL | awk '{print $1}' || true)
-            if [ -n "$AUTH_IP" ]; then
-              echo "$AUTH_IP $AUTH_EXTERNAL" >> /etc/hosts
-              echo "Mapped $AUTH_EXTERNAL → $AUTH_IP (resolved from $AUTH_INTERNAL)"
-            else
-              echo "WARNING: Could not resolve $AUTH_INTERNAL — auth may fail"
-            fi
-          fi
-          
-          echo "Auth Token URL: $CI_AUTH_TOKEN_URL"
-          
-          # Run Maven tests
-          echo "Running Maven tests..."
-          cd framework && mvn clean test \
-            -DskipLocalHistory \
-            -Denv=$DEPLOY_ENV \
-            -Dsuite.xml=testng-suites/${SUITE}-suite.xml \
-            -Dthread.count=$THREADS \
-            -Dauth.token.url=$CI_AUTH_TOKEN_URL \
-            --batch-mode \
-            --no-transfer-progress || TEST_EXIT_CODE=$?
-          
-          # Check test results
-          if [ "${TEST_EXIT_CODE:-0}" -eq 0 ]; then
-            echo "====================================="
-            echo "Test execution completed successfully"
-            echo "====================================="
-          else
-            echo "====================================="
-            echo "Test execution failed with exit code: ${TEST_EXIT_CODE}"
-            echo "====================================="
-            exit ${TEST_EXIT_CODE}
-          fi
+          # Make script executable and run it
+          chmod +x post-deploy-tests.sh
+          ./post-deploy-tests.sh
         resources:
           requests:
             memory: "1Gi"
