@@ -29,8 +29,27 @@ spec:
         emptyDir: {}
       - name: tmp
         emptyDir: {}
+      - name: gcloud-sdk
+        emptyDir: {}
       {{- if .Values.autoTest.extraVolumes }}
       {{- toYaml .Values.autoTest.extraVolumes | nindent 6 }}
+      {{- end }}
+      {{- if .Values.autoTest.enableGCS }}
+      initContainers:
+      - name: install-gcloud
+        image: google/cloud-sdk:slim
+        volumeMounts:
+        - name: gcloud-sdk
+          mountPath: /opt/google-cloud-sdk
+        command:
+        - /bin/bash
+        - -c
+        - |
+          echo "Installing gcloud SDK to shared volume..."
+          # Copy gcloud binaries to shared volume
+          cp -r /usr/lib/google-cloud-sdk/* /opt/google-cloud-sdk/
+          echo "gcloud SDK installed successfully"
+          ls -la /opt/google-cloud-sdk/bin/
       {{- end }}
       containers:
       - name: test-runner
@@ -42,10 +61,30 @@ spec:
           mountPath: /cache
         - name: tmp
           mountPath: /tmp
+        {{- if .Values.autoTest.enableGCS }}
+        - name: gcloud-sdk
+          mountPath: /opt/google-cloud-sdk
+        {{- end }}
         {{- if .Values.autoTest.extraVolumeMounts }}
         {{- toYaml .Values.autoTest.extraVolumeMounts | nindent 8 }}
         {{- end }}
+        {{- if .Values.autoTest.envFromSecret }}
+        # Load all keys from centralized secret as environment variables
+        envFrom:
+        - secretRef:
+            name: {{ .Values.autoTest.envFromSecret }}
+            optional: {{ .Values.autoTest.envFromSecretOptional | default false }}
+        {{- end }}
         env:
+        {{- if .Values.autoTest.enableGCS }}
+        # Add gcloud to PATH and set HOME to writable directory
+        - name: PATH
+          value: "/opt/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        - name: HOME
+          value: "/tmp"
+        - name: CLOUDSDK_CONFIG
+          value: "/tmp/.config/gcloud"
+        {{- end }}
         # Core parameters
         - name: SERVICE_NAME
           value: {{ include "application.name" . | quote }}
@@ -58,7 +97,7 @@ spec:
         - name: TRIGGER
           value: {{ .Values.autoTest.trigger | default "argocd-post-sync" | quote }}
         - name: RUN_ID
-          value: {{ .Values.autoTest.runId | default (printf "%s-%s" .Release.Name .Release.Revision) | quote }}
+          value: {{ .Values.autoTest.runId | default (printf "%s-%s-%s" (include "application.name" .) (now | unixEpoch) (randAlphaNum 6 | lower)) | quote }}
         
         # Optional parameters
         - name: CLUSTER
@@ -138,13 +177,32 @@ spec:
               name: {{ .Values.autoTest.slackSecret | quote }}
               key: "webhook-url"
               optional: true
+        {{- else if .Values.autoTest.slackWebhookUrl }}
+        - name: SLACK_WEBHOOK_URL
+          value: {{ .Values.autoTest.slackWebhookUrl | quote }}
         {{- end }}
+        
+        # Auth token URL for OAuth2 authentication
+        - name: CI_AUTH_TOKEN_URL
+          value: {{ .Values.autoTest.authTokenUrl | default (printf "http://auth.beta.%s.livspace.com/oauth2/token" (.Values.autoTest.environment | default "staging")) | quote }}
         
         {{- if .Values.autoTest.extraEnvVars }}
         # Additional custom environment variables
         {{- range $key, $value := .Values.autoTest.extraEnvVars }}
         - name: {{ $key }}
           value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        
+        {{- if .Values.autoTest.extraEnvFromSecrets }}
+        # Additional environment variables from secrets
+        {{- range $env := .Values.autoTest.extraEnvFromSecrets }}
+        - name: {{ $env.name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $env.secretName | default $.Values.autoTest.envFromSecret }}
+              key: {{ $env.secretKey | default $env.name }}
+              optional: {{ $env.optional | default true }}
         {{- end }}
         {{- end }}
         command: ["/bin/bash"]

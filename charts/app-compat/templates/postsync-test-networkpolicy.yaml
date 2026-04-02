@@ -1,0 +1,113 @@
+{{- if .Values.autoTest.enabled }}
+{{- if .Values.autoTest.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "application.name" . }}-test-egress
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ include "application.name" . }}-test
+    app.kubernetes.io/component: test
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ include "application.name" . }}-test
+      type: postsync
+  policyTypes:
+  - Egress
+  egress:
+  # DNS resolution (required)
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+  
+  # APISIX API Gateway (Internal LoadBalancer)
+  - to:
+    - ipBlock:
+        cidr: 10.4.0.4/32
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+  
+  # HAProxy Ingress (for OAuth2 authentication)
+  - to:
+    - ipBlock:
+        cidr: 10.4.0.36/32
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+  
+  # APISIX namespace access (for internal routing)
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-apisix
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+    - port: 9080
+      protocol: TCP
+    - port: 9443
+      protocol: TCP
+  
+  # External service IP (GitHub/other services)
+  - to:
+    - ipBlock:
+        cidr: 34.93.19.252/32
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+  
+  # External Internet (for GitHub and external APIs)
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 10.0.0.0/8
+        - 192.168.0.0/16
+        - 172.16.0.0/12
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+  
+  # MySQL/PostgreSQL databases
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+    ports:
+    - port: 3306
+      protocol: TCP
+    - port: 3307
+      protocol: TCP
+    - port: 5432
+      protocol: TCP
+  
+  # Internal pod-to-pod communication (critical for cluster networking)
+  - to:
+    - podSelector: {}
+    ports:
+    - protocol: TCP
+  
+  {{- if .Values.autoTest.networkPolicy.additionalEgress }}
+  # Additional custom egress rules
+  {{- toYaml .Values.autoTest.networkPolicy.additionalEgress | nindent 2 }}
+  {{- end }}
+{{- end }}
+{{- end }}

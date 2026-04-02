@@ -827,9 +827,36 @@ autoTest:
   gcsSecret: ""  # Contains service-account-key
   slackSecret: ""  # Contains webhook-url
   
-  # -- Additional custom environment variables
+  # -- Direct configuration (alternative to secrets)
+  slackWebhookUrl: ""  # Direct Slack webhook URL (alternative to slackSecret)
+  authTokenUrl: ""  # OAuth2 token URL (auto-generated if not specified)
+  
+  # -- Network policy for test pods
+  networkPolicy:
+    enabled: true  # Enable network policy for test pods
+    additionalEgress: []  # Additional egress rules if needed
+  
+  # -- Centralized secret containing all test credentials
+  # If set, all keys from this secret will be loaded as environment variables
+  envFromSecret: ""  # e.g., "postsync-test-credentials"
+  envFromSecretOptional: false  # Set to true if the secret might not exist
+  
+  # -- Enable GCS integration for test reports
+  # This will install gcloud SDK via init container
+  enableGCS: false
+  
+  # -- Additional custom environment variables (plain text)
   extraEnvVars: {}
     # CUSTOM_VAR: "value"
+    # API_ENDPOINT: "https://api.example.com"
+  
+  # -- Additional environment variables from secrets
+  # Use this to pick specific keys from secrets or map them to different names
+  extraEnvFromSecrets: []
+    # - name: DB_PASSWORD           # Environment variable name
+    #   secretName: my-secret        # Optional if envFromSecret is set
+    #   secretKey: mysql-password    # Key in the secret
+    #   optional: true              # Won't fail if secret doesn't exist
     # ANOTHER_VAR: "another-value"
   
   # -- Additional volumes (for custom configurations)
