@@ -100,7 +100,7 @@ spec:
           value: {{ .Values.autoTest.runId | default (printf "%s-%s-%s" (include "application.name" .) (now | unixEpoch) (randAlphaNum 6 | lower)) | quote }}
         - name: ARGOCD_REVISION
           value: {{ .Values.deployment.image.tag | default "unknown" | quote }}
-        
+
         # Optional parameters
         - name: CLUSTER
           value: {{ .Values.autoTest.cluster | default "gke-staging-new" | quote }}
@@ -108,7 +108,7 @@ spec:
           value: {{ .Release.Namespace | quote }}
         - name: ENABLE_TREND_SUMMARY
           value: {{ .Values.autoTest.enableTrendSummary | default "false" | quote }}
-        
+
         # Language/Framework specific configuration
         {{- if eq (.Values.autoTest.framework | default "maven") "maven" }}
         - name: MAVEN_OPTS
@@ -129,7 +129,7 @@ spec:
         - name: NPM_CONFIG_CACHE
           value: {{ .Values.autoTest.npmCache | default "/cache/npm" | quote }}
         {{- end }}
-        
+
         # Test framework environment
         - name: TEST_FRAMEWORK
           value: {{ .Values.autoTest.framework | default "maven" | quote }}
@@ -137,14 +137,14 @@ spec:
           value: {{ .Values.autoTest.cacheDir | default "/cache" | quote }}
         - name: ALLURE_HOME
           value: {{ .Values.autoTest.allureHome | default "/tmp/allure" | quote }}
-        
+
         # GitHub authentication
         - name: GITHUB_TOKEN
           valueFrom:
             secretKeyRef:
               name: {{ .Values.autoTest.github.secretName | quote }}
               key: {{ .Values.autoTest.github.secretKey | quote }}
-        
+
         {{- if .Values.autoTest.authSecret }}
         # Auth credentials (optional - won't fail if secret doesn't exist)
         - name: AUTH_CLIENT_ID
@@ -160,7 +160,7 @@ spec:
               key: "client-secret"
               optional: true
         {{- end }}
-        
+
         # GCS credentials for report upload (optional)
         {{- if .Values.autoTest.gcsSecret }}
         - name: GCS_SERVICE_ACCOUNT_KEY
@@ -170,7 +170,7 @@ spec:
               key: "service-account-key"
               optional: true
         {{- end }}
-        
+
         # Slack webhook for notifications (optional)
         {{- if .Values.autoTest.slackSecret }}
         - name: SLACK_WEBHOOK_URL
@@ -183,7 +183,7 @@ spec:
         - name: SLACK_WEBHOOK_URL
           value: {{ .Values.autoTest.slackWebhookUrl | quote }}
         {{- end }}
-        
+
         # Auth token URL for OAuth2 authentication
         - name: CI_AUTH_TOKEN_URL
           {{- if eq (.Values.autoTest.environment | default "staging") "production" }}
@@ -191,7 +191,7 @@ spec:
           {{- else }}
           value: {{ .Values.autoTest.authTokenUrl | default (printf "http://auth.beta.%s.livspace.com/oauth2/token" (.Values.autoTest.environment | default "staging")) | quote }}
           {{- end }}
-        
+
         {{- if .Values.autoTest.extraEnvVars }}
         # Additional custom environment variables
         {{- range $key, $value := .Values.autoTest.extraEnvVars }}
@@ -199,7 +199,7 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         {{- end }}
-        
+
         {{- if .Values.autoTest.extraEnvFromSecrets }}
         # Additional environment variables from secrets
         {{- range $env := .Values.autoTest.extraEnvFromSecrets }}
@@ -216,40 +216,40 @@ spec:
         - -c
         - |
           set -e
-          
+
           echo "====================================="
           echo "Starting Post-Deploy Test Execution"
           echo "====================================="
           echo "Service: $SERVICE_NAME"
-          echo "Environment: $DEPLOY_ENV" 
+          echo "Environment: $DEPLOY_ENV"
           echo "Suite: $SUITE"
           echo "Threads: $THREADS"
           echo "Trigger: $TRIGGER"
           echo "Run ID: $RUN_ID"
           echo "====================================="
-          
+
           # Install git if not available (maven image has it, but just in case)
           which git || (apt-get update && apt-get install -y git)
-          
+
           # Change to workspace directory
           cd /workspace
-          
+
           # Clone the test repository with authentication
           echo "Cloning test repository..."
           REPO_URL="{{ .Values.autoTest.repository | default "https://github.com/livspaceeng/sdet-live-livspace.git" }}"
           REPO_BRANCH="{{ .Values.autoTest.branch | default "main" }}"
-          
+
           # Add authentication to URL if it's GitHub
           if [[ "$REPO_URL" == *"github.com"* ]]; then
             REPO_URL="https://${GITHUB_TOKEN}@${REPO_URL#https://}"
           fi
-          
+
           git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" test-repo
           cd test-repo
-          
+
           # Run the test script
           SCRIPT_PATH="{{ .Values.autoTest.scriptPath | default "framework/k8s/run-post-deploy-tests.sh" }}"
-          
+
           if [ -f "$SCRIPT_PATH" ]; then
             echo "Running test script: $SCRIPT_PATH"
             chmod +x "$SCRIPT_PATH"

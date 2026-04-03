@@ -27,7 +27,7 @@ spec:
       protocol: UDP
     - port: 53
       protocol: TCP
-  
+
   # APISIX API Gateway (Internal LoadBalancer)
   {{- if eq (.Values.autoTest.environment | default "staging") "production" }}
   # Production: No internal APISIX LoadBalancer, use gateway service
@@ -54,7 +54,7 @@ spec:
     - port: 443
       protocol: TCP
   {{- end }}
-  
+
   # HAProxy Ingress (for OAuth2 authentication)
   {{- if eq (.Values.autoTest.environment | default "staging") "production" }}
   # Production HAProxy internal LoadBalancers
@@ -85,7 +85,7 @@ spec:
     - port: 443
       protocol: TCP
   {{- end }}
-  
+
   # APISIX namespace access (for internal routing)
   - to:
     - namespaceSelector:
@@ -100,7 +100,7 @@ spec:
       protocol: TCP
     - port: 9443
       protocol: TCP
-  
+
   # External service IP (GitHub/other services)
   {{- if eq (.Values.autoTest.environment | default "staging") "production" }}
   # Production external IPs
@@ -123,7 +123,7 @@ spec:
     - port: 443
       protocol: TCP
   {{- end }}
-  
+
   # External Internet (for GitHub and external APIs)
   - to:
     - ipBlock:
@@ -137,7 +137,7 @@ spec:
       protocol: TCP
     - port: 443
       protocol: TCP
-  
+
   # MySQL/PostgreSQL databases
   - to:
     - ipBlock:
@@ -149,13 +149,13 @@ spec:
       protocol: TCP
     - port: 5432
       protocol: TCP
-  
+
   # Internal pod-to-pod communication (critical for cluster networking)
   - to:
     - podSelector: {}
     ports:
     - protocol: TCP
-  
+
   {{- if .Values.autoTest.networkPolicy.additionalEgress }}
   # Additional custom egress rules
   {{- toYaml .Values.autoTest.networkPolicy.additionalEgress | nindent 2 }}

@@ -1,0 +1,375 @@
+{{- if .Values.autoTest.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: auto-test-{{ include "application.name" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+  labels:
+    app: {{ include "application.name" . }}
+    app.kubernetes.io/component: test
+spec:
+  ttlSecondsAfterFinished: {{ .Values.autoTest.ttlSecondsAfterFinished | default 3600 }}
+  backoffLimit: {{ .Values.autoTest.backoffLimit | default 0 }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "application.name" . }}-test
+        type: postsync
+        service: {{ include "application.name" . }}
+    spec:
+      serviceAccountName: {{ .Values.autoTest.serviceAccountName | default "argo-workflow" }}
+      restartPolicy: Never
+      volumes:
+      - name: workspace
+        emptyDir: {}
+      {{- if .Values.autoTest.sharedVolume }}
+      - name: shared
+        emptyDir: {}
+      {{- end }}
+      
+      {{- if .Values.autoTest.parallelScripts }}
+      # ========================================
+      # PARALLEL EXECUTION USING INIT CONTAINERS
+      # ========================================
+      initContainers:
+      {{- range $index, $script := .Values.autoTest.parallelScripts }}
+      - name: parallel-{{ $index }}-{{ $script.name | lower | replace " " "-" }}
+        image: {{ $script.image | default $.Values.autoTest.image | default "maven:3.8.6-openjdk-17" | quote }}
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+        {{- if $.Values.autoTest.sharedVolume }}
+        - name: shared
+          mountPath: /shared
+        {{- end }}
+        env:
+        {{- include "autotest.common-env" $ | nindent 8 }}
+        {{- if $script.env }}
+        {{- range $key, $value := $script.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+        command: ["/bin/bash"]
+        args:
+        - -c
+        - |
+          set -e
+          echo "========================================="
+          echo "Running: {{ $script.name }}"
+          echo "========================================="
+          
+          # Clone repository if needed
+          {{- if $script.requiresRepo | default true }}
+          cd /workspace
+          if [ ! -d "test-repo" ]; then
+            which git || (apt-get update && apt-get install -y git)
+            REPO_URL="{{ $script.repository | default $.Values.autoTest.repository | default "https://github.com/livspaceeng/sdet-live-livspace.git" }}"
+            REPO_BRANCH="{{ $script.branch | default $.Values.autoTest.branch | default "main" }}"
+            if [[ "$REPO_URL" == *"github.com"* ]]; then
+              REPO_URL="https://${GITHUB_TOKEN}@${REPO_URL#https://}"
+            fi
+            git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" test-repo
+          fi
+          cd test-repo
+          {{- end }}
+          
+          # Execute script and capture exit code
+          SCRIPT_EXIT_CODE=0
+          (
+            {{ $script.command | nindent 12 }}
+          ) || SCRIPT_EXIT_CODE=$?
+          
+          {{- if $script.saveOutput | default true }}
+          # Save output to shared volume for main container to check
+          echo "Exit code: $SCRIPT_EXIT_CODE" > /shared/{{ $script.name | lower | replace " " "-" }}-result.txt
+          echo "Script {{ $script.name }} completed with exit code: $SCRIPT_EXIT_CODE"
+          {{- end }}
+          
+          # Exit with the script's exit code
+          exit $SCRIPT_EXIT_CODE
+        resources:
+          {{- if $script.resources }}
+          {{- toYaml $script.resources | nindent 10 }}
+          {{- else }}
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+          {{- end }}
+      {{- end }}
+      {{- end }}
+      
+      containers:
+      # ==========================================
+      # MAIN CONTAINER - SEQUENTIAL OR SINGLE EXECUTION
+      # ==========================================
+      - name: test-runner
+        image: {{ .Values.autoTest.image | default "maven:3.8.6-openjdk-17" | quote }}
+        volumeMounts:
+        - name: workspace
+          mountPath: /workspace
+        {{- if .Values.autoTest.sharedVolume }}
+        - name: shared
+          mountPath: /shared
+        {{- end }}
+        env:
+        {{- include "autotest.common-env" . | nindent 8 }}
+        command: ["/bin/bash"]
+        args:
+        - -c
+        - |
+          set -e
+          
+          echo "======================================"
+          echo "Starting Post-Deploy Test Execution"
+          echo "======================================"
+          echo "Service: $SERVICE_NAME"
+          echo "Environment: $DEPLOY_ENV"
+          echo "Suite: $SUITE"
+          echo "======================================"
+          
+          {{- if .Values.autoTest.parallelScripts }}
+          # Check results from parallel execution
+          echo ""
+          echo "========================================="
+          echo "Parallel Scripts Execution Complete"
+          echo "========================================="
+          if [ -d "/shared" ]; then
+            PARALLEL_SUMMARY=""
+            for result in /shared/*-result.txt; do
+              if [ -f "$result" ]; then
+                SCRIPT_NAME=$(basename $result -result.txt)
+                EXIT_CODE=$(cat "$result" | grep "Exit code:" | cut -d: -f2 | tr -d ' ' || echo "unknown")
+                if [ "${EXIT_CODE}" = "0" ]; then
+                  STATUS="✓ PASSED"
+                else
+                  STATUS="✗ FAILED (exit code: ${EXIT_CODE})"
+                fi
+                echo "  ${SCRIPT_NAME}: ${STATUS}"
+                PARALLEL_SUMMARY="${PARALLEL_SUMMARY}\n  ${SCRIPT_NAME}: ${STATUS}"
+              fi
+            done
+            
+            # Optional: Exit if any parallel script failed (unless continueOnParallelError is true)
+            {{- if not .Values.autoTest.continueOnParallelError }}
+            PARALLEL_FAILED=false
+            for result in /shared/*-result.txt; do
+              if [ -f "$result" ]; then
+                EXIT_CODE=$(cat "$result" | grep "Exit code:" | cut -d: -f2 | tr -d ' ' || echo "0")
+                if [ "${EXIT_CODE}" != "0" ] && [ -n "${EXIT_CODE}" ]; then
+                  PARALLEL_FAILED=true
+                fi
+              fi
+            done
+            
+            if [ "$PARALLEL_FAILED" = "true" ]; then
+              echo ""
+              echo "ERROR: One or more parallel scripts failed. Stopping execution."
+              echo "To continue despite parallel failures, set autoTest.continueOnParallelError: true"
+              exit 1
+            fi
+            {{- end }}
+          fi
+          echo "========================================="
+          {{- end }}
+          
+          {{- if .Values.autoTest.scripts }}
+          # ========================================
+          # SEQUENTIAL SCRIPT EXECUTION
+          # ========================================
+          {{- range $index, $script := .Values.autoTest.scripts }}
+          
+          echo ""
+          echo "========================================="
+          echo "[{{ add $index 1 }}/{{ len $.Values.autoTest.scripts }}] Running: {{ $script.name }}"
+          echo "========================================="
+          
+          {{- if $script.condition }}
+          # Check condition
+          if {{ $script.condition }}; then
+          {{- end }}
+          
+          {{- if $script.requiresRepo | default true }}
+          # Clone repository if not already cloned
+          cd /workspace
+          if [ ! -d "test-repo" ]; then
+            which git || (apt-get update && apt-get install -y git)
+            REPO_URL="{{ $script.repository | default $.Values.autoTest.repository | default "https://github.com/livspaceeng/sdet-live-livspace.git" }}"
+            REPO_BRANCH="{{ $script.branch | default $.Values.autoTest.branch | default "main" }}"
+            if [[ "$REPO_URL" == *"github.com"* ]]; then
+              REPO_URL="https://${GITHUB_TOKEN}@${REPO_URL#https://}"
+            fi
+            git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" test-repo
+          fi
+          cd test-repo
+          {{- end }}
+          
+          {{- if $script.workDir }}
+          # Change to specified working directory
+          cd {{ $script.workDir }}
+          {{- end }}
+          
+          {{- if $script.env }}
+          # Set script-specific environment variables
+          {{- range $key, $value := $script.env }}
+          export {{ $key }}="{{ $value }}"
+          {{- end }}
+          {{- end }}
+          
+          # Execute script command
+          {{ $script.command | nindent 10 }}
+          
+          {{- if $script.continueOnError }}
+          # Continue even if script fails
+          SCRIPT_EXIT_CODE=$? || true
+          echo "Script exited with code: $SCRIPT_EXIT_CODE"
+          {{- else }}
+          # Exit on error (default behavior)
+          {{- end }}
+          
+          {{- if $script.condition }}
+          fi
+          {{- end }}
+          
+          {{- if $script.delay }}
+          # Delay before next script
+          echo "Waiting {{ $script.delay }} seconds before next script..."
+          sleep {{ $script.delay }}
+          {{- end }}
+          
+          {{- end }}
+          {{- else if not .Values.autoTest.parallelScripts }}
+          # ========================================
+          # SINGLE SCRIPT EXECUTION (BACKWARD COMPATIBLE)
+          # ========================================
+          
+          # Install git if not available
+          which git || (apt-get update && apt-get install -y git)
+          
+          # Clone repository
+          cd /workspace
+          REPO_URL="{{ .Values.autoTest.repository | default "https://github.com/livspaceeng/sdet-live-livspace.git" }}"
+          REPO_BRANCH="{{ .Values.autoTest.branch | default "main" }}"
+          
+          if [[ "$REPO_URL" == *"github.com"* ]]; then
+            REPO_URL="https://${GITHUB_TOKEN}@${REPO_URL#https://}"
+          fi
+          
+          git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" test-repo
+          cd test-repo
+          
+          # Run the test script
+          SCRIPT_PATH="{{ .Values.autoTest.scriptPath | default "framework/k8s/run-post-deploy-tests.sh" }}"
+          
+          if [ -f "$SCRIPT_PATH" ]; then
+            echo "Running test script: $SCRIPT_PATH"
+            chmod +x "$SCRIPT_PATH"
+            bash "$SCRIPT_PATH"
+          else
+            echo "ERROR: Test script not found at $SCRIPT_PATH"
+            exit 1
+          fi
+          {{- end }}
+          
+          echo ""
+          echo "======================================"
+          echo "Post-Deploy Test Execution Complete"
+          echo "======================================"
+        resources:
+          {{- if .Values.autoTest.resources }}
+          {{- toYaml .Values.autoTest.resources | nindent 10 }}
+          {{- else }}
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+          {{- end }}
+{{- end }}
+
+{{/* Common environment variables helper */}}
+{{- define "autotest.common-env" -}}
+# Core parameters
+- name: SERVICE_NAME
+  value: {{ include "application.name" . | quote }}
+- name: DEPLOY_ENV
+  value: {{ .Values.autoTest.environment | default "staging" | quote }}
+- name: SUITE
+  value: {{ .Values.autoTest.suite | default "smoke" | quote }}
+- name: THREADS
+  value: {{ .Values.autoTest.threads | default 3 | quote }}
+- name: TRIGGER
+  value: {{ .Values.autoTest.trigger | default "argocd-post-sync" | quote }}
+- name: RUN_ID
+  value: {{ .Values.autoTest.runId | default (printf "%s-%s" .Release.Name .Release.Revision) | quote }}
+
+# Optional parameters
+- name: CLUSTER
+  value: {{ .Values.autoTest.cluster | default "gke-staging-new" | quote }}
+- name: TARGET_NAMESPACE
+  value: {{ .Release.Namespace | quote }}
+- name: ENABLE_TREND_SUMMARY
+  value: {{ .Values.autoTest.enableTrendSummary | default "false" | quote }}
+
+# Maven configuration
+- name: MAVEN_OPTS
+  value: {{ .Values.autoTest.mavenOpts | default "-Xmx512m" | quote }}
+
+# GitHub authentication
+- name: GITHUB_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.autoTest.github.secretName | quote }}
+      key: {{ .Values.autoTest.github.secretKey | quote }}
+
+{{- if .Values.autoTest.secrets }}
+# Auth credentials
+{{- if .Values.autoTest.secrets.authClientId }}
+- name: AUTH_CLIENT_ID
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.autoTest.secrets.authClientId.secretName | quote }}
+      key: {{ .Values.autoTest.secrets.authClientId.secretKey | quote }}
+{{- end }}
+{{- if .Values.autoTest.secrets.authClientSecret }}
+- name: AUTH_CLIENT_SECRET
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.autoTest.secrets.authClientSecret.secretName | quote }}
+      key: {{ .Values.autoTest.secrets.authClientSecret.secretKey | quote }}
+{{- end }}
+
+# GCS credentials
+{{- if .Values.autoTest.secrets.gcsServiceAccountKey }}
+- name: GCS_SERVICE_ACCOUNT_KEY
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.autoTest.secrets.gcsServiceAccountKey.secretName | quote }}
+      key: {{ .Values.autoTest.secrets.gcsServiceAccountKey.secretKey | quote }}
+{{- end }}
+
+# Slack webhook
+{{- if .Values.autoTest.secrets.slackWebhookUrl }}
+- name: SLACK_WEBHOOK_URL
+  valueFrom:
+    secretKeyRef:
+      name: {{ .Values.autoTest.secrets.slackWebhookUrl.secretName | quote }}
+      key: {{ .Values.autoTest.secrets.slackWebhookUrl.secretKey | quote }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.autoTest.extraEnvVars }}
+# Additional custom environment variables
+{{- range $key, $value := .Values.autoTest.extraEnvVars }}
+- name: {{ $key }}
+  value: {{ $value | quote }}
+{{- end }}
+{{- end }}
+{{- end -}}
