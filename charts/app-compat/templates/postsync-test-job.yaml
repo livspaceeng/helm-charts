@@ -98,6 +98,8 @@ spec:
           value: {{ .Values.autoTest.trigger | default "argocd-post-sync" | quote }}
         - name: RUN_ID
           value: {{ .Values.autoTest.runId | default (printf "%s-%s-%s" (include "application.name" .) (now | unixEpoch) (randAlphaNum 6 | lower)) | quote }}
+        - name: ARGOCD_REVISION
+          value: {{ .Values.deployment.image.tag | default "unknown" | quote }}
         
         # Optional parameters
         - name: CLUSTER
@@ -184,7 +186,11 @@ spec:
         
         # Auth token URL for OAuth2 authentication
         - name: CI_AUTH_TOKEN_URL
+          {{- if eq (.Values.autoTest.environment | default "staging") "production" }}
+          value: {{ .Values.autoTest.authTokenUrl | default "http://auth.livspace.com/oauth2/token" | quote }}
+          {{- else }}
           value: {{ .Values.autoTest.authTokenUrl | default (printf "http://auth.beta.%s.livspace.com/oauth2/token" (.Values.autoTest.environment | default "staging")) | quote }}
+          {{- end }}
         
         {{- if .Values.autoTest.extraEnvVars }}
         # Additional custom environment variables
