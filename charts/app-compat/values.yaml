@@ -774,39 +774,30 @@ serviceProfile:
 autoTest:
   # -- Enable automatic testing after deployment
   enabled: false
-  
   # -- Test framework (maven, python, go, node)
   framework: "maven"
-  
   # -- Container image for test execution (auto-selected based on framework)
   # Maven: maven:3.8.6-eclipse-temurin-17
   # Python: python:3.11-slim
   # Go: golang:1.21
   # Node: node:18
   image: ""
-  
   # -- Test suite to run (smoke, regression, integration)
   suite: "smoke"
-  
   # -- Number of parallel threads for test execution
   threads: 3
-  
   # -- Job retry limit (0 = no retries)
   backoffLimit: 0
-  
   # -- Test repository configuration
   repository: "https://github.com/livspaceeng/sdet-live-livspace.git"
   branch: "main"
   scriptPath: "framework/k8s/run-post-deploy-tests.sh"
-  
   # -- Environment configuration (auto-detected if not specified)
   environment: ""
   cluster: ""
-  
   # -- Cache directory configuration
   cacheDir: "/cache"
   allureHome: "/tmp/allure"
-  
   # -- Language-specific settings (auto-configured based on framework)
   mavenOpts: "-Xmx512m -Dmaven.repo.local=/cache/maven"
   javaHome: "/opt/java/openjdk"
@@ -815,41 +806,33 @@ autoTest:
   goPath: "/cache/go"
   goCache: "/cache/go-build"
   npmCache: "/cache/npm"
-  
   # -- GitHub authentication for private repository access
   github:
     secretName: "github-pat-secret"
     secretKey: "token"
-  
   # -- Optional secrets (won't fail if not present)
   # Leave empty to skip, or set to secret name to enable
   authSecret: "auth-secrets"  # Contains client-id and client-secret keys
   gcsSecret: ""  # Contains service-account-key
   slackSecret: ""  # Contains webhook-url
-  
   # -- Direct configuration (alternative to secrets)
   slackWebhookUrl: ""  # Direct Slack webhook URL (alternative to slackSecret)
   authTokenUrl: ""  # OAuth2 token URL (auto-generated if not specified)
-  
   # -- Network policy for test pods
   networkPolicy:
     enabled: true  # Enable network policy for test pods
     additionalEgress: []  # Additional egress rules if needed
-  
   # -- Centralized secret containing all test credentials
   # If set, all keys from this secret will be loaded as environment variables
   envFromSecret: ""  # e.g., "postsync-test-credentials"
   envFromSecretOptional: false  # Set to true if the secret might not exist
-  
   # -- Enable GCS integration for test reports
   # This will install gcloud SDK via init container
   enableGCS: false
-  
   # -- Additional custom environment variables (plain text)
   extraEnvVars: {}
     # CUSTOM_VAR: "value"
     # API_ENDPOINT: "https://api.example.com"
-  
   # -- Additional environment variables from secrets
   # Use this to pick specific keys from secrets or map them to different names
   extraEnvFromSecrets: []
@@ -858,18 +841,15 @@ autoTest:
     #   secretKey: mysql-password    # Key in the secret
     #   optional: true              # Won't fail if secret doesn't exist
     # ANOTHER_VAR: "another-value"
-  
   # -- Additional volumes (for custom configurations)
   extraVolumes: []
     # - name: custom-config
     #   configMap:
     #     name: test-config
-  
   # -- Additional volume mounts
   extraVolumeMounts: []
     # - name: custom-config
     #   mountPath: /config
-  
   # -- DEPRECATED: Use simplified secret configuration above
   secrets:
     authClientId:
