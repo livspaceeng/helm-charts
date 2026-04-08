@@ -23,48 +23,32 @@ spec:
       serviceAccountName: argo-workflow  # Required by Kyverno policy
       restartPolicy: Never
       volumes:
-      - name: workspace
-        emptyDir: {}
-      - name: cache
-        emptyDir: {}
+      # Essential writable directories for Docker image
       - name: tmp
         emptyDir: {}
-      - name: gcloud-sdk
+      - name: test-results
+        emptyDir: {}
+      - name: gcloud-config
         emptyDir: {}
       {{- if .Values.autoTest.extraVolumes }}
       {{- toYaml .Values.autoTest.extraVolumes | nindent 6 }}
       {{- end }}
-      {{- if .Values.autoTest.enableGCS }}
-      initContainers:
-      - name: install-gcloud
-        image: google/cloud-sdk:slim
-        volumeMounts:
-        - name: gcloud-sdk
-          mountPath: /opt/google-cloud-sdk
-        command:
-        - /bin/bash
-        - -c
-        - |
-          echo "Installing gcloud SDK to shared volume..."
-          # Copy gcloud binaries to shared volume
-          cp -r /usr/lib/google-cloud-sdk/* /opt/google-cloud-sdk/
-          echo "gcloud SDK installed successfully"
-          ls -la /opt/google-cloud-sdk/bin/
-      {{- end }}
       containers:
       - name: test-runner
-        image: {{ .Values.autoTest.image | default "maven:3.8.6-eclipse-temurin-17" | quote }}
+        image: {{ .Values.autoTest.image | default "livcr.io/livspace/sdet-test-runner:latest" | quote }}
+        {{- if .Values.autoTest.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.autoTest.imagePullPolicy }}
+        {{- else }}
+        imagePullPolicy: Always
+        {{- end }}
         volumeMounts:
-        - name: workspace
-          mountPath: /workspace
-        - name: cache
-          mountPath: /cache
+        # Essential mounts for Docker image to work properly
+        - name: test-results
+          mountPath: /app/framework/target
+        - name: gcloud-config
+          mountPath: /root/.config
         - name: tmp
           mountPath: /tmp
-        {{- if .Values.autoTest.enableGCS }}
-        - name: gcloud-sdk
-          mountPath: /opt/google-cloud-sdk
-        {{- end }}
         {{- if .Values.autoTest.extraVolumeMounts }}
         {{- toYaml .Values.autoTest.extraVolumeMounts | nindent 8 }}
         {{- end }}
@@ -76,15 +60,14 @@ spec:
             optional: {{ .Values.autoTest.envFromSecretOptional | default false }}
         {{- end }}
         env:
-        {{- if .Values.autoTest.enableGCS }}
-        # Add gcloud to PATH and set HOME to writable directory
-        - name: PATH
-          value: "/opt/google-cloud-sdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        # Environment for writable directories
         - name: HOME
           value: "/tmp"
         - name: CLOUDSDK_CONFIG
-          value: "/tmp/.config/gcloud"
-        {{- end }}
+          value: "/root/.config/gcloud"
+        # Test mode - crucial for the unified test runner
+        - name: TEST_MODE
+          value: {{ .Values.autoTest.testMode | default "post-deploy" | quote }}
         # Core parameters
         - name: SERVICE_NAME
           value: {{ include "application.name" . | quote }}
@@ -100,6 +83,8 @@ spec:
           value: {{ .Values.autoTest.runId | default (printf "%s-%s-%s" (include "application.name" .) (now | unixEpoch) (randAlphaNum 6 | lower)) | quote }}
         - name: ARGOCD_REVISION
           value: {{ .Values.deployment.image.tag | default "unknown" | quote }}
+        - name: ARGOCD_SERVER_URL
+          value: {{ .Values.autoTest.argocdServerUrl | default "https://argocd.eng.livspace.com" | quote }}
 
         # Optional parameters
         - name: CLUSTER
@@ -109,34 +94,9 @@ spec:
         - name: ENABLE_TREND_SUMMARY
           value: {{ .Values.autoTest.enableTrendSummary | default "false" | quote }}
 
-        # Language/Framework specific configuration
-        {{- if eq (.Values.autoTest.framework | default "maven") "maven" }}
-        - name: MAVEN_OPTS
-          value: {{ .Values.autoTest.mavenOpts | default "-Xmx512m -Dmaven.repo.local=/cache/maven" | quote }}
-        - name: JAVA_HOME
-          value: {{ .Values.autoTest.javaHome | default "/opt/java/openjdk" | quote }}
-        {{- else if eq .Values.autoTest.framework "python" }}
-        - name: PIP_CACHE_DIR
-          value: {{ .Values.autoTest.pipCacheDir | default "/cache/pip" | quote }}
-        - name: PYTHONPATH
-          value: {{ .Values.autoTest.pythonPath | default "/workspace" | quote }}
-        {{- else if eq .Values.autoTest.framework "go" }}
-        - name: GOPATH
-          value: {{ .Values.autoTest.goPath | default "/cache/go" | quote }}
-        - name: GOCACHE
-          value: {{ .Values.autoTest.goCache | default "/cache/go-build" | quote }}
-        {{- else if eq .Values.autoTest.framework "node" }}
-        - name: NPM_CONFIG_CACHE
-          value: {{ .Values.autoTest.npmCache | default "/cache/npm" | quote }}
-        {{- end }}
-
-        # Test framework environment
-        - name: TEST_FRAMEWORK
-          value: {{ .Values.autoTest.framework | default "maven" | quote }}
-        - name: CACHE_DIR
-          value: {{ .Values.autoTest.cacheDir | default "/cache" | quote }}
-        - name: ALLURE_HOME
-          value: {{ .Values.autoTest.allureHome | default "/tmp/allure" | quote }}
+        # Google Application Credentials path (for GCS uploads)
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/root/.gcp/key.json"
 
         # GitHub authentication
         - name: GITHUB_TOKEN
@@ -184,14 +144,6 @@ spec:
           value: {{ .Values.autoTest.slackWebhookUrl | quote }}
         {{- end }}
 
-        # Auth token URL for OAuth2 authentication
-        - name: CI_AUTH_TOKEN_URL
-          {{- if eq (.Values.autoTest.environment | default "staging") "production" }}
-          value: {{ .Values.autoTest.authTokenUrl | default "http://auth.livspace.com/oauth2/token" | quote }}
-          {{- else }}
-          value: {{ .Values.autoTest.authTokenUrl | default (printf "http://auth.beta.%s.livspace.com/oauth2/token" (.Values.autoTest.environment | default "staging")) | quote }}
-          {{- end }}
-
         {{- if .Values.autoTest.extraEnvVars }}
         # Additional custom environment variables
         {{- range $key, $value := .Values.autoTest.extraEnvVars }}
@@ -211,53 +163,12 @@ spec:
               optional: {{ $env.optional | default true }}
         {{- end }}
         {{- end }}
-        command: ["/bin/bash"]
-        args:
-        - -c
-        - |
-          set -e
-
-          echo "====================================="
-          echo "Starting Post-Deploy Test Execution"
-          echo "====================================="
-          echo "Service: $SERVICE_NAME"
-          echo "Environment: $DEPLOY_ENV"
-          echo "Suite: $SUITE"
-          echo "Threads: $THREADS"
-          echo "Trigger: $TRIGGER"
-          echo "Run ID: $RUN_ID"
-          echo "====================================="
-
-          # Install git if not available (maven image has it, but just in case)
-          which git || (apt-get update && apt-get install -y git)
-
-          # Change to workspace directory
-          cd /workspace
-
-          # Clone the test repository with authentication
-          echo "Cloning test repository..."
-          REPO_URL="{{ .Values.autoTest.repository | default "https://github.com/livspaceeng/sdet-live-livspace.git" }}"
-          REPO_BRANCH="{{ .Values.autoTest.branch | default "main" }}"
-
-          # Add authentication to URL if it's GitHub
-          if [[ "$REPO_URL" == *"github.com"* ]]; then
-            REPO_URL="https://${GITHUB_TOKEN}@${REPO_URL#https://}"
-          fi
-
-          git clone --depth 1 --branch "$REPO_BRANCH" "$REPO_URL" test-repo
-          cd test-repo
-
-          # Run the test script
-          SCRIPT_PATH="{{ .Values.autoTest.scriptPath | default "framework/k8s/run-post-deploy-tests.sh" }}"
-
-          if [ -f "$SCRIPT_PATH" ]; then
-            echo "Running test script: $SCRIPT_PATH"
-            chmod +x "$SCRIPT_PATH"
-            bash "$SCRIPT_PATH"
-          else
-            echo "ERROR: Test script not found at $SCRIPT_PATH"
-            exit 1
-          fi
+        {{- if .Values.autoTest.command }}
+        command: {{ .Values.autoTest.command }}
+        {{- end }}
+        {{- if .Values.autoTest.args }}
+        args: {{ .Values.autoTest.args }}
+        {{- end }}
         resources:
           {{- if .Values.autoTest.resources }}
           {{- toYaml .Values.autoTest.resources | nindent 10 }}
