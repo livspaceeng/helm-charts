@@ -79,7 +79,7 @@ spec:
           value: {{ .Values.autoTest.environment | default "staging" | quote }}
         - name: SUITE
           value: {{ .Values.autoTest.suite | quote }}
-        
+
         # Optional parameters with defaults in test runner
         {{- if .Values.autoTest.enableTrendSummary }}
         - name: ENABLE_TREND_SUMMARY
