@@ -20,7 +20,7 @@ spec:
         type: postsync
         service: {{ include "application.name" . }}
     spec:
-      serviceAccountName: argo-workflow  # Required by Kyverno policy
+      serviceAccountName: {{ .Values.autoTest.serviceAccount | default "argo-workflow" }}  # Required by Kyverno policy
       restartPolicy: Never
       volumes:
       # Essential writable directories for Docker image
@@ -29,6 +29,8 @@ spec:
       - name: test-results
         emptyDir: {}
       - name: gcloud-config
+        emptyDir: {}
+      - name: maven-repo
         emptyDir: {}
       {{- if .Values.autoTest.extraVolumes }}
       {{- toYaml .Values.autoTest.extraVolumes | nindent 6 }}
@@ -44,11 +46,13 @@ spec:
         volumeMounts:
         # Essential mounts for Docker image to work properly
         - name: test-results
-          mountPath: /app/framework/target
+          mountPath: /app/framework/target  # Mount target directory for writable access
         - name: gcloud-config
           mountPath: /root/.config
         - name: tmp
           mountPath: /tmp
+        - name: maven-repo
+          mountPath: /root/.m2/repository  # Mount Maven repository for dependencies
         {{- if .Values.autoTest.extraVolumeMounts }}
         {{- toYaml .Values.autoTest.extraVolumeMounts | nindent 8 }}
         {{- end }}
@@ -92,11 +96,13 @@ spec:
         - name: TARGET_NAMESPACE
           value: {{ .Release.Namespace | quote }}
         - name: ENABLE_TREND_SUMMARY
-          value: {{ .Values.autoTest.enableTrendSummary | default "false" | quote }}
+          value: {{ .Values.autoTest.enableTrendSummary | default "true" | quote }}
 
-        # Google Application Credentials path (for GCS uploads)
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: "/root/.gcp/key.json"
+        # Maven options for environment-specific configurations
+        {{- if .Values.autoTest.mavenOpts }}
+        - name: MAVEN_OPTS
+          value: {{ .Values.autoTest.mavenOpts | quote }}
+        {{- end }}
 
         # GitHub authentication
         - name: GITHUB_TOKEN
@@ -121,15 +127,8 @@ spec:
               optional: true
         {{- end }}
 
-        # GCS credentials for report upload (optional)
-        {{- if .Values.autoTest.gcsSecret }}
-        - name: GCS_SERVICE_ACCOUNT_KEY
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.autoTest.gcsSecret | quote }}
-              key: "service-account-key"
-              optional: true
-        {{- end }}
+        # GCS authentication via Workload Identity (no secrets needed)
+        # Service account must be annotated with iam.gke.io/gcp-service-account
 
         # Slack webhook for notifications (optional)
         {{- if .Values.autoTest.slackSecret }}
