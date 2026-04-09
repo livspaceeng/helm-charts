@@ -770,62 +770,99 @@ serviceProfile:
         pathRegex: /.*
 
 # -- Automatic Testing Configuration
-# Enable automated post-deployment testing using centralized test runner
+# =============================================================================
+# Automated Post-Deployment Testing Configuration
+# =============================================================================
+# Uses unified test runner with Workload Identity for secure GCS access
+#
+# REQUIRED VALUES (must be set in your values override):
+#   - suite: The test suite to run (e.g., "smoke", "regression")
+#
+# COMMONLY OVERRIDDEN VALUES:
+#   - environment: Target environment ("staging", "alpha", "production")
+#   - threads: Number of parallel test threads (default: 3)
+#   - authSecret: Secret name containing OAuth2 credentials
+#   - slackSecret: Secret name for Slack webhook notifications
+#
+# =============================================================================
 autoTest:
   # -- Enable automatic testing after deployment
   enabled: false
-  # -- Test framework (maven, python, go, node)
-  framework: "maven"
+  
+  # =========== CORE CONFIGURATION (Commonly Overridden) ===========
+  # -- Test suite to run (REQUIRED when enabled=true)
+  suite: "smoke"  # Options: smoke, regression, integration, full
+  
   # -- Container image for test execution
-  # Default: livcr.io/livspace/sdet-test-runner:latest (unified test runner with pre-installed dependencies)
   image: "livcr.io/livspace/sdet-test-runner:latest"
-  # -- Test suite to run (smoke, regression, integration)
-  suite: "smoke"
+  
   # -- Number of parallel threads for test execution
   threads: 3
-  # -- Job retry limit (0 = no retries)
-  backoffLimit: 0
-  # -- Test mode for unified test runner
-  testMode: "post-deploy"  # post-deploy, api-tests, manual, cron
-  # -- Service account for Workload Identity authentication
+  
+  # -- Test execution mode
+  testMode: "post-deploy"  # Options: post-deploy, api-tests, manual, cron
+  
+  # -- Service account for Workload Identity (must have GCS annotations)
   serviceAccount: "argo-workflow"
-  # -- Environment configuration
-  environment: "staging"  # staging, alpha, production
+  # =========== ENVIRONMENT CONFIGURATION ===========
+  # -- Target environment for test execution
+  environment: "staging"  # Detected from namespace if not set
+  
+  # -- Kubernetes cluster name
   cluster: "gke-staging-new"
-  # -- ArgoCD configuration
+  
+  # -- ArgoCD server URL for deployment tracking
   argocdServerUrl: "https://argocd.eng.livspace.com"
+  
+  # -- Test trigger source
   trigger: "argocd-post-sync"
-  runId: ""  # Auto-generated if empty
-  # -- Test execution configuration
-  enableTrendSummary: true  # Enable historical trend analysis
-  testMode: "post-deploy"  # Test execution mode
-  # -- Maven configuration for environment-specific settings
-  mavenOpts: ""  # Optional Maven options (e.g., "-Dauth.token.url=... -Dapi.base.url=...")
-  # -- GitHub authentication for private repository access
+  
+  # -- Unique run identifier (auto-generated if empty)
+  runId: ""
+  
+  # -- Enable historical trend analysis and comparison
+  enableTrendSummary: true
+  
+  # -- Maven JVM options for environment-specific configurations
+  # Example: "-Dauth.token.url=https://auth.example.com -Dapi.base.url=https://api.example.com"
+  mavenOpts: ""
+  # =========== AUTHENTICATION & SECRETS ===========
+  # -- GitHub token for accessing test repositories
   github:
-    secretName: "github-pat-secret"
+    secretName: "github-token"  # Or "github-pat-secret"
     secretKey: "token"
-  # -- Optional secrets (won't fail if not present)
-  # Leave empty to skip, or set to secret name to enable
-  authSecret: "auth-credentials"  # Contains client-id and client-secret keys
-  slackSecret: "slack-webhook"  # Contains webhook-url
-  # NOTE: GCS authentication now uses Workload Identity (no secrets needed)
-  # Service account must be annotated with iam.gke.io/gcp-service-account
-  # -- Direct configuration (alternative to secrets)
-  slackWebhookUrl: ""  # Direct Slack webhook URL (alternative to slackSecret)
-  authTokenUrl: ""  # OAuth2 token URL (auto-generated if not specified)
-  # -- Network policy for test pods
+  
+  # -- OAuth2 credentials for API authentication (optional)
+  # Secret must contain 'client-id' and 'client-secret' keys
+  authSecret: ""  # Set to "auth-credentials" if OAuth2 is required
+  
+  # -- Slack webhook for test result notifications (optional)
+  # Secret must contain 'webhook-url' key
+  slackSecret: ""  # Set to "slack-webhook" to enable notifications
+  
+  # -- Alternative: Direct Slack webhook URL (use this OR slackSecret)
+  slackWebhookUrl: ""
+  
+  # =========== GCS INTEGRATION (via Workload Identity) ===========
+  # GCS authentication is automatic via Workload Identity - no secrets needed!
+  # Requirements:
+  # 1. Service account must be annotated: iam.gke.io/gcp-service-account=SA@PROJECT.iam.gserviceaccount.com
+  # 2. GCP service account must have storage.objectAdmin on the reports bucket
+  # 3. IAM binding must exist for Workload Identity
+  # =========== NETWORK & SECURITY ===========
+  # -- Network policy for test pod egress traffic
   networkPolicy:
-    enabled: true  # Enable network policy for test pods
-    additionalEgress: []  # Additional egress rules if needed
-  # -- Centralized secret containing all test credentials
-  # If set, all keys from this secret will be loaded as environment variables
+    enabled: true
+    additionalEgress: []  # Add custom egress rules if needed
+  
+  # -- Job cleanup and retry configuration
+  backoffLimit: 0  # Number of retries (0 = no retries)
+  ttlSecondsAfterFinished: 3600  # Auto-cleanup after 1 hour
+  
+  # =========== ADVANCED CONFIGURATION ===========
+  # -- Load all environment variables from a secret
   envFromSecret: ""  # e.g., "postsync-test-credentials"
-  envFromSecretOptional: false  # Set to true if the secret might not exist
-  # -- GCS authentication via Workload Identity
-  # Ensure the service account is properly annotated:
-  # iam.gke.io/gcp-service-account: YOUR-SERVICE-ACCOUNT@PROJECT.iam.gserviceaccount.com
-  # No secrets or keys required
+  envFromSecretOptional: false
   # -- Additional custom environment variables (plain text)
   extraEnvVars: {}
     # CUSTOM_VAR: "value"
