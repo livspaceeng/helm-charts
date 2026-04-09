@@ -780,7 +780,6 @@ serviceProfile:
 #
 # COMMONLY OVERRIDDEN VALUES:
 #   - environment: Target environment ("staging", "alpha", "production")
-#   - threads: Number of parallel test threads (default: 3)
 #   - authSecret: Secret name containing OAuth2 credentials
 #   - slackSecret: Secret name for Slack webhook notifications
 #
@@ -795,9 +794,6 @@ autoTest:
   
   # -- Container image for test execution
   image: "livcr.io/livspace/sdet-test-runner:latest"
-  
-  # -- Number of parallel threads for test execution (optional, default: 3)
-  # threads: 3
   
   # -- Test execution mode (optional, default: post-deploy)
   # testMode: "post-deploy"  # Options: post-deploy, api-tests, manual, cron

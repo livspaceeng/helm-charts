@@ -81,10 +81,6 @@ spec:
           value: {{ .Values.autoTest.suite | quote }}
         
         # Optional parameters with defaults in test runner
-        {{- if .Values.autoTest.threads }}
-        - name: THREADS
-          value: {{ .Values.autoTest.threads | quote }}
-        {{- end }}
         {{- if .Values.autoTest.enableTrendSummary }}
         - name: ENABLE_TREND_SUMMARY
           value: {{ .Values.autoTest.enableTrendSummary | quote }}
