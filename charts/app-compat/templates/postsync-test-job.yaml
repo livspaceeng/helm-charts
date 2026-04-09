@@ -72,31 +72,30 @@ spec:
         # Test mode - crucial for the unified test runner
         - name: TEST_MODE
           value: {{ .Values.autoTest.testMode | default "post-deploy" | quote }}
-        # Core parameters
+        # Core required parameters
         - name: SERVICE_NAME
           value: {{ include "application.name" . | quote }}
         - name: DEPLOY_ENV
           value: {{ .Values.autoTest.environment | default "staging" | quote }}
         - name: SUITE
           value: {{ .Values.autoTest.suite | quote }}
+        
+        # Optional parameters with defaults in test runner
+        {{- if .Values.autoTest.threads }}
         - name: THREADS
-          value: {{ .Values.autoTest.threads | default 3 | quote }}
-        - name: TRIGGER
-          value: {{ .Values.autoTest.trigger | default "argocd-post-sync" | quote }}
-        - name: RUN_ID
-          value: {{ .Values.autoTest.runId | default (printf "%s-%s-%s" (include "application.name" .) (now | unixEpoch) (randAlphaNum 6 | lower)) | quote }}
+          value: {{ .Values.autoTest.threads | quote }}
+        {{- end }}
+        {{- if .Values.autoTest.enableTrendSummary }}
+        - name: ENABLE_TREND_SUMMARY
+          value: {{ .Values.autoTest.enableTrendSummary | quote }}
+        {{- end }}
+        {{- if .Values.deployment.image.tag }}
         - name: ARGOCD_REVISION
-          value: {{ .Values.deployment.image.tag | default "unknown" | quote }}
-        - name: ARGOCD_SERVER_URL
-          value: {{ .Values.autoTest.argocdServerUrl | default "https://argocd.eng.livspace.com" | quote }}
-
-        # Optional parameters
-        - name: CLUSTER
-          value: {{ .Values.autoTest.cluster | default "gke-staging-new" | quote }}
+          value: {{ .Values.deployment.image.tag | quote }}
+        {{- end }}
+        # Namespace for context (always available)
         - name: TARGET_NAMESPACE
           value: {{ .Release.Namespace | quote }}
-        - name: ENABLE_TREND_SUMMARY
-          value: {{ .Values.autoTest.enableTrendSummary | default "true" | quote }}
 
         # Maven options for environment-specific configurations
         {{- if .Values.autoTest.mavenOpts }}

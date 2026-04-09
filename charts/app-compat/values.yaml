@@ -796,11 +796,11 @@ autoTest:
   # -- Container image for test execution
   image: "livcr.io/livspace/sdet-test-runner:latest"
   
-  # -- Number of parallel threads for test execution
-  threads: 3
+  # -- Number of parallel threads for test execution (optional, default: 3)
+  # threads: 3
   
-  # -- Test execution mode
-  testMode: "post-deploy"  # Options: post-deploy, api-tests, manual, cron
+  # -- Test execution mode (optional, default: post-deploy)
+  # testMode: "post-deploy"  # Options: post-deploy, api-tests, manual, cron
   
   # -- Service account for Workload Identity (must have GCS annotations)
   serviceAccount: "argo-workflow"
@@ -808,20 +808,8 @@ autoTest:
   # -- Target environment for test execution
   environment: "staging"  # Detected from namespace if not set
   
-  # -- Kubernetes cluster name
-  cluster: "gke-staging-new"
-  
-  # -- ArgoCD server URL for deployment tracking
-  argocdServerUrl: "https://argocd.eng.livspace.com"
-  
-  # -- Test trigger source
-  trigger: "argocd-post-sync"
-  
-  # -- Unique run identifier (auto-generated if empty)
-  runId: ""
-  
-  # -- Enable historical trend analysis and comparison
-  enableTrendSummary: true
+  # -- Enable historical trend analysis and comparison (optional, default: false)
+  # enableTrendSummary: true
   
   # -- Maven JVM options for environment-specific configurations
   # Example: "-Dauth.token.url=https://auth.example.com -Dapi.base.url=https://api.example.com"
