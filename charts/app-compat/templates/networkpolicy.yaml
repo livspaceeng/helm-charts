@@ -92,8 +92,14 @@ spec:
 {{- end }}
 ---
 {{- if .Values.autoTest.enabled }}
-{{- if .Values.autoTest.networkPolicy.enabled }}
-# Network policy for PostSync test pods
+{{- $networkPolicyEnabled := true }}
+{{- if hasKey .Values.autoTest "networkPolicy" }}
+  {{- if hasKey .Values.autoTest.networkPolicy "enabled" }}
+    {{- $networkPolicyEnabled = .Values.autoTest.networkPolicy.enabled }}
+  {{- end }}
+{{- end }}
+{{- if $networkPolicyEnabled }}
+# Network policy for PostSync test pods (enabled by default when autoTest is enabled)
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -144,5 +150,5 @@ spec:
     ports:
     - port: 443
       protocol: TCP
-{{- end }}
-{{- end }}
+{{- end }}{{/* end if $networkPolicyEnabled */}}
+{{- end }}{{/* end if .Values.autoTest.enabled */}}
