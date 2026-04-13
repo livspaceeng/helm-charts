@@ -12,7 +12,8 @@ metadata:
     app.kubernetes.io/component: test
 spec:
   ttlSecondsAfterFinished: 3600  # Auto-cleanup after 1 hour
-  backoffLimit: {{ .Values.autoTest.backoffLimit | default 0 }}  # Retry configuration
+  backoffLimit: {{ .Values.autoTest.backoffLimit | default 0 }}  # No retries by default
+  activeDeadlineSeconds: {{ .Values.autoTest.activeDeadlineSeconds | default 600 }}  # Max 10 minutes by default
   template:
     metadata:
       labels:
