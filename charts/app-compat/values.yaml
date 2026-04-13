@@ -791,7 +791,6 @@ autoTest:
 
   # -- Test suite to run (REQUIRED when enabled=true)
   suite: "smoke"  # Options: smoke, regression, integration, full
-  
   # -- Target environment for test execution
   environment: ""  # Auto-detected from namespace if not set
 
@@ -805,5 +804,5 @@ autoTest:
   authSecret: "auth-credentials"
 
   # -- Slack webhook for test result notifications
-  # Secret must contain 'webhook-url' key  
+  # Secret must contain 'webhook-url' key
   slackSecret: "slack-webhook"
