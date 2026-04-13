@@ -784,13 +784,17 @@ serviceProfile:
 #   - slackSecret: Secret name for Slack webhook notifications
 #
 # =============================================================================
+# PostSync Test Job Configuration
 autoTest:
   # -- Enable automatic testing after deployment
-  enabled: false
+  enabled: true
 
   # =========== CORE CONFIGURATION (Commonly Overridden) ===========
   # -- Test suite to run (REQUIRED when enabled=true)
   suite: "smoke"  # Options: smoke, regression, integration, full
+  
+  # -- Target environment for test execution
+  environment: "alpha"  # Options: alpha, beta, staging, production
 
   # -- Container image for test execution
   image: "livcr.io/livspace/sdet-test-runner:latest"
@@ -800,32 +804,27 @@ autoTest:
 
   # -- Service account for Workload Identity (must have GCS annotations)
   serviceAccount: "argo-workflow"
-  # =========== ENVIRONMENT CONFIGURATION ===========
-  # -- Target environment for test execution
-  environment: "staging"  # Detected from namespace if not set
+  
+  # =========== AUTHENTICATION & SECRETS ===========
+  # -- GitHub token for accessing test repositories (required)
+  github:
+    secretName: "github-token"
+    secretKey: "token"
 
-  # -- Enable historical trend analysis and comparison (optional, default: false)
-  # enableTrendSummary: true
+  # -- OAuth2 credentials for API authentication
+  # Secret must contain 'client-id' and 'client-secret' keys
+  authSecret: "auth-credentials"
+
+  # -- Slack webhook for test result notifications
+  # Secret must contain 'webhook-url' key  
+  slackSecret: "slack-webhook"
+
+  # -- Alternative: Direct Slack webhook URL (use this OR slackSecret)
+  slackWebhookUrl: ""
 
   # -- Maven JVM options for environment-specific configurations
   # Example: "-Dauth.token.url=https://auth.example.com -Dapi.base.url=https://api.example.com"
   mavenOpts: ""
-  # =========== AUTHENTICATION & SECRETS ===========
-  # -- GitHub token for accessing test repositories
-  github:
-    secretName: "github-token"  # Or "github-pat-secret"
-    secretKey: "token"
-
-  # -- OAuth2 credentials for API authentication (optional)
-  # Secret must contain 'client-id' and 'client-secret' keys
-  authSecret: ""  # Set to "auth-credentials" if OAuth2 is required
-
-  # -- Slack webhook for test result notifications (optional)
-  # Secret must contain 'webhook-url' key
-  slackSecret: ""  # Set to "slack-webhook" to enable notifications
-
-  # -- Alternative: Direct Slack webhook URL (use this OR slackSecret)
-  slackWebhookUrl: ""
 
   # =========== GCS INTEGRATION (via Workload Identity) ===========
   # GCS authentication is automatic via Workload Identity - no secrets needed!
@@ -833,10 +832,12 @@ autoTest:
   # 1. Service account must be annotated: iam.gke.io/gcp-service-account=SA@PROJECT.iam.gserviceaccount.com
   # 2. GCP service account must have storage.objectAdmin on the reports bucket
   # 3. IAM binding must exist for Workload Identity
+  
   # =========== NETWORK & SECURITY ===========
-  # -- Network policy for test pod egress traffic
+  # -- Network policy for test pod egress traffic (enabled by default when autoTest is enabled)
+  # Set to false to disable network policy creation
   networkPolicy:
-    enabled: true
+    # enabled: true  # Defaults to true, uncomment to explicitly control
     additionalEgress: []  # Add custom egress rules if needed
 
   # -- Job cleanup and retry configuration
