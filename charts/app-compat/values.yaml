@@ -768,3 +768,41 @@ serviceProfile:
     - name: "all"
       condition:
         pathRegex: /.*
+
+# -- Automatic Testing Configuration
+# =============================================================================
+# Automated Post-Deployment Testing Configuration
+# =============================================================================
+# Uses unified test runner with Workload Identity for secure GCS access
+#
+# REQUIRED VALUES (must be set in your values override):
+#   - suite: The test suite to run (e.g., "smoke", "regression")
+#
+# COMMONLY OVERRIDDEN VALUES:
+#   - environment: Target environment ("staging", "alpha", "production")
+#   - authSecret: Secret name containing OAuth2 credentials
+#   - slackSecret: Secret name for Slack webhook notifications
+#
+# =============================================================================
+# PostSync Test Job Configuration
+autoTest:
+  # -- Enable automatic testing after deployment
+  enabled: false  # Set to true to enable PostSync tests
+
+  # -- Test suite to run (REQUIRED when enabled=true)
+  suite: "smoke"  # Options: smoke, regression, integration, full
+  # -- Target environment for test execution
+  environment: ""  # Auto-detected from namespace if not set
+
+  # -- GitHub token for accessing test repositories (required)
+  github:
+    secretName: "github-token"
+    secretKey: "token"
+
+  # -- OAuth2 credentials for API authentication
+  # Secret must contain 'client-id' and 'client-secret' keys
+  authSecret: "auth-credentials"
+
+  # -- Slack webhook for test result notifications
+  # Secret must contain 'webhook-url' key
+  slackSecret: "slack-webhook"

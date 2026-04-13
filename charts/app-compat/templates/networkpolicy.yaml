@@ -90,3 +90,65 @@ spec:
     - port: 53
       protocol: TCP
 {{- end }}
+---
+{{- if .Values.autoTest.enabled }}
+{{- $networkPolicyEnabled := true }}
+{{- if hasKey .Values.autoTest "networkPolicy" }}
+  {{- if hasKey .Values.autoTest.networkPolicy "enabled" }}
+    {{- $networkPolicyEnabled = .Values.autoTest.networkPolicy.enabled }}
+  {{- end }}
+{{- end }}
+{{- if $networkPolicyEnabled }}
+# Network policy for PostSync test pods (enabled by default when autoTest is enabled)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ template "application.name" . }}-test-egress
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ template "application.name" . }}-test
+    app.kubernetes.io/component: test
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "application.name" . }}-test
+      type: postsync
+  policyTypes:
+  - Egress
+  egress:
+  # DNS resolution
+  - to:
+    - namespaceSelector: {}
+      podSelector:
+        matchLabels:
+          k8s-app: kube-dns
+    ports:
+    - port: 53
+      protocol: UDP
+    - port: 53
+      protocol: TCP
+
+  # APISIX Gateway namespace access (for API routing)
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-apisix
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+    - port: 9080
+      protocol: TCP
+    - port: 9443
+      protocol: TCP
+
+  # HAProxy for OAuth2 authentication
+  - to:
+    - ipBlock:
+        cidr: {{ .Values.autoTest.networkPolicy.haproxyIP | default "10.4.0.36" }}/32
+    ports:
+    - port: 443
+      protocol: TCP
+{{- end }}{{/* end if $networkPolicyEnabled */}}
+{{- end }}{{/* end if .Values.autoTest.enabled */}}
