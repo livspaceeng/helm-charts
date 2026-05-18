@@ -28,32 +28,32 @@ ContainerPort:
     #     - sourceLabels: [__name__]
     #       regex: '.*_bucket'
     #       action: drop
-    #     
+    #
     #     # Example 2: For Java services - drop unnecessary JVM metrics
     #     - sourceLabels: [__name__]
     #       regex: 'jvm_buffer_.*|jvm_classes_.*|jvm_threads_states_.*'
     #       action: drop
-    #     
+    #
     #     # Example 3: Drop all Tomcat metrics except sessions
     #     - sourceLabels: [__name__]
     #       regex: 'tomcat_(?!sessions_active).*'
     #       action: drop
-    #     
+    #
     #     # Example 4: For Go services - keep only essential metrics
     #     - sourceLabels: [__name__]
     #       regex: 'go_goroutines|go_memstats_heap_alloc_bytes|nms_.*|up'
     #       action: keep
-    #     
+    #
     #     # Example 5: Aggregate high-cardinality URIs to reduce series
     #     - sourceLabels: [__name__, uri]
     #       regex: 'http_server_requests.*;/api/users/[0-9]+.*'
     #       targetLabel: uri
     #       replacement: '/api/users/{id}'
-    #     
+    #
     #     # Example 6: Drop high-cardinality labels
     #     - regex: 'pod_template_hash|controller_revision_hash|pod_uuid'
     #       action: labeldrop
-    #     
+    #
     #     # Example 7: Modify existing example - change namespace label
     #     - sourceLabels: [namespace]
     #       regex: '(.*)'
