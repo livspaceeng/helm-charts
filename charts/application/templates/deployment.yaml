@@ -32,7 +32,7 @@ spec:
 {{ include "application.selectorLabels" . | indent 8 }}
 {{ include "pod.systemLabels" . | indent 8 }}
 {{- if .Values.deployment.podLabels }}
-{{ toYaml .Values.deployment.podLabels | indent 8 }}
+{{ include "application.podLabels" . | indent 8 }}
 {{- end }}
 {{- if or .Values.deployment.additionalPodAnnotations .Values.deployment.fluentdConfigAnnotations }}
       annotations:

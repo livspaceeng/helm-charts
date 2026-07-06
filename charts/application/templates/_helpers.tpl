@@ -68,3 +68,18 @@ app: {{ include "application.name" . }}
 webapp: "true"
 {{- end }}
 {{- end }}
+
+{{/*
+podLabels renderer: accepts comma-separated values as a convenience for
+authoring multi-valued labels (e.g. `spoc: a, b` -> `spoc: "a_b"`), so that
+authors can express multiple logical values inside a single Kubernetes label
+without violating the label-value regex. Values without a comma pass through
+unchanged.
+*/}}
+{{- define "application.podLabels" -}}
+{{- $rendered := dict -}}
+{{- range $key, $value := .Values.deployment.podLabels -}}
+{{-   $_ := set $rendered $key (regexReplaceAll `\s*,\s*` (toString $value) "_") -}}
+{{- end -}}
+{{ toYaml $rendered }}
+{{- end -}}

@@ -91,9 +91,12 @@ deployment:
   additionalLabels:
     # key: value
 
-  # Additional label added on pod which is used in Service's Label Selector
+  # Additional label added on pod which is used in Service's Label Selector.
+  # Comma-separated values are supported and rendered as underscore-joined
+  # (e.g. `spoc: a, b` -> `spoc: "a_b"`) to satisfy Kubernetes label value rules.
   podLabels:
     # env: prod
+    # spoc: a, b
 
   # Annotations on deployments
   annotations:
