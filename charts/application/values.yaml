@@ -53,10 +53,10 @@ deployment:
     #   maxSurge: 25%
     #   maxUnavailable: 25%
 
-  #terminationGracePeriodSeconds
+  # terminationGracePeriodSeconds
   gracePeriod: 30
 
-  #container lifecycle
+  # container lifecycle
   lifecycle:
     enabled: false
     preStop:
@@ -201,7 +201,7 @@ deployment:
   image:
     repository: repository/image-name
     tag: ''
-    digest: '' # if set to a non empty value, digest takes precedence on the tag
+    digest: ''  # if set to a non empty value, digest takes precedence on the tag
     pullPolicy: IfNotPresent
   dnsConfig:
     # options:
@@ -260,7 +260,7 @@ deployment:
     port: 8080   # Port on which application is running inside container
     secretName: "openshift-oauth-proxy-tls"
     image: openshift/oauth-proxy:latest       # If you have a custom container for oauth-proxy that can be updated here
-    disableTLSArg: false # If disabled --http-address=:8081 will be used instead of --https-address=:8443 , to be used when an ingress is used for application
+    disableTLSArg: false  # If disabled --http-address=:8081 will be used instead of --https-address=:8443 , to be used when an ingress is used for application
   # Add additional containers besides init and app containers
   additionalContainers:
   # - name: sidecar-contaner
@@ -282,15 +282,15 @@ deployment:
 
   # List of ports for the primary container
   ports:
-  #- containerPort: 8080
-  #  name: http
-  #  protocol: TCP
-  #- containerPort: 8778
-  #  name: jolokia
-  #  protocol: TCP
-  #- containerPort: 8443
-  #  name: https
-  #  protocol: TCP
+  # - containerPort: 8080
+  #   name: http
+  #   protocol: TCP
+  # - containerPort: 8778
+  #   name: jolokia
+  #   protocol: TCP
+  # - containerPort: 8443
+  #   name: https
+  #   protocol: TCP
 
 
 ##########################################################
@@ -321,7 +321,7 @@ ingress:
   # Port of the service that serves pods
   servicePort: http
 
-  #Set pathType: default is ImplementationSpecific; Options: Exact, Prefix
+  # Set pathType: default is ImplementationSpecific; Options: Exact, Prefix
   pathType: ImplementationSpecific
 
   # List of host addresses to be exposed by this Ingress
@@ -356,7 +356,7 @@ ingressInternal:
   # Port of the service that serves pods
   servicePort: http
 
-  #Set pathType: default is ImplementationSpecific; Options: Exact, Prefix
+  # Set pathType: default is ImplementationSpecific; Options: Exact, Prefix
   pathType: ImplementationSpecific
 
   # List of host addresses to be exposed by this Ingress
@@ -445,9 +445,9 @@ configMap:
 sealedSecret:
   enabled: false
   additionalLabels:
-    #key: value
+    # key: value
   annotations:
-    #key: value
+    # key: value
   files:
 #  #nameSuffix of sealedSecret
 #     example:
@@ -541,14 +541,14 @@ autoscaling:
     resource:
       name: cpu
       target:
-         type: Utilization
-         averageUtilization: 60
+        type: Utilization
+        averageUtilization: 60
   - type: Resource
     resource:
       name: memory
       target:
-         type: Utilization
-         averageUtilization: 60
+        type: Utilization
+        averageUtilization: 60
 
 ##########################################################
 # Pod disruption budget - PDB
