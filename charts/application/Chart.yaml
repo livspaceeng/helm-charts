@@ -4,3 +4,9 @@ description: Generic helm chart for all kind of applications
 type: application
 version: 1.0.20
 home: https://github.com/livspaceeng/helm-charts
+maintainers:
+  - name: Praveen
+    email: praveen@livspace.com
+    url: www.livspace.com
+  - name: Ankit
+    email: ankit.a@livspace.com
