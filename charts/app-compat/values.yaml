@@ -329,6 +329,16 @@ canary:
 
 mountGToken: false
 
+# LLM gateway (APISIX) access via a projected ServiceAccount token — Path B, no static key.
+# When enabled, mounts a short-lived, kubelet-rotated SA token that the app sends as
+# `Authorization: Bearer` to the LLM gateway. `audience` MUST match the gateway's
+# openid-connect client_id. Opt-in; default off (no effect on services that don't set it).
+llmGatewayToken:
+  enabled: false
+  audience: apisix-llm-gateway
+  mountPath: /var/run/secrets/llm-gateway
+  expirationSeconds: 3600
+
 deployment:
   image:
     repository: livcr.io/livspace/app-name

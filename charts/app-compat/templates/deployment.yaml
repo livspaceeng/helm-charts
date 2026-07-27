@@ -499,6 +499,11 @@ spec:
             - name: aws-dir-volume
               mountPath: /root/.aws
           {{- end }}
+          {{- if (.Values.llmGatewayToken).enabled }}
+            - name: llm-gw-token
+              mountPath: {{ .Values.llmGatewayToken.mountPath | default "/var/run/secrets/llm-gateway" }}
+              readOnly: true
+          {{- end }}
           {{- if and $hasCMVolumeExists (.Values.externalConfigMaps)}}
           {{- range $configMap := .Values.externalConfigMaps  }}
             {{- if $configMap.path  }}
@@ -545,6 +550,15 @@ spec:
         - emptyDir:
             medium: Memory
           name: gtoken-vol
+      {{- end }}
+      {{- if (.Values.llmGatewayToken).enabled }}
+        - name: llm-gw-token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  audience: {{ .Values.llmGatewayToken.audience | default "apisix-llm-gateway" }}
+                  expirationSeconds: {{ .Values.llmGatewayToken.expirationSeconds | default 3600 }}
+                  path: token
       {{- end }}
       {{- if (.Values.externalConfigMaps)}}
       {{- range $item := .Values.externalConfigMaps  }}
