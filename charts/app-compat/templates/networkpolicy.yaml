@@ -20,7 +20,7 @@ spec:
   {{- if .Values.networkPolicy.ingress }}
   ingress:
   {{- range $rule := .Values.networkPolicy.ingress.fromApps }}
-  {{- if or $rule.httpPorts $rule.tcpPorts $rule.udpPorts }}
+  {{- if or $rule.httpPorts $rule.tcpPorts $rule.udpPorts $.Values.networkPolicy.mesh }}
   {{- $labelKey := default "app" $rule.labelKey }}
   - from:
     - podSelector:
@@ -44,13 +44,19 @@ spec:
     - port: {{ $port }}
       protocol: UDP
     {{- end }}
+    {{- if $.Values.networkPolicy.mesh }}
+    # Linkerd proxy inbound port: meshed peers connect proxy-to-proxy on 4143,
+    # so per-peer rules must allow it in addition to the app ports.
+    - port: 4143
+      protocol: TCP
+    {{- end }}
   {{- end }}
   {{- end }}
   {{- end }}
   {{- if .Values.networkPolicy.egress }}
   egress:
   {{- range $app := .Values.networkPolicy.egress.toApps }}
-  {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts }}
+  {{- if or $app.httpPorts $app.tcpPorts $app.udpPorts $.Values.networkPolicy.mesh }}
   {{- $labelKey := default "app" $app.labelKey }}
   - to:
     - podSelector:
@@ -73,6 +79,12 @@ spec:
     {{- range $port := $app.udpPorts }}
     - port: {{ $port }}
       protocol: UDP
+    {{- end }}
+    {{- if $.Values.networkPolicy.mesh }}
+    # Linkerd proxy inbound port: meshed peers connect proxy-to-proxy on 4143,
+    # so per-peer rules must allow it in addition to the app ports.
+    - port: 4143
+      protocol: TCP
     {{- end }}
   {{- end }}
   {{- end }}
