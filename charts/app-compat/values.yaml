@@ -496,6 +496,11 @@ winterSoldier:
 
 networkPolicy:
   enabled: false
+  # mesh: when true, every fromApps/toApps peer rule additionally allows TCP 4143
+  # (the Linkerd proxy inbound port). Required for policies to match traffic
+  # between Linkerd-meshed pods: the wire connection is sidecar-to-sidecar on
+  # 4143, so rules listing only app ports never match meshed traffic.
+  mesh: false
   # ingress defines rules for incoming traffic to your application pods
   # ingress:
   #   fromApps:
