@@ -13,6 +13,10 @@ spec:
       path: {{ default "/metrics" (.servicemonitor).path }}
       interval: {{ default "30s" (.servicemonitor).interval }}
       scrapeTimeout: {{ default "20s" (.servicemonitor).scrapeTimeout }}
+      {{- if (.servicemonitor).metricRelabelings }}
+      metricRelabelings:
+        {{- toYaml (.servicemonitor).metricRelabelings | nindent 8 }}
+      {{- end }}
     {{- end }}
     {{- end }}
   selector:
