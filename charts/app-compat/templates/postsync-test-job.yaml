@@ -1,0 +1,178 @@
+{{- if .Values.autoTest.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: auto-test-{{ include "application.name" . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+  labels:
+    app: {{ include "application.name" . }}
+    app.kubernetes.io/component: test
+spec:
+  ttlSecondsAfterFinished: 3600  # Auto-cleanup after 1 hour
+  backoffLimit: {{ .Values.autoTest.backoffLimit | default 0 }}  # No retries by default
+  activeDeadlineSeconds: {{ .Values.autoTest.activeDeadlineSeconds | default 600 }}  # Max 10 minutes by default
+  template:
+    metadata:
+      labels:
+        app: {{ include "application.name" . }}-test
+        type: postsync
+        service: {{ include "application.name" . }}
+    spec:
+      serviceAccountName: {{ .Values.autoTest.serviceAccount | default "argo-workflow" }}  # Required by Kyverno policy
+      restartPolicy: Never
+      volumes:
+      # Essential writable directories for Docker image
+      - name: tmp
+        emptyDir: {}
+      - name: test-results
+        emptyDir: {}
+      - name: gcloud-config
+        emptyDir: {}
+      - name: maven-repo
+        emptyDir: {}
+      {{- if .Values.autoTest.extraVolumes }}
+      {{- toYaml .Values.autoTest.extraVolumes | nindent 6 }}
+      {{- end }}
+      containers:
+      - name: test-runner
+        image: {{ .Values.autoTest.image | default "livcr.io/livspace/sdet-test-runner:latest" | quote }}
+        {{- if .Values.autoTest.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.autoTest.imagePullPolicy }}
+        {{- else }}
+        imagePullPolicy: Always
+        {{- end }}
+        volumeMounts:
+        # Essential mounts for Docker image to work properly
+        - name: test-results
+          mountPath: /app/framework/target  # Mount target directory for writable access
+        - name: gcloud-config
+          mountPath: /root/.config
+        - name: tmp
+          mountPath: /tmp
+        - name: maven-repo
+          mountPath: /root/.m2/repository  # Mount Maven repository for dependencies
+        {{- if .Values.autoTest.extraVolumeMounts }}
+        {{- toYaml .Values.autoTest.extraVolumeMounts | nindent 8 }}
+        {{- end }}
+        {{- if .Values.autoTest.envFromSecret }}
+        # Load all keys from centralized secret as environment variables
+        envFrom:
+        - secretRef:
+            name: {{ .Values.autoTest.envFromSecret }}
+            optional: {{ .Values.autoTest.envFromSecretOptional | default false }}
+        {{- end }}
+        env:
+        # Environment for writable directories
+        - name: HOME
+          value: "/tmp"
+        - name: CLOUDSDK_CONFIG
+          value: "/root/.config/gcloud"
+        # Test mode - crucial for the unified test runner
+        - name: TEST_MODE
+          value: {{ .Values.autoTest.testMode | default "post-deploy" | quote }}
+        # Core required parameters
+        - name: SERVICE_NAME
+          value: {{ include "application.name" . | quote }}
+        - name: DEPLOY_ENV
+          value: {{ .Values.autoTest.environment | default "staging" | quote }}
+        - name: SUITE
+          value: {{ .Values.autoTest.suite | quote }}
+
+        # Optional parameters with defaults in test runner
+        {{- if .Values.autoTest.enableTrendSummary }}
+        - name: ENABLE_TREND_SUMMARY
+          value: {{ .Values.autoTest.enableTrendSummary | quote }}
+        {{- end }}
+        {{- if .Values.deployment.image.tag }}
+        - name: ARGOCD_REVISION
+          value: {{ .Values.deployment.image.tag | quote }}
+        {{- end }}
+        # Namespace for context (always available)
+        - name: TARGET_NAMESPACE
+          value: {{ .Release.Namespace | quote }}
+
+        # Maven options for environment-specific configurations
+        {{- if .Values.autoTest.mavenOpts }}
+        - name: MAVEN_OPTS
+          value: {{ .Values.autoTest.mavenOpts | quote }}
+        {{- end }}
+
+        # GitHub authentication
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.autoTest.github.secretName | quote }}
+              key: {{ .Values.autoTest.github.secretKey | quote }}
+
+        {{- if .Values.autoTest.authSecret }}
+        # Auth credentials (optional - won't fail if secret doesn't exist)
+        - name: AUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.autoTest.authSecret | quote }}
+              key: "client-id"
+              optional: true
+        - name: AUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.autoTest.authSecret | quote }}
+              key: "client-secret"
+              optional: true
+        {{- end }}
+
+        # GCS authentication via Workload Identity (no secrets needed)
+        # Service account must be annotated with iam.gke.io/gcp-service-account
+
+        # Slack webhook for notifications (optional)
+        {{- if .Values.autoTest.slackSecret }}
+        - name: SLACK_WEBHOOK_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.autoTest.slackSecret | quote }}
+              key: "webhook-url"
+              optional: true
+        {{- else if .Values.autoTest.slackWebhookUrl }}
+        - name: SLACK_WEBHOOK_URL
+          value: {{ .Values.autoTest.slackWebhookUrl | quote }}
+        {{- end }}
+
+        {{- if .Values.autoTest.extraEnvVars }}
+        # Additional custom environment variables
+        {{- range $key, $value := .Values.autoTest.extraEnvVars }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- end }}
+
+        {{- if .Values.autoTest.extraEnvFromSecrets }}
+        # Additional environment variables from secrets
+        {{- range $env := .Values.autoTest.extraEnvFromSecrets }}
+        - name: {{ $env.name }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ $env.secretName | default $.Values.autoTest.envFromSecret }}
+              key: {{ $env.secretKey | default $env.name }}
+              optional: {{ $env.optional | default true }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.autoTest.command }}
+        command: {{ .Values.autoTest.command }}
+        {{- end }}
+        {{- if .Values.autoTest.args }}
+        args: {{ .Values.autoTest.args }}
+        {{- end }}
+        resources:
+          {{- if .Values.autoTest.resources }}
+          {{- toYaml .Values.autoTest.resources | nindent 10 }}
+          {{- else }}
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+          {{- end }}
+{{- end }}
