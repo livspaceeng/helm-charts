@@ -118,6 +118,12 @@ health:
   # -- Health check path
   path: /
   port: 9999
+  # -- Readiness probe on the health port. Without it a pod is Ready the instant the
+  # container starts, so rollouts shift traffic before Caddy is listening.
+  readiness:
+    enabled: true
+    periodSeconds: 5
+    failureThreshold: 3
 
 # -- define additional volumes
 volumes: []
