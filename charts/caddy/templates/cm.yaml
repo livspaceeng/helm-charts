@@ -16,8 +16,9 @@ data:
       debug
     {{- end }}
     {{- if .Values.config.metrics.enabled }}
+      # global `metrics` option: the nested `servers { metrics }` form is deprecated since Caddy 2.9
+      metrics
       servers {
-    	metrics
         client_ip_headers X-Client-Ip X-Forwarded-For X-Real-IP
       }
       admin :{{ .Values.adminPort }}

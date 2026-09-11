@@ -74,6 +74,14 @@ spec:
             httpGet:
               path: {{ .Values.health.path }}
               port: health
+          {{- if .Values.health.readiness.enabled }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.health.path }}
+              port: health
+            periodSeconds: {{ .Values.health.readiness.periodSeconds }}
+            failureThreshold: {{ .Values.health.readiness.failureThreshold }}
+          {{- end }}
           volumeMounts:
             - mountPath: /etc/caddy/Caddyfile
               name: "config"
