@@ -531,7 +531,31 @@ networkPolicy:
   #       namespace: external-services
   #       httpPorts: [443, 80]
   #       udpPorts: []
+  #   toCIDRs:                              # Optional: egress to IP ranges (e.g. the kube API server)
+  #     - cidr: 172.16.0.2/32               # Required: CIDR block
+  #       except: []                         # Optional: CIDRs inside `cidr` to exclude
+  #       tcpPorts: [443]                    # Optional: TCP ports (omit tcpPorts and udpPorts to allow all ports)
+  #       udpPorts: []                       # Optional: UDP ports
+  # toCIDRs works alongside toApps; toCIDRs-only egress is valid.
   # Note: DNS egress to kube-system (port 53 UDP/TCP) is automatically included when egress is enabled
+
+# rbac creates a namespaced Role + RoleBinding for the chart's ServiceAccount.
+# Rendered only when create is true AND rules is non-empty. Both are named after the application.
+# The pod also needs serviceAccount.create (or serviceAccount.name) and
+# serviceAccount.automountServiceAccountToken: true to use the API.
+rbac:
+  create: false
+  rules: []
+  # rules:
+  #   - apiGroups: ["batch"]
+  #     resources: ["jobs"]
+  #     verbs: ["create", "get", "list", "watch", "delete"]
+  #   - apiGroups: [""]
+  #     resources: ["pods"]
+  #     verbs: ["get", "list"]
+  #   - apiGroups: [""]
+  #     resources: ["pods/log"]
+  #     verbs: ["get"]
 
 statefulset:
   enabled: false

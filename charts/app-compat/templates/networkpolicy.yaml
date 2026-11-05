@@ -88,6 +88,28 @@ spec:
     {{- end }}
   {{- end }}
   {{- end }}
+  {{- range $block := .Values.networkPolicy.egress.toCIDRs }}
+  - to:
+    - ipBlock:
+        cidr: {{ $block.cidr | quote }}
+        {{- if $block.except }}
+        except:
+        {{- range $ex := $block.except }}
+        - {{ $ex | quote }}
+        {{- end }}
+        {{- end }}
+    {{- if or $block.tcpPorts $block.udpPorts }}
+    ports:
+    {{- range $port := $block.tcpPorts }}
+    - port: {{ $port }}
+      protocol: TCP
+    {{- end }}
+    {{- range $port := $block.udpPorts }}
+    - port: {{ $port }}
+      protocol: UDP
+    {{- end }}
+    {{- end }}
+  {{- end }}
   {{- end }}
   - to:
     - namespaceSelector:

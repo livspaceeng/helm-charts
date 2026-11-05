@@ -1128,6 +1128,24 @@
         }
       }
     },
+    "rbac": {
+      "type": "object",
+      "description": "Namespaced Role and RoleBinding for the chart ServiceAccount; rendered only when create is true and rules is non-empty",
+      "title": "RBAC",
+      "properties": {
+        "create": {
+          "type": "boolean",
+          "description": "create the Role and RoleBinding"
+        },
+        "rules": {
+          "type": "array",
+          "description": "PolicyRules for the Role (apiGroups, resources, verbs)",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
     "serviceAccount": {
       "type": "object",
       "description": "defines service account for pods",
