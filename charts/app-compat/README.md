@@ -647,6 +647,36 @@ It gives the details for deployment.
 | `image_tag` | It is the image tag |
 | `image` | It is the URL of the image |
 
+### Network Policy egress to CIDR blocks
+
+`networkPolicy.egress.toCIDRs` (opt-in, requires `networkPolicy.enabled: true`) adds one `ipBlock` egress rule per item. It works alongside `toApps`, and DNS egress is still added automatically.
+
+CIDRs are cluster-specific. For example, `172.16.0.2/32` is the gke-staging control-plane endpoint. When the same app moves to another cluster (prod), set that cluster's control-plane IP (`kubectl get endpoints kubernetes -n default`), otherwise API calls time out silently.
+
+```yaml
+networkPolicy:
+  enabled: true
+  egress:
+    toCIDRs:
+      - cidr: 172.16.0.2/32     # required
+        except: []              # optional
+        tcpPorts: [443]         # optional; omit tcpPorts and udpPorts to allow all ports
+        udpPorts: []            # optional
+```
+
+### RBAC
+
+`rbac` (opt-in) creates a namespaced `Role` and `RoleBinding`, both named after the application, binding the rules to the chart's ServiceAccount. It renders only when `rbac.create: true` and `rbac.rules` is non-empty. Rendering fails if the binding would target the namespace's `default` ServiceAccount, so set `serviceAccount.create: true` or a non-default `serviceAccount.name`. Set `serviceAccount.automountServiceAccountToken: true` if the pod calls the Kubernetes API.
+
+```yaml
+rbac:
+  create: true
+  rules:
+    - apiGroups: ["batch"]
+      resources: ["jobs"]
+      verbs: ["create", "get", "list", "watch", "delete"]
+```
+
 ### Service Monitor
 
 ```yaml
