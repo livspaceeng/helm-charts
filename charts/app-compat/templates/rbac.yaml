@@ -1,4 +1,7 @@
 {{- if and .Values.rbac .Values.rbac.create .Values.rbac.rules }}
+{{- if eq (include "serviceAccountName" .) "default" }}
+{{- fail "rbac.create: the Role would be bound to the namespace's `default` ServiceAccount (every pod using it would get these rules). Set serviceAccount.create: true or a non-default serviceAccount.name." }}
+{{- end }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:

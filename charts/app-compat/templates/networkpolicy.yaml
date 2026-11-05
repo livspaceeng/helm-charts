@@ -91,7 +91,7 @@ spec:
   {{- range $block := .Values.networkPolicy.egress.toCIDRs }}
   - to:
     - ipBlock:
-        cidr: {{ $block.cidr | quote }}
+        cidr: {{ required "networkPolicy.egress.toCIDRs[].cidr is required" $block.cidr | quote }}
         {{- if $block.except }}
         except:
         {{- range $ex := $block.except }}
