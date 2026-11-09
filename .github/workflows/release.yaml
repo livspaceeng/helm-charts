@@ -10,7 +10,9 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    # self-hosted-gke (gke-keystone) for Workload Identity to Artifact Registry;
+    # see .github/scripts/oci-push.sh.
+    runs-on: [self-hosted, self-hosted-gke]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,3 +39,16 @@ jobs:
           charts_repo_url: https://charts.livspace.com
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      # chart-releaser leaves the charts it released in .cr-release-packages.
+      # Argo CD pulls from the OCI repo; charts.livspace.com stays for helm repo
+      # users until every kustomization has moved.
+      - name: Push released charts to Artifact Registry (OCI)
+        run: |
+          shopt -s nullglob
+          pkgs=(.cr-release-packages/*.tgz)
+          if [ "${#pkgs[@]}" -eq 0 ]; then
+            echo "No charts released in this push"
+            exit 0
+          fi
+          .github/scripts/oci-push.sh "${pkgs[@]}"
