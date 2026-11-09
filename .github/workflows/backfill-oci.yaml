@@ -1,0 +1,26 @@
+name: Backfill Charts to Artifact Registry
+
+# One-off copy of versions already on charts.livspace.com into the OCI repo,
+# so kustomizations can repoint without bumping chart versions. Idempotent.
+on:
+  workflow_dispatch:
+    inputs:
+      chart:
+        description: "Only this chart (empty = every chart)"
+        required: false
+        default: ""
+
+jobs:
+  backfill:
+    runs-on: [self-hosted, self-hosted-gke]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4.1.0
+        with:
+          version: v3.18.4
+
+      - name: Copy charts.livspace.com versions to Artifact Registry
+        run: .github/scripts/oci-backfill.sh "${{ inputs.chart }}"
